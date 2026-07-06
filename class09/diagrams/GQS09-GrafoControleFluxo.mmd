@@ -1,0 +1,12 @@
+flowchart TD
+    I([Início]) --> D1{a > 0?}
+    D1 -->|Sim| D2{b > 0?}
+    D2 -->|Sim| R1[Ambos positivos]
+    D2 -->|Não| R2[A positivo]
+    D1 -->|Não| D3{b > 0?}
+    D3 -->|Sim| R3[B positivo]
+    D3 -->|Não| R4[Nenhum positivo]
+    R1 --> F([Fim])
+    R2 --> F
+    R3 --> F
+    R4 --> F

@@ -1,0 +1,8 @@
+flowchart TD
+    subgraph Automacao[Automação de Testes]
+        AA[Padrão AAA\nArrange-Act-Assert] --> GWT[Given-When-Then\nBDD]
+    end
+    subgraph Piramide[Pirâmide de Automação]
+        UNIT["70% Unitários\n(JUnit, pytest)"] --> API["20% API\n(Postman, REST Assured)"]
+        API --> UI["10% UI\n(Selenium, Cypress)"]
+    end

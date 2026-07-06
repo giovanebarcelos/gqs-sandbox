@@ -1,0 +1,31 @@
+Testes para serem realizados no SikuliX
+
+1. Abrir o Bloco de Notas e Digitar Texto: 
+   Abra o Bloco de Notas e digite "Hello, SikuliX!"
+
+2. Abrir o Calculadora e Realizar uma Operação de Adição: 
+   Abra a Calculadora e realize a operação 123 + 456
+
+3. Abrir o Bloco de Notas, Digitar e Salvar um Arquivo: 
+   Abra o Bloco de Notas, digite "Teste de automação" e salve o arquivo como "teste.txt"
+
+4. Abrir o Navegador e Navegar para um Site: 
+   Abra o navegador padrão e navegue até "https://www.google.com"
+
+5. Capturar uma Captura de Tela e Salvar: 
+   Capture a tela inteira e salve a captura como "screenshot.png"
+
+6. Localizar e Clicar em um Ícone na Área de Trabalho: 
+   Localize e clique no ícone de "Lixeira" na área de trabalho
+
+7. Fechar uma Janela do Aplicativo: 
+   Feche o Bloco de Notas se ele estiver aberto
+
+8. Realizar Login em uma Página Web: 
+   Abra o navegador, vá para a página de login e insira as credenciais
+
+9. Verificar a Presença de um Elemento em um Aplicativo: 
+   Verifique se o botão "OK" está presente em uma caixa de diálogo
+
+10. Abrir o Paint e Desenhar uma Linha: 
+    Enunciado: Abra o Paint e desenhe uma linha diagonal

@@ -1,0 +1,1406 @@
+User
+enunciado de uma aplicação e demonstração de todas as possibilidades de teste unitário e a classe testada utilizando o junit e mockito
+ChatGPT
+
+Claro! Vamos criar um enunciado para uma aplicação de gerenciamento de pedidos em um restaurante e demonstrar como realizar todos os testes unitários utilizando o JUnit e o Mockito.
+Enunciado da Aplicação: Sistema de Gerenciamento de Pedidos em um Restaurante
+
+Desenvolva um sistema de gerenciamento de pedidos para um restaurante que permita aos clientes fazerem pedidos de comida e aos funcionários acompanharem e gerenciarem esses pedidos. O sistema deve ter as seguintes funcionalidades:
+
+    Adição de Itens ao Pedido:
+        Os clientes devem ser capazes de adicionar itens ao pedido, especificando o nome do item e a quantidade desejada.
+
+    Remoção de Itens do Pedido:
+        Os clientes devem poder remover itens específicos do pedido.
+
+    Cálculo do Total do Pedido:
+        O sistema deve ser capaz de calcular o total do pedido com base nos itens selecionados e suas quantidades.
+
+    Visualização do Pedido Atual:
+        Os clientes devem ser capazes de visualizar o pedido atual e a quantidade de cada item.
+
+    Geração de Recibo:
+        Os funcionários devem poder gerar um recibo para o pedido atual, que inclui a lista de itens, quantidades e o total a ser pago.
+
+Testes Unitários:
+
+Aqui estão todas as possibilidades de teste unitário para a classe OrderManager, que gerencia os pedidos, utilizando o JUnit e o Mockito:
+
+    Teste de Adição de Itens ao Pedido:
+        Testar se é possível adicionar um item válido ao pedido.
+        Testar se é possível adicionar múltiplos itens ao pedido.
+        Testar se uma exceção é lançada ao tentar adicionar um item inválido.
+        Testar se a quantidade de itens é atualizada corretamente ao adicionar itens duplicados.
+
+    Teste de Remoção de Itens do Pedido:
+        Testar se é possível remover um item existente do pedido.
+        Testar se uma exceção é lançada ao tentar remover um item inexistente do pedido.
+
+    Teste de Cálculo do Total do Pedido:
+        Testar se o total do pedido é calculado corretamente com base nos itens e quantidades.
+
+    Teste de Visualização do Pedido Atual:
+        Testar se a visualização do pedido atual retorna a lista de itens correta com suas quantidades.
+
+    Teste de Geração de Recibo:
+        Testar se o recibo é gerado corretamente com a lista de itens, quantidades e o total do pedido.
+
+Classe Testada Utilizando o JUnit e o Mockito:
+
+Aqui está a implementação dos testes unitários para a classe OrderManager utilizando o JUnit e o Mockito:
+
+java
+
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
+import org.junit.Test;
+
+public class OrderManagerTest {
+
+    @Test
+    public void testAddItemToOrder() {
+        // Criação de um mock para o pedido
+        Order order = mock(Order.class);
+        OrderManager orderManager = new OrderManager(order);
+        
+        // Adição de um item válido ao pedido
+        assertTrue(orderManager.addItem("Pizza", 2));
+        
+        // Adição de múltiplos itens ao pedido
+        assertTrue(orderManager.addItem("Burger", 1));
+        assertTrue(orderManager.addItem("Fries", 3));
+        
+        // Tentativa de adicionar um item inválido (deve retornar false)
+        assertFalse(orderManager.addItem("Invalid Item", 1));
+        
+        // Verificação se a quantidade de itens foi atualizada corretamente
+        verify(order, times(1)).addItem("Pizza", 2);
+        verify(order, times(1)).addItem("Burger", 1);
+        verify(order, times(1)).addItem("Fries", 3);
+    }
+
+    @Test
+    public void testRemoveItemFromOrder() {
+        // Criação de um mock para o pedido
+        Order order = mock(Order.class);
+        OrderManager orderManager = new OrderManager(order);
+        
+        // Remoção de um item existente do pedido
+        assertTrue(orderManager.removeItem("Pizza"));
+        
+        // Tentativa de remover um item inexistente do pedido (deve retornar false)
+        assertFalse(orderManager.removeItem("Invalid Item"));
+        
+        // Verificação se a remoção de item foi chamada corretamente
+        verify(order, times(1)).removeItem("Pizza");
+    }
+
+    @Test
+    public void testCalculateTotal() {
+        // Criação de um mock para o pedido
+        Order order = mock(Order.class);
+        when(order.calculateTotal()).thenReturn(25.0);
+        
+        OrderManager orderManager = new OrderManager(order);
+        assertEquals(25.0, orderManager.calculateTotal(), 0.001);
+        
+        // Verificação se o cálculo do total foi chamado corretamente
+        verify(order, times(1)).calculateTotal();
+    }
+
+    @Test
+    public void testViewOrder() {
+        // Criação de um mock para o pedido
+        Order order = mock(Order.class);
+        when(order.viewOrder()).thenReturn("Pizza x2, Burger x1, Fries x3");
+        
+        OrderManager orderManager = new OrderManager(order);
+        assertEquals("Pizza x2, Burger x1, Fries x3", orderManager.viewOrder());
+        
+        // Verificação se a visualização do pedido foi chamada corretamente
+        verify(order, times(1)).viewOrder();
+    }
+
+    @Test
+    public void testGenerateReceipt() {
+        // Criação de um mock para o pedido
+        Order order = mock(Order.class);
+        when(order.generateReceipt()).thenReturn("Total: $25.00\nItems: Pizza x2, Burger x1, Fries x3");
+        
+        OrderManager orderManager = new OrderManager(order);
+        assertEquals("Total: $25.00\nItems: Pizza x2, Burger x1, Fries x3", orderManager.generateReceipt());
+        
+        // Verificação se a geração do recibo foi chamada corretamente
+        verify(order, times(1)).generateReceipt();
+    }
+}
+
+Neste exemplo, estamos usando o Mockito para criar mocks dos objetos de pedidos e simular seu comportamento. Em seguida, estamos testando os métodos da classe OrderManager para garantir que eles se comportem como esperado em diferentes cenários.
+
+-----------------------------------------------------
+
+Claro! Vamos criar um enunciado para uma aplicação simples de uma calculadora e, em seguida, demonstrar todas as possibilidades de teste unitário utilizando o JUnit e o Mockito.
+Enunciado da Aplicação: Calculadora Simples
+
+Desenvolva uma calculadora simples que possa realizar as operações básicas de adição, subtração, multiplicação e divisão. A calculadora deve ser capaz de lidar corretamente com a divisão por zero e retornar mensagens de erro apropriadas quando necessário.
+
+A interface da calculadora deve incluir os seguintes métodos:
+
+    add(double a, double b): Retorna a soma de dois números.
+    subtract(double a, double b): Retorna a subtração do primeiro número pelo segundo.
+    multiply(double a, double b): Retorna o resultado da multiplicação de dois números.
+    divide(double a, double b): Retorna o resultado da divisão do primeiro número pelo segundo. Se o segundo número for zero, uma exceção ArithmeticException deve ser lançada.
+
+Testes Unitários com JUnit e Mockito:
+
+Aqui estão todas as possibilidades de teste unitário para a classe Calculator, utilizando o JUnit para testes e o Mockito para simular comportamentos específicos:
+
+    Teste de adição:
+        Testar a adição de dois números positivos.
+        Testar a adição de um número positivo e um número negativo.
+        Testar a adição de zero a um número positivo.
+        Testar a adição de zero a zero.
+        Testar a adição de dois números negativos.
+
+    Teste de subtração:
+        Testar a subtração de dois números positivos (onde o primeiro número é maior).
+        Testar a subtração de dois números positivos (onde o segundo número é maior).
+        Testar a subtração de um número positivo por zero.
+        Testar a subtração de zero de um número positivo.
+        Testar a subtração de zero de zero.
+
+    Teste de multiplicação:
+        Testar a multiplicação de dois números positivos.
+        Testar a multiplicação de um número positivo e um número negativo.
+        Testar a multiplicação de zero por um número positivo.
+        Testar a multiplicação de zero por zero.
+        Testar a multiplicação de dois números negativos.
+
+    Teste de divisão:
+        Testar a divisão de dois números positivos (onde o primeiro número é divisível pelo segundo).
+        Testar a divisão de dois números positivos (onde o segundo número é divisível pelo primeiro).
+        Testar a divisão de um número positivo por zero (deve lançar uma exceção ArithmeticException).
+        Testar a divisão de zero por um número positivo.
+        Testar a divisão de zero por zero (deve lançar uma exceção ArithmeticException).
+        Testar a divisão de dois números negativos.
+
+Classe Testada Utilizando o JUnit e Mockito:
+
+Aqui está a implementação dos testes unitários para a classe Calculator utilizando o JUnit e o Mockito:
+
+java
+
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
+import org.junit.Test;
+
+public class CalculatorTest {
+
+    @Test
+    public void testAddition() {
+        Calculator calculator = new Calculator();
+        assertEquals(4.0, calculator.add(2.0, 2.0), 0.001); // Testa adição de dois números positivos
+        
+        // Simulando a adição de um número positivo e um número negativo
+        Calculator mockedCalculator = mock(Calculator.class);
+        when(mockedCalculator.add(5.0, -2.0)).thenReturn(3.0);
+        assertEquals(3.0, mockedCalculator.add(5.0, -2.0), 0.001); 
+    }
+
+    @Test
+    public void testSubtraction() {
+        Calculator calculator = new Calculator();
+        assertEquals(2.0, calculator.subtract(5.0, 3.0), 0.001); // Testa subtração de dois números positivos
+        
+        // Simulando a subtração de um número positivo por zero
+        Calculator mockedCalculator = mock(Calculator.class);
+        when(mockedCalculator.subtract(5.0, 0.0)).thenReturn(5.0);
+        assertEquals(5.0, mockedCalculator.subtract(5.0, 0.0), 0.001); 
+    }
+
+    @Test
+    public void testMultiplication() {
+        Calculator calculator = new Calculator();
+        assertEquals(6.0, calculator.multiply(2.0, 3.0), 0.001); // Testa multiplicação de dois números positivos
+        
+        // Simulando a multiplicação de um número positivo e um número negativo
+        Calculator mockedCalculator = mock(Calculator.class);
+        when(mockedCalculator.multiply(2.0, -5.0)).thenReturn(-10.0);
+        assertEquals(-10.0, mockedCalculator.multiply(2.0, -5.0), 0.001); 
+    }
+
+    @Test
+    public void testDivision() {
+        Calculator calculator = new Calculator();
+        assertEquals(2.0, calculator.divide(6.0, 3.0), 0.001); // Testa divisão de dois números positivos (onde o primeiro número é divisível pelo segundo)
+        
+        // Simulando a divisão de um número positivo por zero (deve lançar uma exceção ArithmeticException)
+        Calculator mockedCalculator = mock(Calculator.class);
+        doThrow(new ArithmeticException()).when(mockedCalculator).divide(5.0, 0.0);
+        try {
+            mockedCalculator.divide(5.0, 0.0);
+            fail("Expected an ArithmeticException to be thrown");
+        } catch (ArithmeticException e) {
+            // Test passed
+        }
+    }
+}
+
+Este exemplo demonstra como você pode usar o Mockito para simular comportamentos específicos, como divisão por zero, durante os testes unitários.
+
+-----------------------------------------------------
+
+Claro! Vamos criar um enunciado para uma aplicação de serviço de email simples e, em seguida, demonstrar todas as possibilidades de teste unitário para essa aplicação utilizando o JUnit e o Mockito.
+Enunciado da Aplicação: Serviço de Email Simples
+
+Desenvolva um serviço de email simples que permita enviar emails para destinatários. O serviço deve ser capaz de lidar com a autenticação SMTP e permitir o envio de emails com assunto e corpo personalizados. Além disso, o serviço deve ser capaz de lidar com exceções e retornar mensagens de erro apropriadas quando necessário.
+
+A interface do serviço de email deve incluir o seguinte método:
+
+    sendEmail(String destinatario, String assunto, String corpo): Envia um email para o destinatário especificado com o assunto e corpo fornecidos.
+
+Testes Unitários:
+
+Aqui estão todas as possibilidades de teste unitário para a classe EmailService, utilizando o JUnit e o Mockito:
+
+    Teste de envio de email com sucesso:
+        Testar o envio de um email com sucesso para um destinatário válido.
+
+    Teste de falha na autenticação SMTP:
+        Simular uma falha na autenticação SMTP e garantir que o serviço de email retorne uma mensagem de erro apropriada.
+
+    Teste de envio de email com destinatário inválido:
+        Testar o envio de um email para um destinatário inválido e garantir que o serviço de email retorne uma mensagem de erro apropriada.
+
+Classe Testada Utilizando o JUnit e o Mockito:
+
+Aqui está a implementação dos testes unitários para a classe EmailService utilizando o JUnit e o Mockito:
+
+java
+
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
+
+import javax.mail.*;
+import javax.mail.internet.*;
+
+import org.junit.*;
+import org.mockito.*;
+
+public class EmailServiceTest {
+
+    @Test
+    public void testSendEmail_Success() throws MessagingException {
+        // Configuração do mock
+        Session session = mock(Session.class);
+        Transport transport = mock(Transport.class);
+        when(session.getTransport("smtp")).thenReturn(transport);
+
+        // Configuração do serviço de email
+        EmailService emailService = new EmailService(session, "username", "password");
+
+        // Envio do email
+        emailService.sendEmail("destinatario@example.com", "Assunto", "Corpo");
+
+        // Verificação se o email foi enviado com sucesso
+        verify(transport).sendMessage(any(Message.class), any(Address[].class));
+    }
+
+    @Test(expected = MessagingException.class)
+    public void testSendEmail_AuthenticationFailure() throws MessagingException {
+        // Configuração do mock para simular falha na autenticação
+        Session session = mock(Session.class);
+        when(session.getTransport("smtp")).thenThrow(new AuthenticationFailedException());
+
+        // Configuração do serviço de email
+        EmailService emailService = new EmailService(session, "username", "password");
+
+        // Envio do email deve lançar exceção devido à falha na autenticação
+        emailService.sendEmail("destinatario@example.com", "Assunto", "Corpo");
+    }
+
+    @Test(expected = MessagingException.class)
+    public void testSendEmail_InvalidRecipient() throws MessagingException {
+        // Configuração do mock para simular falha no envio de email devido a um destinatário inválido
+        Session session = mock(Session.class);
+        Transport transport = mock(Transport.class);
+        when(session.getTransport("smtp")).thenReturn(transport);
+        doThrow(new AddressException("Invalid recipient")).when(transport).sendMessage(any(Message.class), any(Address[].class));
+
+        // Configuração do serviço de email
+        EmailService emailService = new EmailService(session, "username", "password");
+
+        // Envio do email deve lançar exceção devido ao destinatário inválido
+        emailService.sendEmail("destinatario@example.com", "Assunto", "Corpo");
+    }
+}
+
+Neste exemplo, utilizamos o Mockito para criar mocks das dependências externas, como a sessão SMTP e o transporte. Isso nos permite simular diferentes cenários, como envio de email bem-sucedido, falha na autenticação SMTP e destinatário inválido, e garantir que o serviço de email se comporte corretamente em cada caso.
+
+-------------------------------------------------------
+
+Claro! Vou criar um enunciado para uma aplicação de uma calculadora que depende de um serviço de log externo para registrar operações. Vamos utilizar o Mockito para criar mocks desse serviço de log e demonstrar como testar a classe da calculadora com todas as possibilidades de teste unitário.
+Enunciado da Aplicação: Calculadora com Serviço de Log
+
+Desenvolva uma calculadora que possa realizar operações básicas de adição, subtração, multiplicação e divisão. Além disso, a calculadora deve registrar cada operação em um serviço de log externo.
+
+A interface da calculadora deve incluir os seguintes métodos:
+
+    add(double a, double b): Retorna a soma de dois números.
+    subtract(double a, double b): Retorna a subtração do primeiro número pelo segundo.
+    multiply(double a, double b): Retorna o resultado da multiplicação de dois números.
+    divide(double a, double b): Retorna o resultado da divisão do primeiro número pelo segundo. Se o segundo número for zero, uma exceção ArithmeticException deve ser lançada.
+
+O serviço de log externo deve ter a seguinte interface:
+
+    void log(String message): Registra uma mensagem de log.
+
+Testes Unitários Utilizando JUnit e Mockito:
+
+Aqui estão todas as possibilidades de teste unitário para a classe Calculator, utilizando JUnit para asserções e Mockito para criar mocks do serviço de log externo:
+
+    Teste de adição:
+        Testar se a adição de dois números positivos é feita corretamente.
+        Verificar se a mensagem de log é registrada corretamente após a adição.
+        Testar a adição de zero a um número positivo.
+        Testar a adição de zero a zero.
+
+    Teste de subtração:
+        Testar se a subtração de dois números positivos é feita corretamente.
+        Verificar se a mensagem de log é registrada corretamente após a subtração.
+        Testar a subtração de zero de um número positivo.
+        Testar a subtração de zero de zero.
+
+    Teste de multiplicação:
+        Testar se a multiplicação de dois números positivos é feita corretamente.
+        Verificar se a mensagem de log é registrada corretamente após a multiplicação.
+        Testar a multiplicação de zero por um número positivo.
+        Testar a multiplicação de zero por zero.
+
+    Teste de divisão:
+        Testar se a divisão de dois números positivos é feita corretamente.
+        Verificar se a mensagem de log é registrada corretamente após a divisão.
+        Testar a divisão de zero por um número positivo.
+        Testar a divisão de zero por zero (deve lançar uma exceção ArithmeticException).
+
+Classe Testada Utilizando JUnit e Mockito:
+
+Aqui está a implementação dos testes unitários para a classe Calculator utilizando JUnit para asserções e Mockito para criar mocks do serviço de log externo:
+
+java
+
+import static org.junit.Assert.*;
+import org.junit.Test;
+import org.mockito.Mockito;
+
+public class CalculatorTest {
+
+    @Test
+    public void testAddition() {
+        // Criação do mock do serviço de log
+        LogService logServiceMock = Mockito.mock(LogService.class);
+        
+        // Criação da calculadora com o mock do serviço de log
+        Calculator calculator = new Calculator(logServiceMock);
+        
+        // Definição do comportamento esperado do mock
+        Mockito.doNothing().when(logServiceMock).log(Mockito.anyString());
+        
+        // Teste da adição de dois números positivos
+        assertEquals(4.0, calculator.add(2.0, 2.0), 0.001);
+        
+        // Verifica se o método de log foi chamado corretamente
+        Mockito.verify(logServiceMock).log("Addition operation performed.");
+        
+        // Outros testes similares para diferentes cenários...
+    }
+
+    // Outros métodos de teste para subtração, multiplicação e divisão...
+
+}
+
+Neste exemplo, utilizamos o Mockito para criar um mock do serviço de log externo e definir o comportamento esperado para ele. Em seguida, testamos os métodos da calculadora e verificamos se as chamadas ao serviço de log foram feitas corretamente após cada operação.
+
+---------------------------------------------------------
+
+Claro! Vamos criar um enunciado para uma aplicação de gerenciamento de usuários, onde podemos adicionar, atualizar, remover e buscar usuários de um banco de dados. Em seguida, vamos demonstrar todas as possibilidades de teste unitário para as operações de CRUD (criação, leitura, atualização e remoção) utilizando o JUnit e Mockito.
+Enunciado da Aplicação: Gerenciamento de Usuários
+
+Desenvolva uma aplicação para gerenciamento de usuários que permita realizar as seguintes operações:
+
+    Adicionar um novo usuário ao banco de dados.
+    Atualizar os dados de um usuário existente no banco de dados.
+    Remover um usuário do banco de dados.
+    Buscar um usuário pelo seu ID no banco de dados.
+
+A interface da aplicação deve incluir os seguintes métodos:
+
+    void addUser(User user): Adiciona um novo usuário ao banco de dados.
+    void updateUser(User user): Atualiza os dados de um usuário existente no banco de dados.
+    void removeUser(long userId): Remove um usuário do banco de dados com base no seu ID.
+    User getUserById(long userId): Retorna um usuário do banco de dados com base no seu ID. Retorna null se o usuário não for encontrado.
+
+Testes Unitários:
+
+Aqui estão todas as possibilidades de teste unitário para a classe UserManager, utilizando JUnit e Mockito:
+
+    Teste de adição de usuário:
+        Verificar se um novo usuário é adicionado corretamente ao banco de dados.
+        Verificar se a adição de um usuário com ID já existente lança uma exceção ou retorna um resultado esperado.
+
+    Teste de atualização de usuário:
+        Verificar se os dados de um usuário existente são atualizados corretamente.
+        Verificar se a atualização de um usuário inexistente lança uma exceção ou retorna um resultado esperado.
+
+    Teste de remoção de usuário:
+        Verificar se um usuário existente é removido corretamente do banco de dados.
+        Verificar se a remoção de um usuário inexistente lança uma exceção ou retorna um resultado esperado.
+
+    Teste de busca de usuário por ID:
+        Verificar se um usuário existente é encontrado corretamente no banco de dados.
+        Verificar se a busca por um usuário inexistente retorna null conforme esperado.
+
+Classe Testada Utilizando o JUnit e Mockito:
+
+Aqui está a implementação dos testes unitários para a classe UserManager utilizando o JUnit e Mockito:
+
+java
+
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
+
+import org.junit.Before;
+import org.junit.Test;
+
+public class UserManagerTest {
+
+    private UserManager userManager;
+    private UserRepository userRepository;
+
+    @Before
+    public void setUp() {
+        userRepository = mock(UserRepository.class);
+        userManager = new UserManager(userRepository);
+    }
+
+    @Test
+    public void testAddUser() {
+        User user = new User(1, "John Doe");
+        userManager.addUser(user);
+        verify(userRepository).addUser(user);
+    }
+
+    @Test
+    public void testUpdateUser() {
+        User user = new User(1, "John Doe");
+        userManager.updateUser(user);
+        verify(userRepository).updateUser(user);
+    }
+
+    @Test
+    public void testRemoveUser() {
+        userManager.removeUser(1);
+        verify(userRepository).removeUser(1);
+    }
+
+    @Test
+    public void testGetUserById_UserExists() {
+        User user = new User(1, "John Doe");
+        when(userRepository.getUserById(1)).thenReturn(user);
+        assertEquals(user, userManager.getUserById(1));
+    }
+
+    @Test
+    public void testGetUserById_UserDoesNotExist() {
+        when(userRepository.getUserById(2)).thenReturn(null);
+        assertNull(userManager.getUserById(2));
+    }
+}
+
+Neste exemplo, utilizamos o Mockito para criar um objeto mock da interface UserRepository, que simula o comportamento de um repositório de usuários. Em seguida, testamos cada método da classe UserManager, verificando se eles interagem corretamente com o repositório simulado.
+
+--------------------------------------------
+
+Claro! Vamos criar um enunciado para uma aplicação simples de um serviço de autenticação de usuários e, em seguida, demonstrar todas as possibilidades de teste unitário para ela, utilizando JUnit para testes de unidade e Mockito para criar mocks.
+Enunciado da Aplicação: Serviço de Autenticação de Usuários
+
+Desenvolva um serviço de autenticação de usuários que verifique as credenciais de login fornecidas (nome de usuário e senha) e retorne um status de autenticação adequado. O serviço deve ser capaz de autenticar usuários com sucesso quando as credenciais fornecidas forem válidas e retornar mensagens de erro apropriadas quando as credenciais forem inválidas.
+
+A interface do serviço de autenticação deve incluir o seguinte método:
+
+    authenticate(String username, String password): Retorna um status de autenticação para as credenciais fornecidas. Este método pode retornar os seguintes valores:
+        AuthenticationStatus.SUCCESS: Se as credenciais forem válidas e o usuário for autenticado com sucesso.
+        AuthenticationStatus.INVALID_CREDENTIALS: Se as credenciais fornecidas forem inválidas (nome de usuário ou senha incorretos).
+        AuthenticationStatus.ACCOUNT_LOCKED: Se a conta do usuário estiver bloqueada devido a várias tentativas de login malsucedidas.
+
+Testes Unitários:
+
+Aqui estão todas as possibilidades de teste unitário para a classe AuthenticationService, utilizando JUnit para testes de unidade e Mockito para criar mocks:
+
+    Teste de autenticação bem-sucedida:
+        Verificar se o método authenticate retorna AuthenticationStatus.SUCCESS para credenciais válidas.
+
+    Teste de credenciais inválidas:
+        Verificar se o método authenticate retorna AuthenticationStatus.INVALID_CREDENTIALS para credenciais inválidas (nome de usuário ou senha incorretos).
+
+    Teste de bloqueio de conta:
+        Verificar se o método authenticate retorna AuthenticationStatus.ACCOUNT_LOCKED quando a conta do usuário está bloqueada devido a várias tentativas de login malsucedidas.
+
+    Teste de tentativas de login:
+        Verificar se o serviço mantém o número correto de tentativas de login malsucedidas e bloqueia a conta após um número específico de tentativas falhadas.
+
+Classe Testada Utilizando o JUnit e Mockito:
+
+Aqui está a implementação dos testes unitários para a classe AuthenticationService utilizando JUnit para testes de unidade e Mockito para criar mocks:
+
+java
+
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
+
+import org.junit.Test;
+
+public class AuthenticationServiceTest {
+
+    @Test
+    public void testSuccessfulAuthentication() {
+        // Criar um mock do repositório de usuários
+        UserRepository userRepository = mock(UserRepository.class);
+        when(userRepository.getUserByUsername("user")).thenReturn(new User("user", "password"));
+
+        // Criar o serviço de autenticação com o mock do repositório de usuários
+        AuthenticationService authService = new AuthenticationService(userRepository);
+
+        // Testar autenticação bem-sucedida
+        assertEquals(AuthenticationStatus.SUCCESS, authService.authenticate("user", "password"));
+    }
+
+    @Test
+    public void testInvalidCredentials() {
+        // Criar um mock do repositório de usuários
+        UserRepository userRepository = mock(UserRepository.class);
+        when(userRepository.getUserByUsername("user")).thenReturn(new User("user", "password"));
+
+        // Criar o serviço de autenticação com o mock do repositório de usuários
+        AuthenticationService authService = new AuthenticationService(userRepository);
+
+        // Testar credenciais inválidas
+        assertEquals(AuthenticationStatus.INVALID_CREDENTIALS, authService.authenticate("user", "wrongpassword"));
+    }
+
+    @Test
+    public void testAccountLockout() {
+        // Criar um mock do repositório de usuários
+        UserRepository userRepository = mock(UserRepository.class);
+        when(userRepository.getUserByUsername("user")).thenReturn(new User("user", "password"));
+
+        // Criar o serviço de autenticação com o mock do repositório de usuários
+        AuthenticationService authService = new AuthenticationService(userRepository);
+
+        // Simular várias tentativas de login malsucedidas
+        for (int i = 0; i < AuthenticationService.MAX_LOGIN_ATTEMPTS; i++) {
+            assertEquals(AuthenticationStatus.INVALID_CREDENTIALS, authService.authenticate("user", "wrongpassword"));
+        }
+
+        // Após o número máximo de tentativas falhadas, a conta deve estar bloqueada
+        assertEquals(AuthenticationStatus.ACCOUNT_LOCKED, authService.authenticate("user", "wrongpassword"));
+    }
+}
+
+Neste exemplo, UserRepository é uma interface que representa um repositório de usuários, e User é uma classe que modela um usuário com nome de usuário e senha. AuthenticationService é a classe que implementa o serviço de autenticação. Usamos Mockito para criar mocks do UserRepository e simular o comportamento do repositório de usuários durante os testes.
+
+--------------------------------------------------
+
+Vamos criar um enunciado para uma aplicação de gerenciamento de estoque de uma loja virtual. A aplicação deve permitir adicionar produtos ao estoque, remover produtos do estoque, verificar a quantidade disponível de um produto e atualizar a quantidade de um produto no estoque. Em seguida, demonstrarei todas as possibilidades de teste unitário e a classe testada utilizando o JUnit e o Mockito.
+Enunciado da Aplicação: Gerenciamento de Estoque
+
+Desenvolva uma aplicação para gerenciar o estoque de uma loja virtual. A aplicação deve fornecer as seguintes funcionalidades:
+
+    Adicionar Produto ao Estoque: Adiciona uma determinada quantidade de um produto ao estoque. Se o produto já existir no estoque, a quantidade existente será atualizada.
+
+    Remover Produto do Estoque: Remove uma determinada quantidade de um produto do estoque. Se a quantidade a ser removida for maior do que a quantidade disponível no estoque, uma exceção deve ser lançada.
+
+    Verificar Quantidade Disponível: Retorna a quantidade disponível de um produto no estoque.
+
+    Atualizar Quantidade no Estoque: Atualiza a quantidade de um produto no estoque para um valor específico.
+
+A interface da classe StockManager deve incluir os seguintes métodos:
+
+    addProduct(String productId, int quantity): Adiciona a quantidade especificada do produto com o ID fornecido ao estoque.
+    removeProduct(String productId, int quantity): Remove a quantidade especificada do produto com o ID fornecido do estoque.
+    getAvailableQuantity(String productId): Retorna a quantidade disponível do produto com o ID fornecido no estoque.
+    updateQuantity(String productId, int quantity): Atualiza a quantidade do produto com o ID fornecido para o valor especificado.
+
+Testes Unitários:
+
+Aqui estão todas as possibilidades de teste unitário para a classe StockManager, utilizando o JUnit e o Mockito:
+
+    Teste de Adicionar Produto ao Estoque:
+        Testar a adição de uma nova quantidade de um produto ao estoque.
+        Testar a atualização da quantidade de um produto existente no estoque.
+
+    Teste de Remover Produto do Estoque:
+        Testar a remoção de uma quantidade válida de um produto do estoque.
+        Testar a remoção de uma quantidade inválida (maior que a disponível) de um produto do estoque, esperando uma exceção.
+
+    Teste de Verificar Quantidade Disponível:
+        Testar a obtenção da quantidade disponível de um produto no estoque.
+        Testar a obtenção da quantidade disponível de um produto que não está no estoque.
+
+    Teste de Atualizar Quantidade no Estoque:
+        Testar a atualização da quantidade de um produto existente no estoque para um novo valor.
+        Testar a atualização da quantidade de um produto que não está no estoque, esperando uma exceção.
+
+Classe Testada Utilizando o JUnit e o Mockito:
+
+Aqui está a implementação dos testes unitários para a classe StockManager utilizando o JUnit e o Mockito:
+
+java
+
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
+
+import org.junit.Before;
+import org.junit.Test;
+
+public class StockManagerTest {
+
+    private StockManager stockManager;
+    private StockDatabase mockDatabase;
+
+    @Before
+    public void setUp() {
+        mockDatabase = mock(StockDatabase.class);
+        stockManager = new StockManager(mockDatabase);
+    }
+
+    @Test
+    public void testAddProduct() {
+        when(mockDatabase.getProductQuantity("product1")).thenReturn(0);
+        stockManager.addProduct("product1", 5);
+        verify(mockDatabase).addProduct("product1", 5);
+
+        when(mockDatabase.getProductQuantity("product2")).thenReturn(10);
+        stockManager.addProduct("product2", 3);
+        verify(mockDatabase).updateProductQuantity("product2", 13);
+    }
+
+    @Test
+    public void testRemoveProduct() {
+        when(mockDatabase.getProductQuantity("product1")).thenReturn(8);
+        stockManager.removeProduct("product1", 3);
+        verify(mockDatabase).updateProductQuantity("product1", 5);
+
+        when(mockDatabase.getProductQuantity("product2")).thenReturn(5);
+        try {
+            stockManager.removeProduct("product2", 8);
+            fail("Expected an InsufficientStockException to be thrown");
+        } catch (InsufficientStockException e) {
+            // Test passed
+        }
+    }
+
+    @Test
+    public void testGetAvailableQuantity() {
+        when(mockDatabase.getProductQuantity("product1")).thenReturn(10);
+        assertEquals(10, stockManager.getAvailableQuantity("product1"));
+
+        when(mockDatabase.getProductQuantity("product2")).thenReturn(0);
+        assertEquals(0, stockManager.getAvailableQuantity("product2"));
+    }
+
+    @Test
+    public void testUpdateQuantity() {
+        when(mockDatabase.getProductQuantity("product1")).thenReturn(15);
+        stockManager.updateQuantity("product1", 20);
+        verify(mockDatabase).updateProductQuantity("product1", 20);
+
+        when(mockDatabase.getProductQuantity("product2")).thenReturn(0);
+        try {
+            stockManager.updateQuantity("product2", 5);
+            fail("Expected a ProductNotFoundException to be thrown");
+        } catch (ProductNotFoundException e) {
+            // Test passed
+        }
+    }
+}
+
+Neste exemplo, estamos utilizando o Mockito para criar um objeto mock de StockDatabase e simular seu comportamento durante os testes. Os métodos when() e verify() são usados para especificar comportamentos esperados e verificar se os métodos foram chamados corretamente.
+
+----------------------------------------------------------
+
+Claro! Vou criar um enunciado para uma aplicação de serviço de e-mail simples e, em seguida, demonstrar todas as possibilidades de teste unitário para essa aplicação, utilizando o JUnit para testes básicos e o Mockito para simular dependências externas.
+Enunciado da Aplicação: Serviço de E-mail Simples
+
+Desenvolva um serviço de e-mail simples que seja capaz de enviar e-mails para destinatários. O serviço deve ser capaz de lidar com mensagens de e-mail formatadas e garantir que os e-mails sejam enviados com sucesso.
+
+A interface do serviço de e-mail deve incluir o seguinte método:
+
+    sendEmail(String to, String subject, String body): Este método envia um e-mail para o destinatário especificado, com o assunto e o corpo especificados.
+
+Testes Unitários:
+
+Aqui estão todas as possibilidades de teste unitário para a classe EmailService, utilizando o JUnit e o Mockito:
+
+    Testes Básicos:
+        Testar o envio de um e-mail com todos os parâmetros corretos.
+        Testar o envio de um e-mail com um destinatário vazio.
+        Testar o envio de um e-mail com um assunto vazio.
+        Testar o envio de um e-mail com um corpo vazio.
+
+    Simulação de Dependências Externas com Mockito:
+        Simular um serviço SMTP para verificar se o método sendEmail é chamado com os parâmetros corretos.
+        Simular o comportamento de falha de envio de e-mail (por exemplo, lançando uma exceção ao enviar e-mail) e garantir que a classe EmailService lide corretamente com isso.
+
+Classe Testada Utilizando o JUnit e Mockito:
+
+Aqui está a implementação dos testes unitários para a classe EmailService utilizando o JUnit e Mockito:
+
+java
+
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
+
+@RunWith(MockitoJUnitRunner.class)
+public class EmailServiceTest {
+
+    @Mock
+    private SMTPService smtpService;
+
+    @Test
+    public void testSendEmail() {
+        // Configuração do mock SMTPService
+        when(smtpService.send("test@example.com", "Test Subject", "Test Body")).thenReturn(true);
+
+        // Criação do serviço de e-mail
+        EmailService emailService = new EmailService(smtpService);
+
+        // Testa o envio de e-mail com todos os parâmetros corretos
+        assertTrue(emailService.sendEmail("test@example.com", "Test Subject", "Test Body"));
+
+        // Verifica se o método send do mock SMTPService foi chamado corretamente
+        verify(smtpService).send("test@example.com", "Test Subject", "Test Body");
+    }
+
+    @Test
+    public void testSendEmailWithEmptyRecipient() {
+        // Criação do serviço de e-mail
+        EmailService emailService = new EmailService(smtpService);
+
+        // Testa o envio de e-mail com um destinatário vazio
+        assertFalse(emailService.sendEmail("", "Test Subject", "Test Body"));
+
+        // Verifica se o método send do mock SMTPService não foi chamado
+        verifyNoInteractions(smtpService);
+    }
+
+    // Testes semelhantes para assunto vazio, corpo vazio e simulação de falha de envio de e-mail
+}
+
+Neste exemplo, utilizamos o Mockito para criar um mock do serviço SMTP e simular seu comportamento. Dessa forma, podemos testar a classe EmailService de forma isolada, garantindo que ela se comporte corretamente em diferentes cenários, incluindo casos de falha.
+
+-------------------------------------------------------
+
+Claro! Vou criar um enunciado para uma aplicação simples de uma calculadora e, em seguida, demonstrar todas as possibilidades de teste unitário para ela, utilizando o JUnit e o Mockito para simular dependências externas.
+Enunciado da Aplicação: Calculadora Simples
+
+Desenvolva uma calculadora simples que possa realizar as operações básicas de adição, subtração, multiplicação e divisão. A calculadora deve ser capaz de lidar corretamente com a divisão por zero e retornar mensagens de erro apropriadas quando necessário.
+
+A interface da calculadora deve incluir os seguintes métodos:
+
+    add(double a, double b): Retorna a soma de dois números.
+    subtract(double a, double b): Retorna a subtração do primeiro número pelo segundo.
+    multiply(double a, double b): Retorna o resultado da multiplicação de dois números.
+    divide(double a, double b): Retorna o resultado da divisão do primeiro número pelo segundo. Se o segundo número for zero, uma exceção ArithmeticException deve ser lançada.
+
+Testes Unitários:
+
+Aqui estão todas as possibilidades de teste unitário para a classe Calculator, utilizando o JUnit e o Mockito para simular dependências externas:
+
+    Teste de adição:
+        Testar a adição de dois números positivos.
+        Testar a adição de um número positivo e um número negativo.
+        Testar a adição de zero a um número positivo.
+        Testar a adição de zero a zero.
+        Testar a adição de dois números negativos.
+
+    Teste de subtração:
+        Testar a subtração de dois números positivos (onde o primeiro número é maior).
+        Testar a subtração de dois números positivos (onde o segundo número é maior).
+        Testar a subtração de um número positivo por zero.
+        Testar a subtração de zero de um número positivo.
+        Testar a subtração de zero de zero.
+
+    Teste de multiplicação:
+        Testar a multiplicação de dois números positivos.
+        Testar a multiplicação de um número positivo e um número negativo.
+        Testar a multiplicação de zero por um número positivo.
+        Testar a multiplicação de zero por zero.
+        Testar a multiplicação de dois números negativos.
+
+    Teste de divisão:
+        Testar a divisão de dois números positivos (onde o primeiro número é divisível pelo segundo).
+        Testar a divisão de dois números positivos (onde o segundo número é divisível pelo primeiro).
+        Testar a divisão de um número positivo por zero (deve lançar uma exceção ArithmeticException).
+        Testar a divisão de zero por um número positivo.
+        Testar a divisão de zero por zero (deve lançar uma exceção ArithmeticException).
+        Testar a divisão de dois números negativos.
+
+Classe Testada Utilizando o JUnit e o Mockito:
+
+Aqui está a implementação dos testes unitários para a classe Calculator utilizando o JUnit e o Mockito:
+
+java
+
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
+import org.junit.Test;
+
+public class CalculatorTest {
+
+    @Test
+    public void testAddition() {
+        Calculator calculator = new Calculator();
+        assertEquals(4.0, calculator.add(2.0, 2.0), 0.001); // Testa adição de dois números positivos
+        
+        // Simula dependência externa para testar adição de um número positivo e um número negativo
+        SomeExternalDependency dependencyMock = mock(SomeExternalDependency.class);
+        when(dependencyMock.getNegativeNumber()).thenReturn(-2.0);
+        assertEquals(3.0, calculator.add(5.0, dependencyMock.getNegativeNumber()), 0.001);
+        
+        assertEquals(5.0, calculator.add(0.0, 5.0), 0.001); // Testa adição de zero a um número positivo
+        assertEquals(0.0, calculator.add(0.0, 0.0), 0.001); // Testa adição de zero a zero
+        assertEquals(-7.0, calculator.add(-4.0, -3.0), 0.001); // Testa adição de dois números negativos
+    }
+
+    // Implementação dos outros testes de subtração, multiplicação e divisão semelhantes aos acima...
+}
+
+Neste exemplo, usamos o Mockito para simular uma dependência externa (um serviço ou objeto que a calculadora depende) para testar a adição de um número positivo e um número negativo. Você pode aplicar uma abordagem semelhante para outros casos de teste. Certifique-se de substituir SomeExternalDependency pelo nome da sua classe ou interface de dependência externa.
+
+------------------------------------------------
+
+Vamos criar um enunciado para uma aplicação de gerenciamento de pedidos em um restaurante. A aplicação permite que os clientes façam pedidos de alimentos e bebidas, enquanto os funcionários podem visualizar os pedidos, prepará-los e marcá-los como concluídos. A aplicação inclui um serviço de notificação para informar os clientes sobre o status dos pedidos.
+Enunciado da Aplicação: Gerenciamento de Pedidos em um Restaurante
+
+Desenvolva uma aplicação para gerenciar pedidos em um restaurante. A aplicação deve incluir as seguintes funcionalidades:
+
+    Clientes:
+        Fazer pedidos de alimentos e bebidas.
+        Receber notificações sobre o status do pedido (confirmado, em preparação, pronto para entrega).
+
+    Funcionários:
+        Visualizar todos os pedidos pendentes.
+        Marcar pedidos como concluídos.
+
+    Serviço de Notificação:
+        Enviar notificações aos clientes sobre o status do pedido.
+
+A interface da aplicação deve incluir os seguintes métodos:
+
+    submitOrder(Order order): Submete um novo pedido ao sistema.
+    getPendingOrders(): Retorna uma lista de todos os pedidos pendentes.
+    markOrderAsCompleted(Order order): Marca um pedido como concluído.
+    notifyCustomer(Customer customer, String message): Envia uma notificação para um cliente específico.
+
+Testes Unitários:
+
+Aqui estão todas as possibilidades de teste unitário para a classe OrderService, que é responsável por gerenciar os pedidos, utilizando o JUnit e Mockito:
+
+    Testes de Submissão de Pedido:
+        Testar a submissão de um novo pedido.
+        Testar a submissão de um pedido nulo.
+        Testar se o serviço de notificação é chamado corretamente após a submissão do pedido.
+
+    Testes de Visualização de Pedidos Pendentes:
+        Testar se a lista de pedidos pendentes é retornada corretamente.
+        Testar se a lista de pedidos pendentes está vazia quando não há pedidos.
+
+    Testes de Marcação de Pedido como Concluído:
+        Testar a marcação de um pedido como concluído.
+        Testar a marcação de um pedido nulo como concluído.
+        Testar se o serviço de notificação é chamado corretamente após a marcação do pedido como concluído.
+
+    Testes de Notificação ao Cliente:
+        Testar o envio de uma notificação para um cliente específico.
+        Testar o envio de uma notificação para um cliente nulo.
+
+Classe Testada Utilizando o JUnit e Mockito:
+
+Aqui está a implementação dos testes unitários para a classe OrderService utilizando o JUnit e Mockito:
+
+java
+
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+
+public class OrderServiceTest {
+
+    @Mock
+    private NotificationService notificationService;
+
+    private OrderService orderService;
+
+    @Before
+    public void setUp() {
+        MockitoAnnotations.initMocks(this);
+        orderService = new OrderService(notificationService);
+    }
+
+    @Test
+    public void testSubmitOrder() {
+        Order order = new Order();
+        orderService.submitOrder(order);
+        verify(notificationService, times(1)).notifyCustomer(any(), anyString());
+    }
+
+    @Test
+    public void testSubmitNullOrder() {
+        orderService.submitOrder(null);
+        verify(notificationService, never()).notifyCustomer(any(), anyString());
+    }
+
+    @Test
+    public void testGetPendingOrders() {
+        List<Order> pendingOrders = new ArrayList<>();
+        when(orderService.getPendingOrders()).thenReturn(pendingOrders);
+        assertEquals(pendingOrders, orderService.getPendingOrders());
+    }
+
+    @Test
+    public void testGetEmptyPendingOrders() {
+        List<Order> pendingOrders = new ArrayList<>();
+        when(orderService.getPendingOrders()).thenReturn(pendingOrders);
+        assertTrue(orderService.getPendingOrders().isEmpty());
+    }
+
+    @Test
+    public void testMarkOrderAsCompleted() {
+        Order order = new Order();
+        orderService.markOrderAsCompleted(order);
+        verify(notificationService, times(1)).notifyCustomer(any(), anyString());
+    }
+
+    @Test
+    public void testMarkNullOrderAsCompleted() {
+        orderService.markOrderAsCompleted(null);
+        verify(notificationService, never()).notifyCustomer(any(), anyString());
+    }
+
+    @Test
+    public void testNotifyCustomer() {
+        Customer customer = new Customer();
+        String message = "Seu pedido está pronto para entrega.";
+        orderService.notifyCustomer(customer, message);
+        verify(notificationService, times(1)).notifyCustomer(customer, message);
+    }
+
+    @Test
+    public void testNotifyNullCustomer() {
+        String message = "Seu pedido está pronto para entrega.";
+        orderService.notifyCustomer(null, message);
+        verify(notificationService, never()).notifyCustomer(any(), anyString());
+    }
+}
+
+Neste exemplo, utilizamos o Mockito para criar um mock do serviço de notificação (NotificationService) e garantir que os métodos corretos sejam chamados durante os testes. O método setUp() é usado para inicializar os mocks antes de cada teste. Em seguida, cada método de teste verifica um cenário específico relacionado à submissão, visualização e conclusão de pedidos, bem como ao envio de notificações aos clientes.
+
+-------------------------------------------------------------
+
+Vamos criar um enunciado para uma aplicação que gerencia uma lista de tarefas (to-do list) e, em seguida, demonstrar todas as possibilidades de teste unitário para essa aplicação utilizando o JUnit e Mockito.
+Enunciado da Aplicação: Gerenciador de Lista de Tarefas
+
+Desenvolva uma aplicação para gerenciar uma lista de tarefas (to-do list). A aplicação deve permitir a adição, remoção e marcação de tarefas como concluídas. Além disso, deve ser capaz de listar todas as tarefas, listar apenas as tarefas pendentes e limpar a lista de tarefas concluídas.
+
+A interface da aplicação deve incluir os seguintes métodos:
+
+    addTask(String taskDescription): Adiciona uma nova tarefa à lista.
+    removeTask(int taskId): Remove a tarefa com o ID especificado da lista.
+    markTaskAsCompleted(int taskId): Marca a tarefa com o ID especificado como concluída.
+    getAllTasks(): Retorna uma lista com todas as tarefas.
+    getPendingTasks(): Retorna uma lista com todas as tarefas pendentes.
+    clearCompletedTasks(): Remove todas as tarefas concluídas da lista.
+
+Testes Unitários Utilizando JUnit e Mockito:
+
+Aqui estão todas as possibilidades de teste unitário para a classe TaskManager, utilizando o JUnit e Mockito:
+
+    Teste de adição de tarefa:
+        Verificar se a tarefa é corretamente adicionada à lista.
+        Verificar se a lista é atualizada corretamente após a adição de uma nova tarefa.
+
+    Teste de remoção de tarefa:
+        Verificar se a tarefa é corretamente removida da lista.
+        Verificar se a lista é atualizada corretamente após a remoção de uma tarefa.
+
+    Teste de marcação de tarefa como concluída:
+        Verificar se a tarefa é marcada corretamente como concluída.
+        Verificar se a lista é atualizada corretamente após a marcação de uma tarefa como concluída.
+
+    Teste de listagem de todas as tarefas:
+        Verificar se todas as tarefas são listadas corretamente.
+
+    Teste de listagem de tarefas pendentes:
+        Verificar se apenas as tarefas pendentes são listadas corretamente.
+
+    Teste de remoção de tarefas concluídas:
+        Verificar se todas as tarefas concluídas são removidas corretamente da lista.
+
+Classe Testada Utilizando JUnit e Mockito:
+
+Aqui está a implementação dos testes unitários para a classe TaskManager utilizando o JUnit e Mockito:
+
+java
+
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
+import java.util.ArrayList;
+import java.util.List;
+import org.junit.Before;
+import org.junit.Test;
+
+public class TaskManagerTest {
+
+    private TaskManager taskManager;
+    private TaskRepository taskRepository;
+
+    @Before
+    public void setUp() {
+        taskRepository = mock(TaskRepository.class);
+        taskManager = new TaskManager(taskRepository);
+    }
+
+    @Test
+    public void testAddTask() {
+        // Cenário
+        Task task = new Task("Nova Tarefa");
+        when(taskRepository.addTask(task)).thenReturn(1);
+
+        // Execução
+        int taskId = taskManager.addTask("Nova Tarefa");
+
+        // Verificação
+        assertEquals(1, taskId);
+    }
+
+    @Test
+    public void testRemoveTask() {
+        // Cenário
+        when(taskRepository.removeTask(1)).thenReturn(true);
+
+        // Execução
+        boolean removed = taskManager.removeTask(1);
+
+        // Verificação
+        assertTrue(removed);
+    }
+
+    @Test
+    public void testMarkTaskAsCompleted() {
+        // Cenário
+        when(taskRepository.markTaskAsCompleted(1)).thenReturn(true);
+
+        // Execução
+        boolean markedCompleted = taskManager.markTaskAsCompleted(1);
+
+        // Verificação
+        assertTrue(markedCompleted);
+    }
+
+    @Test
+    public void testGetAllTasks() {
+        // Cenário
+        List<Task> tasks = new ArrayList<>();
+        tasks.add(new Task("Tarefa 1"));
+        tasks.add(new Task("Tarefa 2"));
+        when(taskRepository.getAllTasks()).thenReturn(tasks);
+
+        // Execução
+        List<Task> allTasks = taskManager.getAllTasks();
+
+        // Verificação
+        assertEquals(2, allTasks.size());
+    }
+
+    @Test
+    public void testGetPendingTasks() {
+        // Cenário
+        List<Task> tasks = new ArrayList<>();
+        tasks.add(new Task("Tarefa 1"));
+        when(taskRepository.getPendingTasks()).thenReturn(tasks);
+
+        // Execução
+        List<Task> pendingTasks = taskManager.getPendingTasks();
+
+        // Verificação
+        assertEquals(1, pendingTasks.size());
+    }
+
+    @Test
+    public void testClearCompletedTasks() {
+        // Cenário
+        when(taskRepository.clearCompletedTasks()).thenReturn(true);
+
+        // Execução
+        boolean cleared = taskManager.clearCompletedTasks();
+
+        // Verificação
+        assertTrue(cleared);
+    }
+}
+
+Neste exemplo, a classe TaskManagerTest testa todos os métodos da classe TaskManager, utilizando mocks para simular o comportamento do TaskRepository. Isso permite testar isoladamente a lógica da classe TaskManager sem depender da implementação real do repositório de tarefas.
+
+----------------------------------------------------------
+
+Claro! Vamos criar um enunciado para uma aplicação de um serviço de processamento de pedidos online, e depois demonstrarei todas as possibilidades de teste unitário para essa aplicação, utilizando o JUnit e o Mockito.
+Enunciado da Aplicação: Serviço de Processamento de Pedidos Online
+
+Desenvolvemos um serviço de processamento de pedidos online para uma loja virtual. O serviço é responsável por receber e processar pedidos de clientes. Cada pedido contém informações sobre os itens comprados, quantidades e detalhes de entrega.
+
+A interface do serviço de processamento de pedidos deve incluir os seguintes métodos:
+
+    processOrder(Order order): Este método processa um pedido recebido e executa as ações necessárias, como verificar a disponibilidade dos itens em estoque, calcular o total do pedido, atualizar o status do pedido e enviar uma confirmação de pedido por e-mail ao cliente.
+
+Testes Unitários:
+
+Aqui estão todas as possibilidades de teste unitário para a classe OrderProcessingService, utilizando o JUnit e o Mockito:
+
+    Teste de processamento de pedido bem-sucedido:
+        Verifique se o método processOrder executa corretamente todas as etapas necessárias para processar um pedido válido.
+        Use o Mockito para simular objetos colaboradores, como o sistema de estoque e o serviço de e-mail, e verifique se eles são chamados corretamente.
+
+    Teste de tratamento de erros:
+        Teste o comportamento do sistema quando um pedido inválido é recebido (por exemplo, quando itens fora de estoque são solicitados).
+        Use o Mockito para simular cenários de erro, como itens fora de estoque, e verifique se o serviço de processamento de pedidos lida corretamente com essas situações, como lançar exceções ou enviar mensagens de erro.
+
+    Teste de confirmação de pedido por e-mail:
+        Verifique se o serviço de processamento de pedidos envia uma confirmação de pedido por e-mail ao cliente após processar o pedido com sucesso.
+        Use o Mockito para simular o serviço de e-mail e verifique se o método de envio de e-mail é chamado com os parâmetros corretos.
+
+Classe Testada Utilizando o JUnit e o Mockito:
+
+Aqui está a implementação dos testes unitários para a classe OrderProcessingService utilizando o JUnit e o Mockito:
+
+java
+
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
+
+import org.junit.Test;
+
+public class OrderProcessingServiceTest {
+
+    @Test
+    public void testProcessOrder_Successful() {
+        // Criação de objetos mock
+        StockService stockService = mock(StockService.class);
+        EmailService emailService = mock(EmailService.class);
+        Order order = new Order(/* dados do pedido */);
+
+        // Configuração do comportamento dos objetos mock
+        when(stockService.checkAvailability(order)).thenReturn(true);
+        when(stockService.reserveItems(order)).thenReturn(true);
+
+        // Criação do objeto a ser testado
+        OrderProcessingService orderProcessingService = new OrderProcessingService(stockService, emailService);
+
+        // Chamada do método a ser testado
+        boolean result = orderProcessingService.processOrder(order);
+
+        // Verificação dos resultados
+        assertTrue(result);
+        verify(stockService).checkAvailability(order);
+        verify(stockService).reserveItems(order);
+        verify(emailService).sendConfirmationEmail(order);
+    }
+
+    @Test
+    public void testProcessOrder_InvalidOrder() {
+        // Criação de objetos mock
+        StockService stockService = mock(StockService.class);
+        EmailService emailService = mock(EmailService.class);
+        Order order = new Order(/* dados do pedido inválido */);
+
+        // Configuração do comportamento dos objetos mock
+        when(stockService.checkAvailability(order)).thenReturn(false);
+
+        // Criação do objeto a ser testado
+        OrderProcessingService orderProcessingService = new OrderProcessingService(stockService, emailService);
+
+        // Chamada do método a ser testado
+        boolean result = orderProcessingService.processOrder(order);
+
+        // Verificação dos resultados
+        assertFalse(result);
+        verify(stockService).checkAvailability(order);
+        verify(stockService, never()).reserveItems(order);
+        verify(emailService, never()).sendConfirmationEmail(order);
+    }
+}
+
+Neste exemplo, StockService e EmailService são interfaces que representam serviços externos necessários para o processamento de pedidos. O Mockito é utilizado para criar objetos mock dessas interfaces, permitindo simular seu comportamento durante os testes. Os testes verificam se o serviço de processamento de pedidos executa corretamente as etapas necessárias e lida adequadamente com diferentes cenários, como pedidos válidos e inválidos.
+
+------------------------------------------------------------
+
+Claro! Vou criar um enunciado para uma aplicação de gerenciamento de produtos e, em seguida, demonstrar todas as possibilidades de teste unitário utilizando o JUnit e Mockito.
+Enunciado da Aplicação: Gerenciamento de Produtos
+
+Desenvolva uma aplicação para gerenciamento de produtos que permita adicionar, remover, atualizar e listar produtos. Cada produto deve ter um nome, uma descrição e um preço.
+
+A interface da aplicação deve incluir os seguintes métodos:
+
+    addProduct(String name, String description, double price): Adiciona um novo produto com o nome, descrição e preço especificados.
+    removeProduct(int productId): Remove o produto com o ID especificado.
+    updateProduct(int productId, String name, String description, double price): Atualiza os detalhes do produto com o ID especificado.
+    listProducts(): Retorna uma lista de todos os produtos atualmente disponíveis.
+
+Testes Unitários:
+
+Aqui estão todas as possibilidades de teste unitário para a classe ProductManager, utilizando o JUnit e o Mockito:
+
+    Teste de adição de produto:
+        Verificar se um produto é corretamente adicionado quando os parâmetros são válidos.
+        Verificar se uma exceção é lançada quando um parâmetro obrigatório está ausente (como o nome do produto).
+        Verificar se a interação correta ocorre com um mock de repositório de produtos.
+
+    Teste de remoção de produto:
+        Verificar se um produto é corretamente removido quando o ID é válido.
+        Verificar se uma exceção é lançada quando o ID não corresponde a nenhum produto.
+        Verificar se a interação correta ocorre com um mock de repositório de produtos.
+
+    Teste de atualização de produto:
+        Verificar se um produto é corretamente atualizado quando o ID é válido.
+        Verificar se uma exceção é lançada quando o ID não corresponde a nenhum produto.
+        Verificar se a interação correta ocorre com um mock de repositório de produtos.
+
+    Teste de listagem de produtos:
+        Verificar se a lista de produtos é retornada corretamente.
+        Verificar se a lista está vazia quando não há produtos disponíveis.
+        Verificar se a interação correta ocorre com um mock de repositório de produtos.
+
+Classe Testada Utilizando o JUnit e Mockito:
+
+Aqui está a implementação dos testes unitários para a classe ProductManager utilizando o JUnit e Mockito:
+
+java
+
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.Test;
+
+public class ProductManagerTest {
+
+    @Test
+    public void testAddProduct() {
+        // Configuração do mock do repositório de produtos
+        ProductRepository productRepository = mock(ProductRepository.class);
+        ProductManager productManager = new ProductManager(productRepository);
+
+        // Configuração do produto a ser adicionado
+        String name = "Product";
+        String description = "Product Description";
+        double price = 10.0;
+
+        // Simulação da adição do produto
+        when(productRepository.addProduct(name, description, price)).thenReturn(1); // ID do produto adicionado
+
+        // Adição do produto
+        int productId = productManager.addProduct(name, description, price);
+
+        // Verificação se o produto foi corretamente adicionado
+        assertEquals(1, productId);
+        verify(productRepository, times(1)).addProduct(name, description, price);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testAddProductMissingName() {
+        ProductRepository productRepository = mock(ProductRepository.class);
+        ProductManager productManager = new ProductManager(productRepository);
+
+        // Tentativa de adicionar um produto sem nome
+        productManager.addProduct(null, "Description", 10.0);
+    }
+
+    @Test
+    public void testRemoveProduct() {
+        ProductRepository productRepository = mock(ProductRepository.class);
+        ProductManager productManager = new ProductManager(productRepository);
+
+        int productId = 1; // ID de um produto existente
+
+        // Simulação da remoção do produto
+        when(productRepository.removeProduct(productId)).thenReturn(true);
+
+        // Remoção do produto
+        boolean result = productManager.removeProduct(productId);
+
+        // Verificação se o produto foi corretamente removido
+        assertTrue(result);
+        verify(productRepository, times(1)).removeProduct(productId);
+    }
+
+    @Test
+    public void testUpdateProduct() {
+        ProductRepository productRepository = mock(ProductRepository.class);
+        ProductManager productManager = new ProductManager(productRepository);
+
+        int productId = 1; // ID de um produto existente
+        String name = "Updated Product";
+        String description = "Updated Description";
+        double price = 20.0;
+
+        // Simulação da atualização do produto
+        when(productRepository.updateProduct(productId, name, description, price)).thenReturn(true);
+
+        // Atualização do produto
+        boolean result = productManager.updateProduct(productId, name, description, price);
+
+        // Verificação se o produto foi corretamente atualizado
+        assertTrue(result);
+        verify(productRepository, times(1)).updateProduct(productId, name, description, price);
+    }
+
+    @Test
+    public void testListProducts() {
+        ProductRepository productRepository = mock(ProductRepository.class);
+        ProductManager productManager = new ProductManager(productRepository);
+
+        // Lista simulada de produtos
+        List<Product> productList = new ArrayList<>();
+        productList.add(new Product(1, "Product1", "Description1", 10.0));
+        productList.add(new Product(2, "Product2", "Description2", 20.0));
+
+        // Simulação da listagem de produtos
+        when(productRepository.getAllProducts()).thenReturn(productList);
+
+        // Listagem de produtos
+        List<Product> retrievedProducts = productManager.listProducts();
+
+        // Verificação se a lista de produtos é retornada corretamente
+        assertEquals(productList.size(), retrievedProducts.size());
+        verify(productRepository, times(1)).getAllProducts();
+    }
+}
+
+Neste exemplo, os mocks do Mockito são usados para simular o comportamento do repositório de produtos, permitindo testar isoladamente a lógica da classe ProductManager. Cada método é testado para diferentes cenários e verificações são realizadas para garantir que a interação com o repositório ocorra como esperado.
+
+-------------------------------------------------------
+

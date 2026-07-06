@@ -1,0 +1,187 @@
+Enunciado da aplicação:
+
+Desenvolva uma calculadora simples em Java que realiza operações básicas de adição, subtração, multiplicação e divisão. A calculadora deve ser capaz de receber dois números como entrada e realizar a operação especificada pelo usuário. Além disso, a aplicação deve incluir testes unitários utilizando o framework JUnit para garantir que as operações matemáticas estejam corretas.
+
+Demonstração de todas as possibilidades de teste unitário utilizando JUnit:
+
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
+
+public class CalculadoraTest {
+
+    @Test
+    public void testAdicao() {
+        Calculadora calc = new Calculadora();
+        assertEquals(5, calc.adicionar(2, 3));
+    }
+
+    @Test
+    public void testSubtracao() {
+        Calculadora calc = new Calculadora();
+        assertEquals(4, calc.subtrair(7, 3));
+    }
+
+    @Test
+    public void testMultiplicacao() {
+        Calculadora calc = new Calculadora();
+        assertEquals(12, calc.multiplicar(4, 3));
+    }
+
+    @Test
+    public void testDivisao() {
+        Calculadora calc = new Calculadora();
+        assertEquals(4, calc.dividir(12, 3));
+    }
+
+    @Test
+    public void testDivisaoPorZero() {
+        Calculadora calc = new Calculadora();
+        assertThrows(ArithmeticException.class, () -> {
+            calc.dividir(10, 0);
+        });
+    }
+}
+
+
+Neste exemplo, a classe Calculadora é a classe que implementa as operações matemáticas básicas. Cada método de teste na classe CalculadoraTest testa uma operação específica (adição, subtração, multiplicação e divisão), além de um caso de divisão por zero. O método assertThrows verifica se a exceção ArithmeticException é lançada corretamente quando uma divisão por zero é tentada.
+
+------------------
+
+Enunciado da Aplicação:
+Desenvolva uma aplicação de lista de tarefas (to-do list) em Java utilizando o framework Spring Boot. A aplicação deve permitir que os usuários criem, editem, visualizem e removam tarefas. Cada tarefa deve ter um título, uma descrição e um status (pendente, em andamento ou concluída). Além disso, a aplicação deve permitir a atribuição de tarefas a usuários específicos.
+
+Demonstração das Possibilidades de Teste Unitário Utilizando o JUnit:
+
+Vamos supor que temos uma classe de serviço chamada TaskService responsável por manipular as operações relacionadas às tarefas. Abaixo está um exemplo de como podemos escrever testes unitários para diferentes métodos dessa classe usando JUnit.
+
+import static org.junit.Assert.*;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import static org.mockito.Mockito.*;
+
+public class TaskServiceTest {
+
+    @Mock
+    private TaskRepository taskRepository;
+
+    @InjectMocks
+    private TaskService taskService;
+
+    @Before
+    public void setUp() {
+        MockitoAnnotations.initMocks(this);
+    }
+
+    @Test
+    public void testCreateTask() {
+        Task task = new Task("Título", "Descrição", Status.PENDING);
+        when(taskRepository.save(task)).thenReturn(task);
+        Task savedTask = taskService.createTask(task);
+        assertEquals("Título", savedTask.getTitle());
+        assertEquals("Descrição", savedTask.getDescription());
+        assertEquals(Status.PENDING, savedTask.getStatus());
+    }
+
+    @Test
+    public void testUpdateTask() {
+        Task task = new Task("Título", "Descrição", Status.PENDING);
+        task.setId(1L);
+        when(taskRepository.findById(1L)).thenReturn(Optional.of(task));
+        Task updatedTask = new Task("Novo Título", "Nova Descrição", Status.IN_PROGRESS);
+        when(taskRepository.save(task)).thenReturn(updatedTask);
+        Task result = taskService.updateTask(1L, updatedTask);
+        assertEquals("Novo Título", result.getTitle());
+        assertEquals("Nova Descrição", result.getDescription());
+        assertEquals(Status.IN_PROGRESS, result.getStatus());
+    }
+
+    @Test
+    public void testDeleteTask() {
+        Task task = new Task("Título", "Descrição", Status.PENDING);
+        task.setId(1L);
+        when(taskRepository.findById(1L)).thenReturn(Optional.of(task));
+        taskService.deleteTask(1L);
+        verify(taskRepository, times(1)).delete(task);
+    }
+
+    // Teste para outros métodos, como getTaskById(), getAllTasks(), etc.
+}
+
+Neste exemplo, estamos utilizando o Mockito para criar mocks do TaskRepository, permitindo-nos simular o comportamento do repositório de tarefas. Em seguida, usamos o @InjectMocks para injetar o mock do TaskRepository na instância de TaskService. Depois, escrevemos testes para os métodos de criação, atualização e exclusão de tarefas, bem como outros métodos que possam existir na classe de serviço.
+
+Esse é apenas um exemplo básico de como você pode escrever testes unitários usando o JUnit para uma aplicação Spring Boot. É importante cobrir diferentes cenários e casos de uso para garantir que sua aplicação funcione corretamente em todas as situações.
+
+---------------------------------------------
+
+Enunciado da Aplicação: Sistema de Gestão de Biblioteca
+
+Desenvolva um sistema de gestão de biblioteca que permita aos usuários realizar operações como adicionar livros, emprestar livros, devolver livros e pesquisar livros disponíveis. Cada livro deve ter um título, um autor e um identificador único. Os usuários devem ser capazes de realizar as seguintes operações:
+
+    Adicionar um novo livro à biblioteca.
+    Emprestar um livro disponível para um usuário.
+    Devolver um livro emprestado.
+    Pesquisar livros disponíveis por título ou autor.
+
+Desenvolva o sistema utilizando a linguagem Java e a biblioteca JUnit para escrever testes unitários. O sistema deve ser modular e seguir boas práticas de programação.
+
+Demonstração das Possibilidades de Teste Unitário Utilizando JUnit:
+
+Abaixo estão os testes unitários para cada funcionalidade do sistema de gestão de biblioteca:
+
+import static org.junit.Assert.*;
+import org.junit.Before;
+import org.junit.Test;
+
+public class BibliotecaTest {
+    private Biblioteca biblioteca;
+
+    @Before
+    public void setUp() {
+        biblioteca = new Biblioteca();
+    }
+
+    @Test
+    public void testAdicionarLivro() {
+        Livro livro = new Livro("1984", "George Orwell", 1);
+        biblioteca.adicionarLivro(livro);
+        assertTrue(biblioteca.getLivros().contains(livro));
+    }
+
+    @Test
+    public void testEmprestarLivro() {
+        Livro livro = new Livro("O Hobbit", "J.R.R. Tolkien", 2);
+        biblioteca.adicionarLivro(livro);
+        biblioteca.emprestarLivro(livro, "João");
+        assertFalse(biblioteca.getLivrosDisponiveis().contains(livro));
+        assertTrue(biblioteca.getLivrosEmprestados().containsKey(livro));
+    }
+
+    @Test
+    public void testDevolverLivro() {
+        Livro livro = new Livro("Harry Potter", "J.K. Rowling", 3);
+        biblioteca.adicionarLivro(livro);
+        biblioteca.emprestarLivro(livro, "Maria");
+        biblioteca.devolverLivro(livro);
+        assertTrue(biblioteca.getLivrosDisponiveis().contains(livro));
+        assertFalse(biblioteca.getLivrosEmprestados().containsKey(livro));
+    }
+
+    @Test
+    public void testPesquisarLivroPorTitulo() {
+        Livro livro = new Livro("A Revolução dos Bichos", "George Orwell", 4);
+        biblioteca.adicionarLivro(livro);
+        assertEquals(livro, biblioteca.pesquisarLivroPorTitulo("A Revolução dos Bichos"));
+    }
+
+    @Test
+    public void testPesquisarLivroPorAutor() {
+        Livro livro = new Livro("O Senhor dos Anéis", "J.R.R. Tolkien", 5);
+        biblioteca.adicionarLivro(livro);
+        assertEquals(livro, biblioteca.pesquisarLivroPorAutor("J.R.R. Tolkien").get(0));
+    }
+}
+
+Esses testes garantem que todas as funcionalidades do sistema de gestão de biblioteca estão funcionando corretamente. Cada teste verifica uma operação específica e seu resultado esperado. O uso do JUnit facilita a execução e a verificação dos resultados dos testes.

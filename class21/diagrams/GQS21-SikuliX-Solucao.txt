@@ -1,0 +1,168 @@
+Testes para serem realizados no SikuliX
+1. Abrir o Bloco de Notas e Digitar Texto: 
+   Abra o Bloco de Notas e digite "Hello, SikuliX!"
+
+Script:
+python
+
+from sikuli import *
+
+# Abrir o Bloco de Notas
+App.open("notepad.exe")
+wait(1)  # Esperar um segundo para o Bloco de Notas abrir
+
+# Digitar texto
+type("Hello, SikuliX!")
+
+2. Abrir o Calculadora e Realizar uma Operação de Adição: 
+   Abra a Calculadora e realize a operação 123 + 456
+
+Script:
+python
+
+from sikuli import *
+
+# Abrir a Calculadora
+App.open("calc.exe")
+wait(1)  # Esperar um segundo para a Calculadora abrir
+
+# Realizar a operação 123 + 456
+type("123")
+type("+")
+type("456")
+type("=")
+
+3. Abrir o Bloco de Notas, Digitar e Salvar um Arquivo: 
+   Abra o Bloco de Notas, digite "Teste de automação" e salve o arquivo como "teste.txt"
+
+Script:
+python
+
+from sikuli import *
+
+# Abrir o Bloco de Notas
+App.open("notepad.exe")
+wait(1)
+
+# Digitar texto
+type("Teste de automação")
+
+# Salvar o arquivo
+type(Key.CTRL + "s")
+wait(1)
+type("teste.txt")
+type(Key.ENTER)
+
+4. Abrir o Navegador e Navegar para um Site: 
+   Abra o navegador padrão e navegue até "https://www.google.com"
+
+Script:
+python
+
+from sikuli import *
+
+# Abrir o navegador (assumindo que o navegador padrão é o Edge)
+App.open("msedge.exe")
+wait(3)  # Esperar o navegador abrir
+
+# Navegar para o Google
+type("https://www.google.com" + Key.ENTER)
+
+5. Capturar uma Captura de Tela e Salvar: 
+   Capture a tela inteira e salve a captura como "screenshot.png"
+
+Script:
+python
+
+from sikuli import *
+
+# Capturar a tela inteira
+screen = capture(Screen())
+# Salvar a captura de tela
+shfile = "C:\\caminho\\para\\salvar\\screenshot.png"
+shfile.save(screen)
+
+6. Localizar e Clicar em um Ícone na Área de Trabalho: 
+   Localize e clique no ícone de "Lixeira" na área de trabalho
+
+Script:
+python
+
+from sikuli import *
+
+# Caminho para a imagem do ícone da Lixeira
+lixeira_icon = "C:\\caminho\\para\\imagem\\lixeira.png"
+
+# Localizar e clicar no ícone da Lixeira
+if exists(lixeira_icon):
+    click(lixeira_icon)
+
+7. Fechar uma Janela do Aplicativo: 
+   Feche o Bloco de Notas se ele estiver aberto
+
+Script:
+python
+
+from sikuli import *
+
+# Fechar o Bloco de Notas (usando o título da janela como referência)
+notepad_title = "C:\\caminho\\para\\imagem\\notepad_title.png"
+
+if exists(notepad_title):
+    type(Key.ALT + Key.F4)
+
+8. Realizar Login em uma Página Web: 
+   Abra o navegador, vá para a página de login e insira as credenciais.
+
+Script:
+python
+
+from sikuli import *
+
+# Abrir o navegador e navegar para a página de login
+App.open("msedge.exe")
+wait(3)
+type("https://www.example.com/login" + Key.ENTER)
+wait(3)
+
+# Inserir nome de usuário e senha
+type("C:\\caminho\\para\\imagem\\username_field.png", "meu_usuario")
+type("C:\\caminho\\para\\imagem\\password_field.png", "minha_senha")
+click("C:\\caminho\\para\\imagem\\login_button.png")
+
+9. Verificar a Presença de um Elemento em um Aplicativo: 
+   Verifique se o botão "OK" está presente em uma caixa de diálogo.
+
+Script:
+python
+
+from sikuli import *
+
+# Caminho para a imagem do botão OK
+ok_button = "C:\\caminho\\para\\imagem\\ok_button.png"
+
+# Verificar a presença do botão OK
+if exists(ok_button):
+    print("Botão OK encontrado")
+else:
+    print("Botão OK não encontrado")
+
+10. Abrir o Paint e Desenhar uma Linha: 
+    Enunciado: Abra o Paint e desenhe uma linha diagonal.
+
+Script:
+python
+
+from sikuli import *
+
+# Abrir o Paint
+App.open("mspaint.exe")
+wait(3)
+
+# Selecionar a ferramenta de desenho
+click("C:\\caminho\\para\\imagem\\paint_draw_tool.png")
+
+# Desenhar uma linha diagonal
+mouseDown(Button.LEFT)
+mouseMove(Location(300, 300))
+mouseUp(Button.LEFT)

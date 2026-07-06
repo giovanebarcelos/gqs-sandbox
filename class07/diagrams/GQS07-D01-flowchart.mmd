@@ -1,0 +1,12 @@
+@startuml
+    A([Novo]) --> B([Atribuído])
+    B --> C([Em Análise])
+    C -->|É bug?| D([Corrigindo])
+    C -->|Não é bug| E([Rejeitado])
+    D --> F([Resolvido])
+    F --> G([Em Teste])
+    G -->|Correção OK| H([Fechado])
+    G -->|Correção falhou| B
+    H --> I([Reaberto])
+    I --> B
+@enduml

@@ -1,0 +1,11 @@
+@startuml
+    A[Requisitos] --> B[Teste Baseado\nem Requisitos]
+    A --> C[Análise de Risco]
+    C --> D[Priorização]
+    D --> E[Testes Estruturados\n(Caixa-preta + Caixa-branca)]
+    D --> F[Teste Exploratório\n(Áreas de alto risco)]
+    B --> E
+    E --> G[Execução]
+    F --> G
+    G --> H[Relatório]
+@enduml

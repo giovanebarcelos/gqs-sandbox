@@ -1,0 +1,15 @@
+---
+Test
+---
+!define TEST_SYSTEM {slim}
+!define COLLAPSE_SETUP {true}
+!define COLLAPSE_TEARDOWN {true}
+# Caminho onde estão armazenadas as classes compiladas
+!path /home/giovanebarcelos/Documents/tmp/fitnesse
+# Imports dos caminhos das classes nos pacotes
+|import |
+|com.gobyz.fitnesse|
+!|Criar Programas |
+|Nome |Canal|DiaDaSemana |HoraDoDia|DuracaoEmMinutos|id? |
+|Faustao|12 |Domingo |15:00 |60 |$ID=|
+|Auto |12 |Quinta-Feira |22:30 |90 |[Auto:12]|

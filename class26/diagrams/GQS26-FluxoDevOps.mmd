@@ -1,0 +1,13 @@
+@startuml
+partition "DevOps" {
+  (Plan) --> (Code)
+  (Code) --> (Build)
+  (Build) --> (Test)
+  (Test) --> (Package)
+  (Package) --> (Release)
+  (Release) --> (Deploy)
+  (Deploy) --> (Operate)
+  (Operate) --> (Monitor)
+  (Monitor) -.-> (Plan)
+}
+@enduml

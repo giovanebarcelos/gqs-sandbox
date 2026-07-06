@@ -1,0 +1,19 @@
+Problemas de Software, Teste e Qualidade
+
+Vamos avaliar problemas em softwares conhecidos e apontar melhorias e testes que devem ser realizados para encaminhar a solução dos problemas e aumentar a qualidade dos softwares. 
+
+1) Formação dos grupos: formar equipes de 5 componentes
+
+2) Seleção dos softwares: selecionem um ou mais softwares que consideram ruins ou com áreas que precisam de melhorias. Pode-se escolher softwares com os quais estão familiarizados ou fazer uma pesquisa rápida para identificar exemplos
+
+3) Análise dos problemas: dentro de cada grupo, os participantes discutem e identificam os principais problemas e deficiências dos softwares selecionados. Pode-se considerar aspectos como usabilidade, desempenho, segurança, interface, entre outros
+
+4) Testes e qualidade: identifique testes que acreditam ser necessários para evidenciar os problemas e definir um proposta de solução que aumente a qualidade do software
+
+5) Propostas de melhorias: com base na análise dos problemas e testes identificados, cada grupo elabora propostas de melhorias e testes para os softwares selecionados. As propostas podem incluir sugestões de novas funcionalidades, ajustes na interface, correção de bugs, otimização de desempenho, testes de perfomance, aceitação, entre outras.
+
+6) Apresentação das propostas: cada grupo apresenta suas propostas de melhorias para os demais participantes. Pode-se utilizar recursos visuais, como slides, para facilitar a compreensão e comunicação das ideias ou simplesmente fazer uma apresentação oral e argumentativa
+
+7) Discussão e feedback: após as apresentações, os grupos podem discutir as propostas de melhorias uns dos outros e fornecer feedback construtivo. Isso pode ajudar na identificação de ideias complementares e na geração de insights adicionais.
+
+Esta atividade proporciona uma oportunidade para todos exercitarem habilidades de análise crítica, colaboração em grupo, criatividade na proposição de soluções e comunicação eficaz de ideias. Além disso, permite uma reflexão sobre a importância da qualidade do software e o impacto das melhorias na experiência do usuário.

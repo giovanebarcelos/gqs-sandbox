@@ -1,0 +1,16 @@
+flowchart TD
+    subgraph CMMI[CMMI - 5 Níveis]
+        N1[Nível 1: Inicial] --> N2[Nível 2: Gerenciado]
+        N2 --> N3[Nível 3: Definido]
+        N3 --> N4[Nível 4: Gerenciado Quantitativamente]
+        N4 --> N5[Nível 5: Otimizando]
+    end
+    subgraph MPS[MPS.BR - 7 Níveis]
+        G[Nível G] --> F[Nível F]
+        F --> E[Nível E]
+        E --> D[Nível D]
+        D --> C[Nível C]
+        C --> B[Nível B]
+        B --> A[Nível A]
+    end
+    CMMI -.->|Equivalência| MPS

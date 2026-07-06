@@ -1,0 +1,14 @@
+flowchart LR
+    subgraph "Seu Código"
+        A[Script Python/Java]
+    end
+    subgraph "Selenium"
+        B[WebDriver API]
+    end
+    subgraph "Browser"
+        C[ChromeDriver]
+        D[Navegador Chrome]
+    end
+    A --> B
+    B --> C
+    C --> D

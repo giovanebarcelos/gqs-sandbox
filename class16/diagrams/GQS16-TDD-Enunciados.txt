@@ -1,0 +1,50 @@
+Todos os testes devem seguir o padrão AAA (Arrange, Act, Assert) e fornecer uma cobertura completa para as classes desenvolvidas. 
+
+0) Calculadora
+
+Testar uma Calculadora que tem como objetivo realizar operações matemáticas simples. A Calculadora possui métodos para somar, subtrair, multiplicar e dividir números inteiros.
+Deve-se criar casos de teste para garantir que a classe Calculadora funcione corretamente em diferentes cenários.
+Aqui estão os casos de teste que devem ser implementados:
+- Soma: verificar se a soma de dois números inteiros está sendo calculada corretamente
+- Subtração: verificar se a subtração de dois números inteiros está sendo calculada corretamente
+- Multiplicação: verificar se a multiplicação de dois números inteiros está sendo calculada corretamente
+- Divisão: verificar se a divisão de dois números inteiros está sendo calculada corretamente
+- Divisão por Zero: teste de exceção ao dividir por zero
+
+1) Email 
+
+Testar o envio de e-mail de boas-vindas aos usuários de nossa plataforma. 
+Aqui está a descrição do teste que deve ser implementado:
+- Teste de envio de e-mail de boas-vindas: verificar se o método envia um e-mail de boas-vindas ao usuário com os dados corretos.
+
+2) Gerenciador de Tarefas 
+
+Testar um gerenciador de tarefas. 
+Aqui está a descrição do teste que deve ser implementado:
+- Teste de obtenção de todas as tarefas: verificar se o método retorna corretamente todas as tarefas obtidas do serviço de tarefas. Verifique se o método é chamado corretamente e se a lista de tarefas retornada é igual à lista de tarefas de amostra.
+
+3) Ações da Bolsa
+
+Testar um gerenciador de ações da bolsa da nossa aplicação. 
+Aqui está a descrição do teste que deve ser implementado:
+- Teste de obtenção de todas as ações: verificar se o método retorna corretamente todas as ações obtidas do serviço de ações. Verifique se o método é chamado corretamente e se a lista de ações retornada é igual à lista de ações de amostra.
+
+4) Autenticação
+
+Testar o processo de autenticação de usuários em nossa aplicação verificando as credenciais dos usuários.
+Aqui está a descrição dos testes que devem ser implementados:
+- Teste de autenticação com sucesso: verificar se o login retorna a mensagem "Login successful" quando as credenciais do usuário são válidas. Verifique se o método é chamado corretamente com as credenciais corretas.
+- Teste de falha na autenticação: verificar se o método retorna a mensagem "Login failed" quando as credenciais do usuário são inválidas. Verifique se o método é chamado corretamente com as credenciais incorretas.
+
+5) Gerenciador de pedidos 
+
+Testar um gerenciador de pedidos que realize operações relacionadas a pedidos.
+Aqui está a descrição dos testes que devem ser implementados:
+- Teste de realização de pedido: verificar se o método chama corretamente o serviço de pedidos com o pedido correto. Verifique se o método é chamado corretamente com um pedido de amostra.
+- Teste de obtenção de todos os pedidos: verificar se o método retorna corretamente todos os pedidos obtidos do serviço de pedidos. Verifique se o método é chamado corretamente e se a lista de pedidos retornada é igual à lista de pedidos de amostra.
+
+6) Gerenciamento de Usuários 
+
+Testar o gerenciador de usuários de nossa aplicação para realizar operações relacionadas aos usuários.
+Aqui está a descrição do teste que deve ser implementado:
+- Teste de criação de usuário: verificar se o método cria corretamente um novo usuário quando as informações do usuário são válidas e não existe outro usuário com o mesmo nome de usuário. Verifique se os métodos são chamados corretamente com os argumentos esperados e se o usuário criado é o mesmo que foi retornado pelo método de criação.

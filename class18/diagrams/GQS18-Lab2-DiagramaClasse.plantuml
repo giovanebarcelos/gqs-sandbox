@@ -1,0 +1,30 @@
+@startuml
+class Usuario {
+    - String nome
+    - int idade
+    - String sexo
+    - double altura
+    - double peso
+    - double metaPeso
+    
+    + Usuario(String nome, int idade, String sexo, double altura, double peso)
+    + double calcularIMC()
+    + void setMetaPeso(double meta)
+    + double getMetaPeso()
+}
+
+class SistemaAcademia {
+    - List<Usuario> usuarios
+
+    + void cadastrarUsuario(Usuario usuario)
+    + void editarUsuario(int index, Usuario novoUsuario)
+    + List<Usuario> listarUsuarios()
+    + String recomendarAtividade(double imc)
+    + String gerarRelatorioMensal()
+    + void definirMetaPeso(int index, double meta)
+    + boolean verificarMetaAtingida(int index)
+    + void excluirUsuario(int index)
+}
+
+SistemaAcademia "1" *-- "0..*" Usuario
+@enduml

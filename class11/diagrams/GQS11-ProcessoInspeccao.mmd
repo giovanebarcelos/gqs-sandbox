@@ -1,0 +1,8 @@
+flowchart LR
+    P[1. Planejamento] --> V[2. Visão Geral]
+    V --> PR[3. Preparação]
+    PR --> R[4. Reunião de Inspeção]
+    R --> C[5. Correção]
+    C --> VE[6. Verificação]
+    VE -->|OK| F([Fechado])
+    VE -->|Pendente| C

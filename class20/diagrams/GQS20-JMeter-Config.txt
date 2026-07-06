@@ -1,0 +1,72 @@
+https://dlcdn.apache.org//jmeter/binaries/apache-jmeter-5.6.3.zip
+
+https://buscacepinter.correios.com.br/app/endereco/index.php
+
+Ordem de Execucao:
+Elementos de configuracao -> pre-processadores -> timers -> testadores (samplers) e controladores logicos -> pos-processadores -> assertions -> ouvintes (listeners)
+
+Ordem natural: testadores e controladores logicos 
+Ordem hierarquica: demais elementos 
+
+- elemento de configuracao 
+  - variaveis definidas pelo usuario ${nome variavel}
+- temporizador
+  - temporizador constante
+
+JS -> "${acessarBing}" === "sim"
+${JMeterThread.last_sample_ok}
+
+Plano de Teste 
+- Grupo de Usuarios 
+  - Controlador de Gravacao
+    - Servidor HTTP Proxy 
+    Padroes de URL a serem excluidas
+    .*\.js
+    .*\.css
+    - Ver Arove de Resultados
+  -> Iniciar Proxy
+
+Plugin: FoxyProxy do Navegador
+
+https://help.blazemeter.com/
+
+jmeter plugins
+
+https://jmeter.apache.org/usermanual/jmeter_proxy_step_by_step.pdf
+
+https://my.cloudera.com/
+
+To use JMeter as a proxy in Chrome, you typically don't need a plugin. Instead, you configure Chrome to use the proxy settings provided by JMeter. Here's how you can do it:
+
+    Open JMeter:
+    Launch JMeter and create a new Test Plan or open an existing one.
+
+    Configure the HTTP(S) Test Script Recorder:
+        Right-click on your Test Plan.
+        Go to Add -> Non-Test Elements -> HTTP(S) Test Script Recorder.
+        In the HTTP(S) Test Script Recorder, you can specify the port number you want JMeter to listen to. The default port is 8888.
+
+    Start the HTTP(S) Test Script Recorder:
+        Click the Start button at the bottom of the HTTP(S) Test Script Recorder.
+        JMeter will generate a self-signed SSL certificate. Note that browsers may display warnings when connecting to sites using this certificate.
+
+    Configure Chrome to Use the JMeter Proxy:
+        Open Chrome and go to Settings.
+        Scroll down and click on Advanced.
+        Under System, click on Open proxy settings.
+        This will open the Internet Properties window. Go to the Connections tab and click on LAN settings.
+        Check the box for Use a proxy server for your LAN.
+        Enter the IP address of your machine running JMeter in the Address field and the port number you specified for the HTTP(S) Test Script Recorder in the Port field (by default, 8888).
+        Click OK to save the settings and close all the windows.
+
+    Start Recording:
+        Now, when you navigate to a website in Chrome, JMeter will record the HTTP requests.
+        You can perform the actions you want to record in Chrome, and JMeter will capture the corresponding HTTP requests.
+
+    Stop Recording:
+        Once you have finished recording, remember to stop the HTTP(S) Test Script Recorder in JMeter.
+
+    Adjust Recorded Requests (if necessary):
+        After recording, you may need to adjust the recorded requests in JMeter as needed. This could include adding parameters, assertions, or modifying any recorded values.
+
+That's it! You've now configured Chrome to use JMeter as a proxy, allowing you to record HTTP requests for your test scenarios.

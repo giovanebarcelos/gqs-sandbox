@@ -1,0 +1,8 @@
+@startuml
+    A[Requisito\nJira] --> B[Caso de Teste\nTestLink]
+    B --> C[Execução\nTestLink]
+    C -->|Falhou| D[Defeito\nJira]
+    D --> E[Correção\nJira]
+    E --> F[Reteste\nTestLink]
+    F -->|Passou| G[Caso Fechado]
+@enduml

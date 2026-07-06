@@ -1,0 +1,11 @@
+Links para download do SikuliX:
+- Windows: https://launchpad.net/sikuli/sikulix/2.0.5/+download/sikulixide-2.0.5-win.jar
+- Linux: https://launchpad.net/sikuli/sikulix/2.0.5/+download/sikulixide-2.0.5-lux.jar
+- MAC: https://launchpad.net/sikuli/sikulix/2.0.5/+download/sikulixide-2.0.5-mac.jar
+- Qualquer sistema operacional: https://launchpad.net/sikuli/sikulix/2.0.5/+download/sikulixide-2.0.5.jar 
+
+Pré-Requisito:
+Instalar o Java: https://www.oracle.com/java/technologies/downloads/
+
+Execução do SikuliX no Windows:
+java -jar 

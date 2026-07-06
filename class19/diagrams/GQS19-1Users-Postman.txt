@@ -1,0 +1,69 @@
+Teste Completo no Postman:
+
+-> Teste 1: Criar um Novo Usuário
+
+Descrição: Testa se é possível criar um novo usuário na aplicação.
+Método HTTP: POST
+URL: http://localhost:3000/users
+Headers:
+    Content-Type: application/json
+Body (JSON):
+{
+    "id": 1,
+    "nome": "Usuário Teste",
+    "email": "usuario@teste.com",
+    "idade": 30,
+    "cidade": "Exemploville"
+}
+
+Assertions:
+Status Code: 201 Created
+Response Body: Verifique se os dados do usuário criado são os mesmos enviados na solicitação.
+
+-> Teste 2: Obter Todos os Usuários
+
+Descrição: Testa se é possível obter todos os usuários da aplicação.
+Método HTTP: GET
+URL: http://localhost:3000/users
+Assertions:
+        Status Code: 200 OK
+        Response Body: Verifique se a resposta contém uma lista de usuários e se os dados dos usuários correspondem aos dados esperados.
+
+Teste 3: Obter um Usuário pelo ID
+
+    Descrição: Testa se é possível obter um usuário específico pelo ID.
+    Método HTTP: GET
+    URL: http://localhost:3000/users/1 (Substitua 1 pelo ID do usuário criado no Teste 1)
+    Assertions:
+        Status Code: 200 OK
+        Response Body: Verifique se os dados do usuário retornado correspondem aos dados do usuário criado no Teste 1.
+
+Teste 4: Atualizar um Usuário
+
+    Descrição: Testa se é possível atualizar os dados de um usuário existente.
+    Método HTTP: PUT
+    URL: http://localhost:3000/users/1 (Substitua 1 pelo ID do usuário criado no Teste 1)
+    Headers:
+        Content-Type: application/json
+    Body (JSON):
+
+    json
+
+    {
+        "nome": "Novo Nome",
+        "email": "novoemail@teste.com",
+        "idade": 35,
+        "cidade": "Cidade Nova"
+    }
+
+    Assertions:
+        Status Code: 200 OK
+        Response Body: Verifique se os dados do usuário atualizado correspondem aos dados enviados na solicitação.
+
+Teste 5: Deletar um Usuário
+
+    Descrição: Testa se é possível deletar um usuário existente.
+    Método HTTP: DELETE
+    URL: http://localhost:3000/users/1 (Substitua 1 pelo ID do usuário criado no Teste 1)
+    Assertions:
+        Status Code: 204 No Content

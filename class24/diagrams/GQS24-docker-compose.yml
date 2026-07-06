@@ -1,0 +1,130 @@
+version: '3.3'
+services:
+  traefik:
+    image: traefik
+    container_name: traefik-mantis
+    hostname: traefik   
+    restart: ${RESTART_MODE}
+    command:
+    - --api.insecure=true
+    - --providers.docker=true
+    - --providers.docker.exposedbydefault=false
+    - --entrypoints.web.address=:80
+    - --entrypoints.web-secure.address=:443
+    ports:
+    - 80:80
+    - 443:443
+    - 8090:8080
+    volumes:
+    - /var/run/docker.sock:/var/run/docker.sock:ro
+    dns:
+    - ${IPV4_NETWORK:-172.23.1}.254
+    - 8.8.8.8
+    networks:
+      goTestlink:
+        aliases:
+        - traefik
+
+  # Default User: admin; Password: admin
+  # docker exec -ti testlink sh -c 'chown www-data:www-data /var/testlink/*'
+  # 2- Run installation sequence: https://testlink.localhost/install/
+  # 2- Run installation sequence: http://localhost:8181/install
+  testlink:
+    image: gigashiro/testlink
+    #build: 
+    #  context: ./testlink
+    container_name: testlink
+    hostname: testlink 
+    environment:
+    - TZ=${TZ}
+    - DB_USER=testlink
+    - DB_PASS=passw0rd
+    - DB_HOST=mysql
+    - DB_NAME=testlink
+    restart: ${RESTART_MODE}
+    volumes:
+    - testlink-logs:/var/testlink/logs:rw
+    - testlink-uploads:/var/testlink/upload_area:rw
+    #ports:
+    #- "8181:80"
+    labels:
+    - traefik.enable=true
+    - traefik.http.routers.testlink.rule=${DOMAIN_TESTLINK}
+    - traefik.http.services.testlink.loadbalancer.server.port=80
+    - traefik.http.routers.testlink.tls=true
+    dns:
+    - ${IPV4_NETWORK:-172.23.1}.254
+    - 8.8.8.8
+    networks:
+      goTestlink:
+        aliases:
+        - testlink
+
+  mysql:
+    image: mysql/mysql-server:latest
+    container_name: mysql-testlink
+    hostname: mysql
+    environment:
+    - TZ=${TZ}
+    - MYSQL_DATABASE=testlink
+    - MYSQL_USER=testlink
+    - MYSQL_PASSWORD=passw0rd
+    - MYSQL_ROOT_PASSWORD=root
+    restart: ${RESTART_MODE}
+    volumes:
+    - mysql-data:/var/lib/mysql
+    dns:
+    - ${IPV4_NETWORK:-172.23.1}.254
+    - 8.8.8.8
+    networks:
+      goTestlink:
+        aliases:
+        - mysql
+
+  portainer:
+    image: portainer/portainer-ce
+    container_name: portainer-mantis
+    hostname: portainer
+    environment:
+    - TZ=${TZ}
+    restart: ${RESTART_MODE}
+    #Automatically choose 'Manage the Docker instance where Portainer is running' by adding <--host=unix:///var/run/docker.sock> to the command
+    #command: --templates http://templates/templates.json
+    command: -H unix:///var/run/docker.sock
+    volumes:
+    - /var/run/docker.sock:/var/run/docker.sock
+    - "/etc/timezone:/etc/timezone:ro"
+    - "/etc/localtime:/etc/localtime:ro"
+    #ports:
+    #- "8092:9000"
+    labels:
+    - traefik.enable=true
+    - traefik.http.routers.portainer.rule=${DOMAIN_PORTAINER}
+    - traefik.http.services.portainer.loadbalancer.server.port=9000
+    - traefik.http.routers.portainer.tls=true
+    #- traefik.http.routers.portainer.entrypoints=web
+    #- traefik.http.routers.portainer.entrypoints=web-secure
+    #- traefik.http.routers.portainer.tls.certresolver=selfsigned
+    dns:
+    - ${IPV4_NETWORK:-172.23.1}.254
+    - 8.8.8.8
+    networks:
+      goTestlink:
+        aliases:
+        - portainer
+
+networks:
+    goTestlink:
+       driver: bridge
+       #enable_ipv6: true
+       #name: goTestlink
+       ipam:
+          driver: default
+          config:
+          - subnet: ${IPV4_NETWORK:-172.23.1}.0/24
+          #- subnet: ${IPV6_NETWORK:-fd4d:6169:6c63:6f77::/64}
+
+volumes:
+   mysql-data:
+   testlink-logs:
+   testlink-uploads:

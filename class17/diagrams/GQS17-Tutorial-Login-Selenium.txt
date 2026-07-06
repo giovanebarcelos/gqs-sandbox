@@ -1,0 +1,141 @@
+Demonstração de Login - Selenium
+
+Teste de um site de demonstração de login para ilustrar o processo de teste.
+
+Passos para Usar o Selenium IDE
+1. Instalar o Selenium IDE
+    Para Chrome:
+        Vá para a Chrome Web Store.
+        Pesquise por "Selenium IDE".
+        Clique em "Adicionar ao Chrome" e depois "Adicionar extensão".
+
+    Para Firefox:
+        Vá para o site de complementos do Firefox.
+        Pesquise por "Selenium IDE".
+        Clique em "Adicionar ao Firefox" e depois "Adicionar".
+
+2. Abrir o Selenium IDE
+    Abra o navegador onde você instalou o Selenium IDE.
+    Clique no ícone do Selenium IDE na barra de ferramentas do navegador para iniciar a aplicação.
+
+3. Criar um Novo Projeto
+    Quando o Selenium IDE abrir, clique em "Create a new project".
+    Dê um nome ao seu projeto, por exemplo, "LoginTest", e clique em "OK".
+
+4. Gravar um Teste
+    Clique em "Record a new test in a new project".
+    Digite a URL do site de demonstração de login. Para este exemplo, usaremos The Internet (https://the-internet.herokuapp.com/login).
+    Clique em "Start recording".
+    O navegador abrirá a página de login.
+
+5. Realizar Ações no Site
+    No campo de "Username", digite "tomsmith".
+    No campo de "Password", digite "SuperSecretPassword!".
+    Clique no botão "Login".
+    O Selenium IDE gravará todas essas ações.
+
+6. Parar a Gravação
+    Quando terminar a gravação, clique no botão "Stop recording" no Selenium IDE.
+    Dê um nome ao seu teste, por exemplo, "ValidLoginTest", e clique em "OK".
+
+7. Editar o Teste Gravado
+    No painel esquerdo do Selenium IDE, você verá uma lista de comandos gravados.
+    Verifique se os comandos estão corretos e fazem sentido. Você pode editar comandos clicando duas vezes neles.
+    Adicione um comando para verificar se o login foi bem-sucedido, verificando a presença de um elemento na página pós-login.
+
+8. Adicionar Verificação de Resultado
+
+    Adicione um comando assertText ou assertElementPresent para verificar se o texto "You logged into a secure area!" aparece na página pós-login.
+
+    Exemplo de comando:
+
+    Command: assertText
+    Target: css=.flash.success
+    Value: You logged into a secure area!
+
+9. Executar o Teste
+    Clique no botão "Run current test" (ícone de play) para executar o teste que você gravou.
+    O Selenium IDE abrirá uma nova janela do navegador e executará as ações que você gravou.
+    Você verá os resultados do teste no painel de resultados.
+
+10. Verificar Resultados e Depurar
+    Se o teste falhar, verifique os detalhes na aba "Log" para entender o que deu errado.
+    Você pode usar os botões "Step over", "Step into" e "Step out" para depurar o teste passo a passo.
+
+Exemplo de Teste Gravado
+
+Aqui está um exemplo de como o teste gravado no Selenium IDE pode parecer:
+
+Command: open
+Target: http://the-internet.herokuapp.com/login
+Value: 
+
+Command: type
+Target: id=username
+Value: tomsmith
+
+Command: type
+Target: id=password
+Value: SuperSecretPassword!
+
+Command: clickAndWait
+Target: css=button[type='submit']
+Value: 
+
+Command: assertText
+Target: css=.flash.success
+Value: You logged into a secure area!
+
+Exportar o Teste
+
+O Selenium IDE permite exportar os testes para várias linguagens de programação e frameworks. Aqui está como exportar o teste para Java usando JUnit:
+
+    Exportar o Teste:
+        Clique em "File" > "Export" > "Export Test Suite As" e escolha o formato desejado, por exemplo, "Java JUnit".
+
+    Exemplo de Teste Exportado para Java JUnit:
+
+--> JAVA
+
+package com.example;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+
+public class LoginTest {
+    private WebDriver driver;
+
+    @Before
+    public void setUp() {
+        System.setProperty("webdriver.chrome.driver", "path/to/chromedriver");
+        driver = new ChromeDriver();
+    }
+
+    @Test
+    public void testValidLogin() {
+        driver.get("http://the-internet.herokuapp.com/login");
+        driver.findElement(By.id("username")).sendKeys("tomsmith");
+        driver.findElement(By.id("password")).sendKeys("SuperSecretPassword!");
+        driver.findElement(By.cssSelector("button[type='submit']")).click();
+        String successMessage = driver.findElement(By.cssSelector(".flash.success")).getText();
+        assert(successMessage.contains("You logged into a secure area!"));
+    }
+
+    @After
+    public void tearDown() {
+        if (driver != null) {
+            driver.quit();
+        }
+    }
+}
+
+Notas Finais
+
+1. Ambiente de Desenvolvimento: Certifique-se de que o caminho para o chromedriver está corretamente especificado no System.setProperty.
+2. WebDriverWait: Para um código de produção, use WebDriverWait em vez de Thread.sleep para esperas explícitas e mais eficientes.
+
+Este tutorial fornece uma base sólida para começar com testes automatizados usando o Selenium IDE, incluindo gravação de testes, edição, execução e verificação de resultados.

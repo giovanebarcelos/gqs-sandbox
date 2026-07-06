@@ -1,0 +1,73 @@
+Busca na Amazon - Selenium
+
+Vamos testar a funcionalidade de busca no site da Amazon, onde faremos uma busca por um produto e verificaremos se os resultados são exibidos corretamente.
+
+Passos para Usar o Selenium IDE
+
+1. Instalar o Selenium IDE
+    Para Chrome:
+        Vá para a Chrome Web Store.
+        Pesquise por "Selenium IDE".
+        Clique em "Adicionar ao Chrome" e depois "Adicionar extensão".
+
+    Para Firefox:
+        Vá para o site de complementos do Firefox.
+        Pesquise por "Selenium IDE".
+        Clique em "Adicionar ao Firefox" e depois "Adicionar".
+
+2. Abrir o Selenium IDE
+    Abra o navegador onde você instalou o Selenium IDE.
+    Clique no ícone do Selenium IDE na barra de ferramentas do navegador para iniciar a aplicação.
+
+3. Criar um Novo Projeto
+    Quando o Selenium IDE abrir, clique em "Create a new project".
+    Dê um nome ao seu projeto, por exemplo, "AmazonSearchTest", e clique em "OK".
+
+4. Gravar um Teste
+    Clique em "Record a new test in a new project".
+    Digite a URL do site da Amazon (por exemplo, https://www.amazon.com) e clique em "Start recording".
+    O navegador abrirá a página da Amazon.
+
+5. Realizar Ações no Site
+    No site da Amazon, localize o campo de busca.
+    Digite o nome de um produto que você deseja buscar, por exemplo, "smartphone".
+    Pressione "Enter" para realizar a busca.
+    O Selenium IDE gravará todas essas ações.
+
+6. Parar a Gravação
+    Quando terminar a gravação, clique no botão "Stop recording" no Selenium IDE.
+    Dê um nome ao seu teste, por exemplo, "ProductSearchTest", e clique em "OK".
+
+7. Editar o Teste Gravado
+    No painel esquerdo do Selenium IDE, você verá uma lista de comandos gravados.
+    Verifique se os comandos estão corretos e fazem sentido. Você pode editar comandos clicando duas vezes neles.
+    Por exemplo, você deve ver comandos como open, type, e click.
+
+8. Executar o Teste
+    Clique no botão "Run current test" (ícone de play) para executar o teste que você gravou.
+    O Selenium IDE abrirá uma nova janela do navegador e executará as ações que você gravou.
+    Você verá os resultados do teste no painel de resultados.
+
+9. Verificar Resultados e Depurar
+    Se o teste falhar, verifique os detalhes na aba "Log" para entender o que deu errado.
+    Você pode usar os botões "Step over", "Step into" e "Step out" para depurar o teste passo a passo.
+
+Exemplo de Teste Gravado
+
+Aqui está um exemplo de como o teste gravado no Selenium IDE pode parecer:
+
+Command: open
+Target: https://www.amazon.com
+Value:
+
+Command: type
+Target: id=twotabsearchtextbox
+Value: smartphone
+
+Command: sendKeys
+Target: id=twotabsearchtextbox
+Value: ${KEY_ENTER}
+
+Exportar o Teste
+
+O Selenium IDE permite exportar os testes para várias linguagens de programação e frameworks. Você pode exportar o teste para uma linguagem de programação de sua escolha para executá-lo em seu ambiente de teste automatizado.

@@ -1,0 +1,12 @@
+Desenvolva a classe Java abaixo e faça os testes de aceitação para um sistema de gestão de academia conforme requisitos abaixo: 
+
+RF1) Cadastrar novos usuários com nome, idade, sexo, altura e peso
+RF2) Editar informações dos usuários
+RF3) Consultar a lista de todos os usuários
+RF4) Registrar as atividades físicas diárias de cada usuário
+RF5) Calcular o IMC (Índice de Massa Corporal) do usuário
+RF6) Verificar a recomendação de atividades com base no IMC
+RF7) Gerar um relatório mensal das atividades dos usuários
+RF8) Definir metas de perda de peso e monitorar o progresso
+RF9) Notificar o usuário ao atingir uma meta definida
+RF10) Excluir um usuário do sistema

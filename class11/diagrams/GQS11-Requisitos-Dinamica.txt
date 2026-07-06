@@ -1,0 +1,11 @@
+O Produto pode ser um Navio, Chapéu ou outro Origame qualquer
+
+Criar e Testar um Produto a partir dos Requisitos descritos em uma Folha de Papel
+
+Papéis: Analistas de Requisitos, Desenvolvedor e Testadores 
+1) Equipes de no mínimo 3 e no máximo 6 componentes
+2) Cada equipe deve definir um componente que será o Desenvolvedor para sair no período de até 20 minutos da sala de aula 
+3) Ensinar a todos os times que serão os Analistas de Requisitos como criar um produto ou que os times definam o produto de sua escolha
+4) Os Analistas de Requisitos devem escrever em forma de requisitos em uma folha de papel como o Desenvolvedor deve criar o produto e em outra folha descrever como os Analistas de Testes devem testar se o requisito foi atendido
+5) Definir um tempo total com os times para o Desenvolvedor criar o produto quando este retornar 
+6) A folha que descreve o teste será sorteada em um grupo diferente que serão os Analista de Testes para testar e certificar se o produto atendeu o que foi requisitado 

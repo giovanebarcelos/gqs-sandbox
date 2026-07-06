@@ -1,0 +1,11 @@
+flowchart LR
+    subgraph "Qualidade Interna"
+        QI[Atributos do código-fonte\nEx: complexidade, coesão]
+    end
+    subgraph "Qualidade Externa"
+        QE[Comportamento do sistema\nEx: tempo de resposta, taxa de falha]
+    end
+    subgraph "Qualidade em Uso"
+        QU[Efetividade do usuário\nEx: produtividade, satisfação]
+    end
+    QI --> QE --> QU

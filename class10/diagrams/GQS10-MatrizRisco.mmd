@@ -1,0 +1,13 @@
+flowchart TD
+    subgraph Matriz[Matriz de Risco 5x5]
+        direction TB
+        M1["Impacto 5"] --> M2["Impacto 4"]
+        M2 --> M3["Impacto 3"]
+        M3 --> M4["Impacto 2"]
+        M4 --> M5["Impacto 1"]
+    end
+    subgraph Acoes[Ações por Nível de Risco]
+        C[Crítico: 15-25] --> A[Alto: 10-14]
+        A --> M[Médio: 5-9]
+        M --> B[Baixo: 1-4]
+    end

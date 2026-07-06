@@ -1,0 +1,41 @@
+!***< Hidden
+
+!define TEST_SYSTEM {slim}
+
+
+!define COLLAPSE_SETUP {true}
+!define COLLAPSE_TEARDOWN {true}
+
+!path /home/giovanebarcelos/Documents/tmp/fitnesse
+
+
+*!
+
+!1 Teste de Aceitação para um Sistema de Gestão de Academia
+
+!3 RF1 - Cadastro de Usuários
+
+'''Página de Teste: !-CadastroUsuarios-!'''
+
+!| script: SistemaAcademia | 
+| cadastrar usuario | João | 30 | M | 1.75 | 70 |
+| listar usuarios | Nome=João, Idade=30, Sexo=M, Altura=1.75, Peso=70 |
+
+!3 RF5 - Calcular o IMC (Índice de Massa Corporal) do usuário
+
+'''Página de Teste: !-CalcularIMC-!'''
+
+!| script: SistemaAcademia | 
+| cadastrar usuario | Maria | 25 | F | 1.60 | 60 |
+| calcular imc para usuario | 0 | => | 23.4 |
+
+
+!3 RF6 - Verificar a recomendação de atividades com base no IMC
+
+'''Página de Teste: !-RecomendarAtividades-!'''
+
+!| script: SistemaAcademia | 
+| cadastrar usuario | Carlos | 28 | M | 1.80 | 85 |
+| calcular imc para usuario | 0 | => | 26.2 |
+| recomendar atividade para usuario | 0 | => | Focar em atividades de perda de peso |
+

@@ -1,0 +1,11 @@
+sequenceDiagram
+    participant J as JUnit Platform
+    participant T as TestClass
+    J->>T: @BeforeAll (1x)
+    loop Para cada @Test
+        J->>T: new TestClass()
+        J->>T: @BeforeEach
+        J->>T: @Test método
+        J->>T: @AfterEach
+    end
+    J->>T: @AfterAll (1x)

@@ -1,0 +1,12 @@
+Desenvolva a classe Java abaixo e faça os testes de aceitação para um sistema bancário conforme requisitos abaixo: 
+
+RF1) Criar Conta com Saldo Inicial
+RF2) Depositar Dinheiro na Conta
+RF3) Sacar Dinheiro da Conta
+RF4) Transferir Dinheiro entre Contas
+RF5) Verificar Saldo Insuficiente para Saque
+RF6) Conta Inexistente
+RF7) Fechar Conta
+RF8) Saldo Zero após Saque
+RF9) Verificar Histórico de Transações
+RF10) Transferência Falha por Saldo Insuficiente

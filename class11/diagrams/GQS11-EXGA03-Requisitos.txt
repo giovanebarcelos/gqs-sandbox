@@ -1,0 +1,10 @@
+Click aqui para entregar o exercício EXGA03 ...
+
+1) O que são requisitos de usuário e requisitos de sistema?
+2) Qual é a diferença entre os requisitos funcionais e não funcionais?
+3) Listar 3 tipos de requisitos não funcionais?
+4) O que entende-se por um documento de requisitos de software?
+5) Qual é a distinção entre os termos "deve" e "deveria" em um documento de requisitos do usuário, quando escrito em linguagem natural?
+6) Quais são as principais vantagens da utilização de um formato padrão para especificar os requisitos?
+7) Quais são as principais etapas do processo de engenharia de requisitos?
+

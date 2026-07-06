@@ -1,0 +1,792 @@
+enunciado de uma aplicação e demonstração de todas as possibilidades de teste unitário e a classe testada utilizando o junit
+
+Enunciado da Aplicação: Calculadora de Operações Básicas
+
+Desenvolva uma calculadora simples que seja capaz de realizar operações básicas de adição, subtração, multiplicação e divisão. A calculadora deve aceitar dois números como entrada e retornar o resultado da operação solicitada. Além disso, a calculadora deve tratar casos de erro, como divisão por zero.
+
+Desenvolva a aplicação em Java e utilize o JUnit para escrever testes unitários que cubram todas as funcionalidades da calculadora.
+
+Demonstração das Possibilidades de Teste Unitário Utilizando JUnit:
+
+Aqui está a implementação da classe Calculadora e os testes unitários correspondentes:
+
+Classe Calculadora:
+public class Calculadora {
+    public int somar(int a, int b) {
+        return a + b;
+    }
+
+    public int subtrair(int a, int b) {
+        return a - b;
+    }
+
+    public int multiplicar(int a, int b) {
+        return a * b;
+    }
+
+    public double dividir(int a, int b) {
+        if (b == 0) {
+            throw new IllegalArgumentException("Divisão por zero não é permitida.");
+        }
+        return (double) a / b;
+    }
+}
+
+Testes Unitários (CalculadoraTest):
+
+import static org.junit.Assert.*;
+import org.junit.Before;
+import org.junit.Test;
+
+public class CalculadoraTest {
+    private Calculadora calculadora;
+
+    @Before
+    public void setUp() {
+        calculadora = new Calculadora();
+    }
+
+    @Test
+    public void testSomar() {
+        assertEquals(5, calculadora.somar(2, 3));
+    }
+
+    @Test
+    public void testSubtrair() {
+        assertEquals(4, calculadora.subtrair(7, 3));
+    }
+
+    @Test
+    public void testMultiplicar() {
+        assertEquals(15, calculadora.multiplicar(3, 5));
+    }
+
+    @Test
+    public void testDividir() {
+        assertEquals(2.0, calculadora.dividir(10, 5), 0.001);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testDividirPorZero() {
+        calculadora.dividir(10, 0);
+    }
+}
+
+Estes testes unitários cobrem todas as funcionalidades da calculadora, incluindo todas as operações básicas (adição, subtração, multiplicação, divisão) e tratamento de erros (divisão por zero). O uso do JUnit torna fácil executar e verificar os resultados dos testes, garantindo a correta funcionalidade da calculadora.
+
+---------------------------------------------------
+Vamos criar um enunciado para uma aplicação simples de uma lista de tarefas (to-do list) e demonstrar todas as possibilidades de teste unitário para essa aplicação, juntamente com a classe testada utilizando o JUnit.
+
+Enunciado da Aplicação:
+
+Desenvolva uma aplicação de lista de tarefas (to-do list) que permita aos usuários adicionar, remover, marcar como concluída e visualizar tarefas. Cada tarefa deve ter um título e um estado (pendente ou concluída). A aplicação deve ser capaz de lidar com múltiplas tarefas.
+
+Possibilidades de Teste Unitário:
+
+    Teste de adição de tarefa: Verifica se uma tarefa é corretamente adicionada à lista.
+    Teste de remoção de tarefa: Verifica se uma tarefa é corretamente removida da lista.
+    Teste de marcação de tarefa como concluída: Verifica se uma tarefa é corretamente marcada como concluída.
+    Teste de visualização de tarefas: Verifica se a lista de tarefas é corretamente retornada para visualização.
+    Teste de tratamento de erros: Verifica se a aplicação lida corretamente com situações inesperadas, como tentar remover uma tarefa que não existe.
+
+Agora, vamos criar a classe ToDoList que representa a lista de tarefas e implementar os métodos necessários, juntamente com a classe de teste utilizando o JUnit.
+
+Classe ToDoList:
+import java.util.ArrayList;
+import java.util.List;
+
+public class ToDoList {
+    private List<Task> tasks;
+
+    public ToDoList() {
+        this.tasks = new ArrayList<>();
+    }
+
+    public void addTask(Task task) {
+        tasks.add(task);
+    }
+
+    public void removeTask(Task task) {
+        tasks.remove(task);
+    }
+
+    public void markTaskAsCompleted(Task task) {
+        task.setCompleted(true);
+    }
+
+    public List<Task> getTasks() {
+        return tasks;
+    }
+}
+
+Classe Task:
+
+public class Task {
+    private String title;
+    private boolean completed;
+
+    public Task(String title) {
+        this.title = title;
+        this.completed = false;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public boolean isCompleted() {
+        return completed;
+    }
+
+    public void setCompleted(boolean completed) {
+        this.completed = completed;
+    }
+}
+
+Classe de Teste Utilizando o JUnit:
+
+import org.junit.Test;
+import java.util.List;
+import static org.junit.Assert.*;
+
+public class ToDoListTest {
+
+    @Test
+    public void testAddTask() {
+        ToDoList toDoList = new ToDoList();
+        Task task = new Task("Test Task");
+        toDoList.addTask(task);
+        assertTrue(toDoList.getTasks().contains(task));
+    }
+
+    @Test
+    public void testRemoveTask() {
+        ToDoList toDoList = new ToDoList();
+        Task task = new Task("Test Task");
+        toDoList.addTask(task);
+        toDoList.removeTask(task);
+        assertFalse(toDoList.getTasks().contains(task));
+    }
+
+    @Test
+    public void testMarkTaskAsCompleted() {
+        ToDoList toDoList = new ToDoList();
+        Task task = new Task("Test Task");
+        toDoList.addTask(task);
+        toDoList.markTaskAsCompleted(task);
+        assertTrue(task.isCompleted());
+    }
+
+    @Test
+    public void testGetTasks() {
+        ToDoList toDoList = new ToDoList();
+        Task task1 = new Task("Task 1");
+        Task task2 = new Task("Task 2");
+        toDoList.addTask(task1);
+        toDoList.addTask(task2);
+        List<Task> tasks = toDoList.getTasks();
+        assertEquals(2, tasks.size());
+        assertTrue(tasks.contains(task1));
+        assertTrue(tasks.contains(task2));
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testRemoveNonExistingTask() {
+        ToDoList toDoList = new ToDoList();
+        Task task = new Task("Test Task");
+        toDoList.removeTask(task);
+    }
+}
+
+Esses testes cobrem todas as funcionalidades da aplicação de lista de tarefas, incluindo adição, remoção, marcação de tarefas como concluídas e visualização de tarefas. Além disso, o último teste verifica o tratamento adequado de uma tentativa de remover uma tarefa que não existe.
+
+-----------------------------------------------------------
+
+Vamos supor que temos uma aplicação de uma calculadora simples em Java. A classe Calculator possui métodos para realizar operações básicas de adição, subtração, multiplicação e divisão, além de tratar erros como divisão por zero.
+
+Aqui está o enunciado da aplicação:
+
+public class Calculator {
+    
+    public int add(int a, int b) {
+        return a + b;
+    }
+    
+    public int subtract(int a, int b) {
+        return a - b;
+    }
+    
+    public int multiply(int a, int b) {
+        return a * b;
+    }
+    
+    public int divide(int a, int b) {
+        if (b == 0) {
+            throw new IllegalArgumentException("Divisão por zero não é permitida");
+        }
+        return a / b;
+    }
+}
+
+Agora, vamos escrever testes unitários para cobrir todas as funcionalidades da calculadora, utilizando o JUnit.
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
+import org.junit.Test;
+
+public class CalculatorTest {
+
+    @Test
+    public void testAddition() {
+        Calculator calculator = new Calculator();
+        assertEquals(4, calculator.add(2, 2));
+    }
+
+    @Test
+    public void testSubtraction() {
+        Calculator calculator = new Calculator();
+        assertEquals(2, calculator.subtract(4, 2));
+    }
+
+    @Test
+    public void testMultiplication() {
+        Calculator calculator = new Calculator();
+        assertEquals(6, calculator.multiply(2, 3));
+    }
+
+    @Test
+    public void testDivision() {
+        Calculator calculator = new Calculator();
+        assertEquals(3, calculator.divide(9, 3));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testDivisionByZero() {
+        Calculator calculator = new Calculator();
+        calculator.divide(5, 0);
+    }
+
+    @Test
+    public void testNegativeNumbers() {
+        Calculator calculator = new Calculator();
+        assertEquals(-1, calculator.add(2, -3));
+        assertEquals(5, calculator.subtract(2, -3));
+        assertEquals(-6, calculator.multiply(2, -3));
+        assertEquals(-2, calculator.divide(6, -3));
+    }
+}
+
+Nestes testes, estamos garantindo que todas as operações básicas da calculadora funcionam corretamente, além de verificar o tratamento correto de erros, como divisão por zero. Também testamos o comportamento da calculadora com números negativos.
+
+Esses testes cobrem todas as funcionalidades da calculadora e garantem seu funcionamento correto. Certifique-se de adaptar esses testes de acordo com sua implementação específica da calculadora, adicionando mais casos de teste conforme necessário.
+
+----------------------------------------------------------
+
+Vamos criar um enunciado para uma aplicação simples de lista de tarefas (to-do list) e demonstrar todas as possibilidades de teste unitário para essa aplicação, juntamente com a classe testada utilizando o JUnit.
+
+Enunciado da Aplicação:
+
+Desenvolvemos uma aplicação de lista de tarefas para ajudar os usuários a gerenciar suas atividades diárias. A aplicação permite que os usuários adicionem, removam, marquem como concluídas e visualizem suas tarefas. Cada tarefa possui um título, uma descrição e um status de conclusão.
+
+Possibilidades de Teste Unitário:
+
+    Teste para adicionar uma nova tarefa.
+    Teste para remover uma tarefa existente.
+    Teste para marcar uma tarefa como concluída.
+    Teste para visualizar todas as tarefas.
+    Teste para visualizar apenas tarefas não concluídas.
+    Teste para visualizar apenas tarefas concluídas.
+    Teste para garantir que a lista de tarefas esteja vazia inicialmente.
+    Teste para garantir que a lista de tarefas permaneça vazia após a remoção de todas as tarefas.
+    Teste para garantir que a lista de tarefas mantenha a ordem das tarefas após a remoção ou adição.
+    Teste para garantir que a aplicação lide corretamente com tentativas de remover ou marcar como concluída uma tarefa inexistente.
+
+Classe Testada Utilizando JUnit:
+
+Aqui está um exemplo de implementação da classe TaskList que gerencia a lista de tarefas, juntamente com os testes unitários utilizando o JUnit:
+
+java
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class TaskList {
+    private List<Task> tasks;
+
+    public TaskList() {
+        this.tasks = new ArrayList<>();
+    }
+
+    public void addTask(Task task) {
+        tasks.add(task);
+    }
+
+    public void removeTask(Task task) {
+        tasks.remove(task);
+    }
+
+    public void markTaskAsCompleted(Task task) {
+        task.setCompleted(true);
+    }
+
+    public List<Task> getAllTasks() {
+        return tasks;
+    }
+
+    public List<Task> getIncompleteTasks() {
+        List<Task> incompleteTasks = new ArrayList<>();
+        for (Task task : tasks) {
+            if (!task.isCompleted()) {
+                incompleteTasks.add(task);
+            }
+        }
+        return incompleteTasks;
+    }
+
+    public List<Task> getCompletedTasks() {
+        List<Task> completedTasks = new ArrayList<>();
+        for (Task task : tasks) {
+            if (task.isCompleted()) {
+                completedTasks.add(task);
+            }
+        }
+        return completedTasks;
+    }
+}
+
+E os testes unitários correspondentes usando JUnit:
+
+java
+
+import static org.junit.Assert.*;
+import org.junit.Before;
+import org.junit.Test;
+
+public class TaskListTest {
+    private TaskList taskList;
+    private Task task1;
+    private Task task2;
+
+    @Before
+    public void setUp() {
+        taskList = new TaskList();
+        task1 = new Task("Task 1", "Description for Task 1");
+        task2 = new Task("Task 2", "Description for Task 2");
+    }
+
+    @Test
+    public void testAddTask() {
+        taskList.addTask(task1);
+        assertEquals(1, taskList.getAllTasks().size());
+    }
+
+    @Test
+    public void testRemoveTask() {
+        taskList.addTask(task1);
+        taskList.addTask(task2);
+        taskList.removeTask(task1);
+        assertEquals(1, taskList.getAllTasks().size());
+        assertFalse(taskList.getAllTasks().contains(task1));
+    }
+
+    @Test
+    public void testMarkTaskAsCompleted() {
+        taskList.addTask(task1);
+        taskList.markTaskAsCompleted(task1);
+        assertTrue(task1.isCompleted());
+    }
+
+    @Test
+    public void testGetIncompleteTasks() {
+        taskList.addTask(task1);
+        taskList.addTask(task2);
+        taskList.markTaskAsCompleted(task1);
+        assertEquals(1, taskList.getIncompleteTasks().size());
+        assertTrue(taskList.getIncompleteTasks().contains(task2));
+    }
+
+    @Test
+    public void testGetCompletedTasks() {
+        taskList.addTask(task1);
+        taskList.addTask(task2);
+        taskList.markTaskAsCompleted(task1);
+        assertEquals(1, taskList.getCompletedTasks().size());
+        assertTrue(taskList.getCompletedTasks().contains(task1));
+    }
+
+    @Test
+    public void testEmptyTaskList() {
+        assertEquals(0, taskList.getAllTasks().size());
+    }
+
+    @Test
+    public void testEmptyTaskListAfterRemovingAllTasks() {
+        taskList.addTask(task1);
+        taskList.addTask(task2);
+        taskList.removeTask(task1);
+        taskList.removeTask(task2);
+        assertEquals(0, taskList.getAllTasks().size());
+    }
+
+    @Test
+    public void testTaskListOrder() {
+        taskList.addTask(task1);
+        taskList.addTask(task2);
+        assertEquals(task1, taskList.getAllTasks().get(0));
+        assertEquals(task2, taskList.getAllTasks().get(1));
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testRemoveNonexistentTask() {
+        taskList.removeTask(task1);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testMarkNonexistentTaskAsCompleted() {
+        taskList.markTaskAsCompleted(task1);
+    }
+}
+
+Esses testes cobrem todas as funcionalidades da classe TaskList, garantindo que ela se comporte corretamente em diferentes cenários.
+
+--------------------------------------------------------
+
+Claro! Vamos criar um enunciado para uma aplicação simples e demonstrar todas as possibilidades de teste unitário para essa aplicação, utilizando a estrutura de testes do JUnit.
+
+Enunciado da Aplicação:
+
+Vamos considerar uma aplicação de uma biblioteca que gerencia livros. A aplicação permite adicionar novos livros, remover livros, emprestar livros para os usuários e devolver livros. A biblioteca tem um limite máximo de livros que podem ser emprestados para um único usuário.
+
+Possibilidades de Teste Unitário:
+
+    Testar a adição de um novo livro.
+    Testar a remoção de um livro existente.
+    Testar o empréstimo de um livro para um usuário.
+    Testar a devolução de um livro por um usuário.
+    Testar a adição de um novo usuário.
+    Testar o limite máximo de livros que podem ser emprestados para um único usuário.
+    Testar o tratamento de erros, como tentar emprestar um livro indisponível ou devolver um livro que não foi emprestado.
+
+Classe Testada Utilizando JUnit:
+
+Aqui está um exemplo de como as classes e os testes unitários podem ser estruturados:
+
+java
+
+import static org.junit.Assert.assertEquals;
+import org.junit.Before;
+import org.junit.Test;
+
+public class LibraryTest {
+
+    private Library library;
+
+    @Before
+    public void setUp() {
+        library = new Library();
+        // Inicializar a biblioteca com alguns livros e usuários para os testes
+        library.addBook(new Book("ISBN123", "Livro 1"));
+        library.addBook(new Book("ISBN456", "Livro 2"));
+        library.addUser(new User("Usuário1"));
+    }
+
+    @Test
+    public void testAddBook() {
+        assertEquals(2, library.getBooks().size()); // Verifica se há 2 livros inicialmente
+        library.addBook(new Book("ISBN789", "Livro 3"));
+        assertEquals(3, library.getBooks().size()); // Verifica se um novo livro foi adicionado
+    }
+
+    @Test
+    public void testRemoveBook() {
+        library.removeBook("ISBN123");
+        assertEquals(1, library.getBooks().size()); // Verifica se o livro foi removido
+    }
+
+    @Test
+    public void testBorrowBook() {
+        library.borrowBook("ISBN123", "Usuário1");
+        assertEquals(1, library.getBorrowedBooks("Usuário1").size()); // Verifica se o livro foi emprestado para o usuário
+    }
+
+    @Test
+    public void testReturnBook() {
+        library.borrowBook("ISBN123", "Usuário1");
+        library.returnBook("ISBN123");
+        assertEquals(0, library.getBorrowedBooks("Usuário1").size()); // Verifica se o livro foi devolvido pelo usuário
+    }
+
+    @Test
+    public void testAddUser() {
+        library.addUser(new User("Usuário2"));
+        assertEquals(2, library.getUsers().size()); // Verifica se um novo usuário foi adicionado
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testBorrowLimit() {
+        // Adiciona livros suficientes para exceder o limite de empréstimo para um usuário
+        library.addBook(new Book("ISBN789", "Livro 3"));
+        library.borrowBook("ISBN456", "Usuário1");
+        library.borrowBook("ISBN789", "Usuário1");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testInvalidBorrow() {
+        // Tenta emprestar um livro que não está disponível na biblioteca
+        library.borrowBook("ISBN789", "Usuário1");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testInvalidReturn() {
+        // Tenta devolver um livro que não foi emprestado pelo usuário
+        library.returnBook("ISBN123");
+    }
+}
+
+Neste exemplo, a classe Library é testada para garantir que todas as funcionalidades funcionem conforme o esperado e que os casos de erro sejam tratados corretamente.
+
+------------------------------------------------------------------
+
+d setUp() {
+        calculadora = new Calculadora();
+    }
+
+    @Test
+    public void testAdicao() {
+        assertEquals(5, calculadora.adicionar(2, 3));
+    }
+
+    @Test
+    public void testSubtracao() {
+        assertEquals(2, calculadora.subtrair(5, 3));
+    }
+
+    @Test
+    public void testMultiplicacao() {
+        assertEquals(15, calculadora.multiplicar(5, 3));
+    }
+
+    @Test
+    public void testDivisao() {
+        assertEquals(2, calculadora.dividir(6, 3));
+    }
+
+    @Test(expected = ArithmeticException.class)
+    public void testDivisaoPorZero() {
+        calculadora.dividir(5, 0);
+    }
+}
+
+Agora, vamos criar a classe Calculadora que será testada:
+
+java
+
+public class Calculadora {
+
+    public int adicionar(int a, int b) {
+        return a + b;
+    }
+
+    public int subtrair(int a, int b) {
+        return a - b;
+    }
+
+    public int multiplicar(int a, int b) {
+        return a * b;
+    }
+
+    public int dividir(int a, int b) {
+        if (b == 0) {
+            throw new ArithmeticException("Divisão por zero");
+        }
+        return a / b;
+    }
+}
+
+Neste exemplo, estamos testando todas as funcionalidades da classe Calculadora, incluindo todas as operações básicas (adição, subtração, multiplicação, divisão) e o tratamento de erros para divisão por zero. O método setUp() é usado para inicializar a calculadora antes de cada teste, garantindo que cada teste comece com um estado limpo. O uso de @Test(expected = ArithmeticException.class) nos permite verificar se a exceção correta é lançada quando ocorre uma divisão por zero.
+
+-----------------------------------------------------
+
+Vamos criar um enunciado para uma aplicação simples de lista de tarefas (to-do list) e demonstrar todas as possibilidades de teste unitário utilizando o JUnit. A classe que será testada será a TaskList, responsável por gerenciar as tarefas na lista.
+
+Enunciado da Aplicação:
+
+A aplicação consiste em uma lista de tarefas onde os usuários podem adicionar, remover e marcar tarefas como concluídas. Cada tarefa tem um título, uma descrição e um status de conclusão.
+
+Possibilidades de Teste Unitário:
+
+    Testar adição de tarefa.
+    Testar remoção de tarefa.
+    Testar marcação de tarefa como concluída.
+    Testar marcação de tarefa como não concluída.
+    Testar obtenção de todas as tarefas.
+    Testar obtenção de tarefas concluídas.
+    Testar obtenção de tarefas não concluídas.
+    Testar obtenção de uma tarefa por título.
+    Testar obtenção de uma tarefa por título inexistente.
+    Testar atualização de uma tarefa.
+
+Agora, vamos criar a classe TaskList que gerencia as tarefas e os testes unitários utilizando o JUnit:
+
+java
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class TaskList {
+    private List<Task> tasks;
+
+    public TaskList() {
+        this.tasks = new ArrayList<>();
+    }
+
+    public void addTask(Task task) {
+        tasks.add(task);
+    }
+
+    public void removeTask(Task task) {
+        tasks.remove(task);
+    }
+
+    public void markTaskAsCompleted(Task task) {
+        task.setCompleted(true);
+    }
+
+    public void markTaskAsIncomplete(Task task) {
+        task.setCompleted(false);
+    }
+
+    public List<Task> getAllTasks() {
+        return new ArrayList<>(tasks);
+    }
+
+    public List<Task> getCompletedTasks() {
+        List<Task> completedTasks = new ArrayList<>();
+        for (Task task : tasks) {
+            if (task.isCompleted()) {
+                completedTasks.add(task);
+            }
+        }
+        return completedTasks;
+    }
+
+    public List<Task> getIncompleteTasks() {
+        List<Task> incompleteTasks = new ArrayList<>();
+        for (Task task : tasks) {
+            if (!task.isCompleted()) {
+                incompleteTasks.add(task);
+            }
+        }
+        return incompleteTasks;
+    }
+
+    public Task getTaskByTitle(String title) {
+        for (Task task : tasks) {
+            if (task.getTitle().equals(title)) {
+                return task;
+            }
+        }
+        return null;
+    }
+
+    public void updateTask(Task task, String title, String description) {
+        task.setTitle(title);
+        task.setDescription(description);
+    }
+}
+
+Agora vamos criar a classe de teste TaskListTest:
+
+java
+
+import static org.junit.Assert.*;
+import org.junit.Before;
+import org.junit.Test;
+
+public class TaskListTest {
+    private TaskList taskList;
+    private Task task1;
+    private Task task2;
+
+    @Before
+    public void setUp() {
+        taskList = new TaskList();
+        task1 = new Task("Task 1", "Description 1");
+        task2 = new Task("Task 2", "Description 2");
+    }
+
+    @Test
+    public void testAddTask() {
+        taskList.addTask(task1);
+        assertTrue(taskList.getAllTasks().contains(task1));
+    }
+
+    @Test
+    public void testRemoveTask() {
+        taskList.addTask(task1);
+        taskList.removeTask(task1);
+        assertFalse(taskList.getAllTasks().contains(task1));
+    }
+
+    @Test
+    public void testMarkTaskAsCompleted() {
+        taskList.addTask(task1);
+        taskList.markTaskAsCompleted(task1);
+        assertTrue(task1.isCompleted());
+    }
+
+    @Test
+    public void testMarkTaskAsIncomplete() {
+        taskList.addTask(task1);
+        taskList.markTaskAsCompleted(task1);
+        taskList.markTaskAsIncomplete(task1);
+        assertFalse(task1.isCompleted());
+    }
+
+    @Test
+    public void testGetAllTasks() {
+        taskList.addTask(task1);
+        taskList.addTask(task2);
+        assertEquals(2, taskList.getAllTasks().size());
+    }
+
+    @Test
+    public void testGetCompletedTasks() {
+        taskList.addTask(task1);
+        taskList.addTask(task2);
+        taskList.markTaskAsCompleted(task1);
+        assertEquals(1, taskList.getCompletedTasks().size());
+    }
+
+    @Test
+    public void testGetIncompleteTasks() {
+        taskList.addTask(task1);
+        taskList.addTask(task2);
+        taskList.markTaskAsCompleted(task1);
+        assertEquals(1, taskList.getIncompleteTasks().size());
+    }
+
+    @Test
+    public void testGetTaskByTitle() {
+        taskList.addTask(task1);
+        assertEquals(task1, taskList.getTaskByTitle("Task 1"));
+    }
+
+    @Test
+    public void testGetTaskByTitleNotFound() {
+        assertNull(taskList.getTaskByTitle("Nonexistent Task"));
+    }
+
+    @Test
+    public void testUpdateTask() {
+        taskList.addTask(task1);
+        taskList.updateTask(task1, "New Title", "New Description");
+        assertEquals("New Title", task1.getTitle());
+        assertEquals("New Description", task1.getDescription());
+    }
+}
+
+Esta classe de teste verifica todas as funcionalidades da classe TaskList, garantindo que ela funcione conforme esperado em todas as situações.
+
+----------------------------------------------
+

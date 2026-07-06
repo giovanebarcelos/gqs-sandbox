@@ -1,0 +1,14 @@
+@startuml
+ class ContaBancoFixture {
+   private Map<String, Double> contas = new HashMap<>
+   private Map<String, List<String>> historicoDeTransacoes = new HashMap<>
+   
+   public void criarConta(String codigoConta, double saldoInicial);
+   public double mostrarSaldoDaConta(String codigoConta);
+   public void depositar(String codigoConta, double valor);
+   public void sacar(String codigoConta, double valor);
+   public void transferir(String contaOrigem, String contaDestino, double valor);
+   public void fecharConta(String codigoConta);
+   public List<String> mostrarHistoricoDeTransacoes(String codigoConta);
+ }
+@enduml

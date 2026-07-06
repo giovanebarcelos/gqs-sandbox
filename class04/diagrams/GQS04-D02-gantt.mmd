@@ -1,0 +1,17 @@
+@startuml
+gantt
+    title Cronograma de Teste - Release 2.3
+    dateFormat  YYYY-MM-DD
+    section Planejamento
+    Elaborar Plano de Teste      :a1, 2026-03-01, 3d
+    Revisar Plano                :a2, after a1, 1d
+    section Design
+    Especificar Casos            :b1, after a2, 5d
+    Revisar Casos                :b2, after b1, 2d
+    section Execução
+    Smoke Test                   :c1, after b2, 1d
+    Testes Funcionais            :c2, after c1, 5d
+    Testes de Regressão          :c3, after c2, 3d
+    section Encerramento
+    Relatório Final              :d1, after c3, 2d
+@enduml

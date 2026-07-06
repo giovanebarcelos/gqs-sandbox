@@ -1,0 +1,79 @@
+Sem Ferramenta
+FIRST -> Fast, Independent, Repeatable, Self-Verifying, Timely
+
+cenário, ação, verificação
+
+nomes métodos 
+deve e não deve
+should e shouldNot 
+
+--- 
+
+"xUnit" é uma família de frameworks de teste de unidade que compartilham uma estrutura e princípios comuns. Estes frameworks são projetados para facilitar a automação de testes de unidade em várias linguagens de programação. O nome "xUnit" deriva de JUnit, que foi o primeiro framework desse tipo desenvolvido para a linguagem Java.
+
+Principais conceitos associados aos frameworks xUnit incluem:
+
+Test Fixture (Configuração de Teste): Representa a preparação necessária para executar um ou mais testes, incluindo código de configuração e limpeza.
+
+Test Case (Caso de Teste): Refere-se a um conjunto de condições ou variáveis sob as quais um teste é executado. Geralmente, corresponde a um único método ou função de teste.
+
+Test Runner (Executor de Testes): Responsável por descobrir e executar os métodos de teste. É uma ferramenta que automatiza a execução de testes e fornece relatórios de resultados.
+
+Assertions (Afirmações): São usadas para verificar se os resultados esperados correspondem aos resultados reais. Se uma assertiva falhar, indica um problema no código testado.
+
+Anotações/Attributes/Decoradores: Muitos frameworks xUnit utilizam anotações, atributos ou decoradores para marcar métodos como métodos de teste, métodos de configuração, métodos de limpeza, etc.
+
+Relatórios: Oferecem relatórios detalhados sobre a execução dos testes, indicando quais testes passaram, falharam ou foram ignorados.
+
+Exemplos de frameworks xUnit incluem JUnit para Java, NUnit para .NET (C#), pytest para Python, PHPUnit para PHP, RSpec para Ruby, Mocha e Jest para JavaScript (Node.js), entre outros. Esses frameworks são amplamente utilizados para a prática de teste automatizado, garantindo a qualidade e confiabilidade do código ao longo do desenvolvimento de software.
+
+---
+
+Classe Teste na mesma estrutura de pastas/diretórios permite acessar variáveis privadas 
+
+---
+CoreMatchers - Hamcrest
+Assert.AssertThat -> SUT 
+assertThat(locacao.getValor(), is(equalTo(5.0)))
+--
+@Rule
+public ErrorCollector error = new ErrorColector();
+
+public void testeLocacao(){
+	...
+	// verificacao
+	error.checkThat(locacao.getValor(), is(equalTo(6.0)))
+}
+--
+Não deve alugar filmes sem estoque 
+Usuário e Filme são obrigatórios 
+Alugar mais que um filme por vez 
+Descontos crescentes: 25% no 3o filme, 50% no 4o filme, 75% no 5o filme, 100% no 6o filme 
+Não deve devolver filmes no domingo
+--
+Formas de tratamento de exceção: Elegante, Robusta e Nova
+-- 
+@Rule
+@Before
+@BeforeClass
+@After
+@AfterClass
+@Test
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@Ignore 
+@RunWith(Parameterized.class)
+@Parameter
+@Parameter(value=1)
+@Parametes(name="{2}")
+@RunWith(Suite.class)
+@SuiteClasses({
+	CalculadoraTest.class, 
+	CalculaValorLocacaoTest.class
+})
+
+// Assume ignora execução
+Assume.assumeFalse
+Assume.assumeTrue(DataUtils.verificarDiaSemana(new Date(), Calendar.SATURDAY))
+
+// Matchers
+public class DiaSemanaMatcher extends TypeSafeMatcher<Date>

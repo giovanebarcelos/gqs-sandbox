@@ -1,0 +1,17 @@
+Como resolver:
+
+Instale o JMeter Plugins Manager:
+
+Baixe o jmeter-plugins-manager.jar e coloque em JMETER_HOME/lib/ext/
+
+Reinicie o JMeter → aparecerá menu Options > Plugins Manager.
+
+No Plugins Manager, instale:
+
+Custom Thread Groups
+
+Extras with Libs (para o Corrected Result Collector)
+
+Reabra o .jmx. Agora ele deve carregar sem o erro.
+
+https://repo1.maven.org/maven2/kg/apc/jmeter-plugins-manager/1.11/jmeter-plugins-manager-1.11.jar

@@ -1,0 +1,9 @@
+@startuml
+partition "FitNesse" {
+  (Pagina Wiki) --> (Tabela de Decisao)
+  (Tabela de Decisao) --> (Fixture Java)
+  (Fixture Java) --> (Resultado)
+  (Resultado) --> (Verde: Passou)
+  (Resultado) --> (Vermelho: Falhou)
+}
+@enduml

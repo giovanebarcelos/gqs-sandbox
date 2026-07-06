@@ -1,0 +1,49 @@
+# Compiled output
+*.class
+*.jar
+*.war
+*.ear
+
+# Build artifacts
+target/
+build/
+dist/
+*.iml
+.idea/
+*.classpath
+*.project
+.settings/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.eggs/
+*.egg
+.venv/
+venv/
+
+# OS files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# IDE files
+.vscode/
+.idea/
+*.code-workspace
+
+# Logs and temporary files
+*.log
+*.tmp
+*.temp
+
+# HTML files (auto-generated from markdown)
+*.html
+
+# Environment files
+.env
+.env.local

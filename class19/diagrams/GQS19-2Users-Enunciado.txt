@@ -1,0 +1,1 @@
+Desenvolver testes utilizando o Postman para garantir o correto funcionamento das operações CRUD (Create, Read, Update, Delete) em uma aplicação Node.js que armazena dados de usuários em memória e requer autenticação JWT para inclusão e remoção de usuários.

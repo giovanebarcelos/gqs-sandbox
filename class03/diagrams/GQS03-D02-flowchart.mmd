@@ -1,0 +1,12 @@
+@startuml
+    subgraph SDLC
+        REQ[Requisitos] --> ARQ[Arquitetura] --> COD[Codificação] --> DEP[Deploy]
+    end
+    subgraph STLC
+        PL[Plano Teste] --> CT[Casos Teste] --> EX[Execução] --> REL[Relatório]
+    end
+    REQ -.-> PL
+    ARQ -.-> CT
+    COD -.-> EX
+    DEP -.-> REL
+@enduml

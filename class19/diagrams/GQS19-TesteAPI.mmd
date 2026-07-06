@@ -1,0 +1,9 @@
+@startuml
+partition "Postman" {
+  (Collection) --> (Request)
+  (Request) --> (Script Test)
+  (Script Test) --> (Response)
+  (Response) --> (Assertion)
+  (Assertion) --> (Passou/Falhou)
+}
+@enduml

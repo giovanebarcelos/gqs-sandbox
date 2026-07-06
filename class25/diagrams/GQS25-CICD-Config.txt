@@ -1,0 +1,131 @@
+docker swarm leave --force
+
+docker swarm init
+Swarm initialized: current node (l5ei6alqwkge18czb1a2tt4wg) is now a manager.
+
+To add a worker to this swarm, run the following command:
+
+    docker swarm join --token SWMTKN-1-1hhk4ehbxy3wizplgn3jznkg8xe9h9hduskxik11imbs578ea3-4f9du978xzecd5pf8of2fwx1z 10.0.0.72:2377
+
+To add a manager to this swarm, run 'docker swarm join-token manager' and follow the instructions.
+
+docker network create --driver overlay goNet
+
+docker stack deploy --compose-file docker-compose.yml goStack
+docker stack ls
+docker stack services goStack
+
+docker login harbor.gobyz.com
+
+docker service rm sample-web-app
+
+docker service create \
+  --name sample-web-app \
+  --hostname sample-web-app \
+  --network goNet \
+  --with-registry-auth \
+  --label "traefik.enable=true" \
+  --label "traefik.http.routers.sample-web-app.rule=Host(\"sample-web-app.gob.cloudns.nz\")" \
+  --label "traefik.http.routers.sample-web-app.entrypoints=web,websecure" \
+  --label "traefik.http.services.sample-web-app.loadbalancer.server.port=8080" \
+  --label "traefik.http.routers.sample-web-app.tls=true" \
+  --label "traefik.http.routers.sample-web-app.tls.certresolver=letsencrypt" \
+  --log-opt max-size=1m \
+  harbor.gobyz.com/giovane.barcelos/sample-web-application:1.0.31
+
+
+docker service ls
+
+docker service logs sample-web-app -f
+docker service logs traefik -f
+
+
+sample-web-app:
+   image: harbor.gobyz.com/giovane.barcelos/sample-web-application:1.0.31
+   container_name: sample-web-app
+   hostname: sample-web-app
+   labels:
+   - "traefik.enable=true"
+   - "traefik.http.routers.sample-web-app.tls.certresolver=letsencrypt"
+   - "traefik.port=8080"
+   - "traefik.http.routers.sample-web-app.rule=host(`sample-web-app.gobyz.com`)"
+   - "traefik.http.services.sample-web-app.loadbalancer.server.port=8080"
+   - "traefik.http.routers.sample-web-app.service=sample-web-app"
+   logging:
+     options:
+       max-size: 1m 
+   networks: 
+      goNet:
+         aliases: 
+         - sample-web-app
+
+docker swarm leave --force
+
+docker swarm init
+
+docker network create --driver=overlay --attachable goNet
+
+docker service create \
+  --name traefik \
+  --hostname traefik \
+  --network goNet \
+  --publish 80:80 \
+  --publish 443:443 \
+  --constraint 'node.role == manager' \
+  --mount type=bind,source=/var/run/docker.sock,target=/var/run/docker.sock,readonly \
+  --label "traefik.enable=true" \
+  --label "traefik.http.routers.http_catchall.rule=HostRegexp('{any:.+}')" \
+  --label "traefik.http.routers.http_catchall.entrypoints=web" \
+  --label "traefik.http.routers.http_catchall.middlewares=https_redirect" \
+  --label "traefik.http.middlewares.https_redirect.redirectscheme.scheme=https" \
+  --label "traefik.http.middlewares.https_redirect.redirectscheme.permanent=true" \
+  --label "traefik.http.routers.traefik.rule=Host('traefik.gob.cloudns.nz')" \
+  --label "traefik.http.services.traefik.loadbalancer.server.port=8080" \
+  --label "traefik.http.routers.traefik.entrypoints=websecure" \
+  --label "traefik.http.routers.traefik.tls=true" \
+  --label "traefik.http.routers.traefik.tls.certresolver=letsencrypt" \
+  --env "TRAefik_LOG_LEVEL=ERROR" \
+  --env "TRAefik_CERTRESOLVERS_LETSENCRYPT_ACME_HTTPCHALLENGE=true" \
+  --env "TRAefik_CERTRESOLVERS_LETSENCRYPT_ACME_HTTPCHALLENGE_ENTRYPOINT=web" \
+  --env "TRAefik_CERTRESOLVERS_LETSENCRYPT_ACME_TLSCHALLENGE=true" \
+  --env "TRAefik_CERTRESOLVERS_LETSENCRYPT_ACME_EMAIL=admin@gobyz.biz" \
+  --env "TRAefik_CERTRESOLVERS_LETSENCRYPT_ACME_STORAGE=/acme.json" \
+  traefik:latest \
+  --api=true \
+  --api.dashboard=true \
+  --entrypoints.web.address=:80 \
+  --entrypoints.websecure.address=:443 \
+  --providers.docker=true \
+  --providers.docker.exposedbydefault=false \
+  --api.insecure=true
+  traefik:v2.10
+
+
+
+docker service create \
+  --name sample-web-app \
+  --hostname sample-web-app \
+  --network goNet \
+  --with-registry-auth \
+  --label "traefik.enable=true" \
+  --label "traefik.http.routers.sample-web-app.rule=Host('sample-web-app.gob.cloudns.nz')" \
+  --label "traefik.http.routers.sample-web-app.entrypoints=web,websecure" \
+  --label "traefik.http.services.sample-web-app.loadbalancer.server.port=8080" \
+  --label "traefik.http.routers.sample-web-app.tls=true" \
+  --label "traefik.http.routers.sample-web-app.tls.certresolver=letsencrypt" \
+  harbor.gobyz.com/giovane.barcelos/sample-web-application:1.0.31
+
+
+  -----
+
+docker swarm leave --force
+
+docker swarm init
+
+docker network create -d overlay goNet
+
+docker stack deploy -c traefik-letsencrypt-docker-swarm.yml traefik
+
+
+
+

@@ -1,0 +1,9 @@
+@startuml
+partition "pytest" {
+  (Descoberta) --> (Execucao)
+  (Execucao) --> (Fixture Setup)
+  (Fixture Setup) --> (Teste)
+  (Teste) --> (Fixture Teardown)
+  (Fixture Teardown) --> (Relatorio)
+}
+@enduml

@@ -1,0 +1,5 @@
+flowchart TD
+    E2E["Testes E2E\nPoucos, Lentos, Caros\n~10%"]
+    INT["Testes de Integração\nAlguns, Médios\n~20%"]
+    UNIT["Testes Unitários\nMuitos, Rápidos, Baratos\n~70%"]
+    UNIT --> INT --> E2E

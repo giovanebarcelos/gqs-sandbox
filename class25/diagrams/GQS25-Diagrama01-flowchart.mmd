@@ -1,0 +1,10 @@
+flowchart LR
+    A[Commit] --> B[Build]
+    B --> C[Testes\nAutomatizados]
+    C --> D[Análise\nEstática]
+    D --> E{Quality\nGate}
+    E -- OK --> F[Artefato\nPublicado]
+    F --> G[Deploy\nStaging]
+    G --> H{Aprovação\nManual?}
+    H -- CD Delivery --> I[Deploy\nProdução\nManual]
+    H -- CD Deploy --> J[Deploy\nProdução\nAutomático]

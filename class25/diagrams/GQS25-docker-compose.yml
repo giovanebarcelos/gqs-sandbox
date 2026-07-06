@@ -1,0 +1,123 @@
+services:
+   postgres:
+      image: postgres
+      restart: always
+      container_name: postgres
+      hostname: postgres
+      environment: 
+      - TZ=America/Sao_Paulo
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - PGDATA=/data/postgres
+      volumes:
+      - postgres-data:/data/postgres
+      - postgres-data-post:/var/lib/postgresql/data
+      ports: 
+      - "5439:5432" 
+      networks: 
+         goNet:
+            aliases: 
+            - postgres
+
+   pgadmin4:
+      image: dpage/pgadmin4
+      restart: always
+      container_name: pgadmin4
+      hostname: pgadmin4
+      environment: 
+      - TZ=America/Sao_Paulo
+      - PGADMIN_DEFAULT_EMAIL=admin@gobyz.com
+      - PGADMIN_DEFAULT_PASSWORD=postgres
+      - PGADMIN_CONFIG_SERVER_MODE=True
+      volumes:
+      - pgadmin4-var:/var/lib/pgadmin
+      - pgadmin4-conf:/pgadmin4/config
+      depends_on:
+      - postgres
+      ports: 
+      - "8090:80" 
+      networks: 
+         goNet:
+            aliases: 
+            - pgadmin4
+
+   gitea:
+      image: gitea/gitea:latest
+      container_name: gitea
+      hostname: gitea
+      restart: always
+      environment:
+      - USER_UID=1000
+      - USER_GID=1000
+      - TZ=${TZ}
+      - GITEA__log__LEVEL=error # Define o nível de log como 'error'
+      - GITEA__database__DB_TYPE=postgres
+      - GITEA__database__HOST=postgres:5432
+      - GITEA__database__NAME=gitea
+      - GITEA__database__USER=postgres
+      - GITEA__database__PASSWD=postgres
+      - GITEA__security__ADMIN_USER=root        # Nome de usuário do administrador
+      - GITEA__security__ADMIN_PASSWORD=admin@gobyz.com  # Senha do administrador
+      - GITEA__security__ADMIN_PASSWORD=12345 # Senha do administrador
+      - GITEA__mailer__ENABLED=true                     # Habilita o envio de e-mails
+      - GITEA__mailer__FROM_EMAIL=admin@gobyz.com    # E-mail de "De"
+      - GITEA__mailer__FROM=admin@gobyz.com    # E-mail de "De"
+      - GITEA__mailer__SMTP_ADDR=mailserver              # Servidor SMTP
+     - GITEA__mailer__PORT=25                          # Porta do SMTP (agora 25)
+      - GITEA__mailer__USER=admin@gobyz.com        # Usuário do SMTP (se necessário)
+      - GITEA__mailer__PASSWD=12345           # Senha do SMTP
+      - GITEA__mailer__ENCRYPTION=none                    # Sem criptografia
+      - GITEA__mailer__PROTOCOL=smtp                    # Sem criptografia
+      - GITEA__actions__enabled=true # Habilitar Gitea Actions
+      - GITEA__actions__default_runner_image=docker:latest # Imagem padrão para runners
+      volumes:
+      - gitea:/data
+      #ports:
+      #- "3000:3000"
+      #- "222:22" 
+      labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.gitea.tls.certresolver=letsencrypt"
+      - "traefik.port=3000"
+      - "traefik.http.routers.gitea.rule=Host(`gitea.gobyz.com`)"
+      - "traefik.http.services.gitea.loadbalancer.server.port=3000"
+      - "traefik.http.routers.gitea.service=gitea"
+      networks:
+         goNet:
+            aliases:
+            - gitea
+
+   gitea-runner:
+      image: gitea/act_runner:latest
+      container_name: gitea-runner
+      hostname: gitea-runner
+      restart: always
+      environment:
+      - GITEA_INSTANCE_URL=http://gitea:3000 # URL do Gitea
+      - GITEA_RUNNER_NAME=go-runner
+      - GITEA_RUNNER_REGISTRATION_TOKEN=w6NQS4qnU9OTjMNNsBJyuO9CkT8vJMhiv8D2Txmr # Token gerado no Gitea
+      - CONFIG_FILE=/config.yaml
+      #- GITEA_RUNNER_LABELS=ubuntu-latest:docker://node:16-bullseye,ubuntu-22.04:docker://node:16-bullseye,ubuntu-20.04:docker://node:16-bullseye,ubuntu-18.04:docker://node:16-buster,cth-ubuntu-latest:docker://catthehacker/>
+      volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - gitea-act-runner:/data
+      - ./gitea/config.yaml:/config.yaml
+      depends_on:
+      - gitea
+    networks:
+         goNet:
+            aliases:
+            - gitea-runner
+
+networks:
+   goNet:
+      driver: bridge
+     #driver: overlay
+
+volumes:
+   postgres-data:
+   postgres-data-post:
+   pgadmin4-var:
+   pgadmin4-conf:
+   gitea:
+   gitea-act-runner:

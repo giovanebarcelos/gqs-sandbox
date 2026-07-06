@@ -1,0 +1,66 @@
+Passo 1: Registro de Usuário
+
+    Método: POST
+    URL: http://localhost:3000/register
+    Body (JSON):
+
+    json
+
+    {
+        "username": "user1",
+        "password": "password1"
+    }
+
+    Verificação: Verifique se o status da resposta é 201 Created e se a mensagem "Usuário registrado com sucesso" é retornada no corpo da resposta.
+
+Passo 2: Login de Usuário
+
+    Método: POST
+    URL: http://localhost:3000/login
+    Body (JSON):
+
+    json
+
+    {
+        "username": "user1",
+        "password": "password1"
+    }
+
+    Verificação: Verifique se o status da resposta é 200 OK e se um token JWT é retornado no corpo da resposta.
+
+Passo 3: Obtenção de Informações do Perfil do Usuário
+
+    Método: GET
+    URL: http://localhost:3000/profile
+    Header:
+        Key: Authorization
+        Value: Bearer {token_jwt}
+    Verificação: Verifique se o status da resposta é 200 OK e se as informações do perfil do usuário são retornadas no corpo da resposta.
+
+Passo 4: Atualização da Senha do Usuário
+
+    Método: PUT
+    URL: http://localhost:3000/profile
+    Header:
+        Key: Authorization
+        Value: Bearer {token_jwt}
+    Body (JSON):
+
+    json
+
+    {
+        "newPassword": "new_password"
+    }
+
+    Verificação: Verifique se o status da resposta é 200 OK e se a mensagem "Senha atualizada com sucesso" é retornada no corpo da resposta.
+
+Passo 5: Exclusão do Perfil do Usuário
+
+    Método: DELETE
+    URL: http://localhost:3000/profile
+    Header:
+        Key: Authorization
+        Value: Bearer {token_jwt}
+    Verificação: Verifique se o status da resposta é 200 OK e se a mensagem "Usuário excluído com sucesso" é retornada no corpo da resposta.
+
+Depois de configurar este plano de teste no Postman, você pode executar cada etapa e verificar se o servidor responde conforme o esperado. Certifique-se de que todas as operações CRUD estão funcionando corretamente e que as respostas estão de acordo com as expectativas definidas em cada etapa.

@@ -1,0 +1,11 @@
+flowchart TD
+    subgraph Tecnicas[Técnicas de Caixa-Preta]
+        PE[Partição de Equivalência] --> BVA[BVA - Análise de Valor Limite]
+        BVA --> TD[Tabela de Decisão]
+        TD --> TE[Transição de Estados]
+    end
+    subgraph QuandoUsar[Quando usar cada uma]
+        PE2["Dados com faixas claras"] --> BVA2["Limites numéricos, datas"]
+        BVA2 --> TD2["Múltiplas condições combinadas"]
+        TD2 --> TE2["Objetos com estados e eventos"]
+    end

@@ -1,6 +1,6 @@
 import java.util.*;
 
-public class BankAccountFixture {
+class BankAccountFixture {
     private Map<String, Double> accounts = new HashMap<>();
     private Map<String, List<String>> transactionHistory = new HashMap<>();
 

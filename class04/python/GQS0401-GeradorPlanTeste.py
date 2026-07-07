@@ -27,7 +27,7 @@ PT-{projeto}-v1.0
 - Ferramentas: {ferramentas}
 
 ## 6. Critérios de Aprovação/Reprovação
-{ criterios_aprovacao}
+{criterios_aprovacao}
 
 ## 7. Critérios de Suspensão e Retomada
 {suspensao}

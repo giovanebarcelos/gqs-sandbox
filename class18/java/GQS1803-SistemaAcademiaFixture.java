@@ -21,6 +21,18 @@ class Usuario {
     public double calcularIMC() {
         return peso / (altura * altura);
     }
+
+    public double getPeso() {
+        return peso;
+    }
+
+    public double getMetaPeso() {
+        return metaPeso;
+    }
+
+    public void setMetaPeso(double metaPeso) {
+        this.metaPeso = metaPeso;
+    }
 }
 
 class SistemaAcademia {
@@ -50,12 +62,12 @@ class SistemaAcademia {
     }
 
     public void definirMetaPeso(int index, double meta) {
-        usuarios.get(index).metaPeso = meta;
+        usuarios.get(index).setMetaPeso(meta);
     }
 
     public boolean verificarMetaAtingida(int index) {
         Usuario usuario = usuarios.get(index);
-        return usuario.peso <= usuario.metaPeso;
+        return usuario.getPeso() <= usuario.getMetaPeso();
     }
 
     public void excluirUsuario(int index) {

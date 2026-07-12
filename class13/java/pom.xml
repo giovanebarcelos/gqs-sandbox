@@ -47,7 +47,7 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>5.11.0</version>
+            <version>5.20.0</version>
             <scope>test</scope>
         </dependency>
 
@@ -55,13 +55,30 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-junit-jupiter</artifactId>
-            <version>5.11.0</version>
+            <version>5.20.0</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
 
     <build>
+        <!-- Layout didático: exercícios em exNN_nome/ e testes em exNN_nome_test/ na raiz -->
+        <sourceDirectory>${project.basedir}</sourceDirectory>
+        <testSourceDirectory>${project.basedir}</testSourceDirectory>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.13.0</version>
+                <configuration>
+                    <excludes>
+                        <exclude>**/*_test/**</exclude>
+                        <exclude>target/**</exclude>
+                    </excludes>
+                    <testIncludes>
+                        <testInclude>**/*_test/**</testInclude>
+                    </testIncludes>
+                </configuration>
+            </plugin>
             <!-- Plugin para rodar testes JUnit 4 e 5 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

@@ -97,9 +97,9 @@ class CalculadoraTDD:
 class TestValidadorSenhaTDD(unittest.TestCase):
     """Testes TDD para um validador de senha."""
 
-    # Requisito 1: mínimo 8 caracteres
+    # Requisito 1: mínimo 8 caracteres (senha atende também aos requisitos 2 e 3)
     def test_senha_deve_ter_8_caracteres(self):
-        self.assertTrue(ValidadorSenha.eh_valida("abc12345"))
+        self.assertTrue(ValidadorSenha.eh_valida("Abc12345"))
 
     def test_senha_curta_rejeitada(self):
         self.assertFalse(ValidadorSenha.eh_valida("abc1234"))

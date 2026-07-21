@@ -1,4 +1,3 @@
-@startuml
 stateDiagram-v2
     [*] --> Ativa: Conta criada
     Ativa --> Bloqueada: 3 senhas erradas
@@ -6,4 +5,3 @@ stateDiagram-v2
     Bloqueada --> Ativa: Desbloqueio pelo gerente
     Bloqueada --> Encerrada: Solicitação de encerramento
     Encerrada --> [*]
-@enduml

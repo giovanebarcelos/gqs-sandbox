@@ -1,4 +1,4 @@
-@startuml
+flowchart LR
     A([Novo]) --> B([Atribuído])
     B --> C([Em Análise])
     C -->|É bug?| D([Corrigindo])
@@ -9,4 +9,3 @@
     G -->|Correção falhou| B
     H --> I([Reaberto])
     I --> B
-@enduml

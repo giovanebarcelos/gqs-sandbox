@@ -1,7 +1,7 @@
 # Repositório de Código — Garantia da Qualidade de Software  
 
 **Curso:** Garantia da Qualidade de Software | **Período:** 2026/2  
-**Origem do material:** adaptado de `/2025-02/4M - Gestão e Qualidade de Software - FAPA`  
+**Origem do material:** adaptado de `/2025-02/4M - Gestão e Qualidade de Software - FAPA` (classes 01-26, 29-30) + conteúdo original da UA9 (classes 27-28, ver §1 de `planejamento.md`)  
 
 ---  
 
@@ -20,7 +20,11 @@ repository/
 ├── class21/ — SikuliX: Testes de Interface  
 ├── class24/ — TestLink e Bug Tracking  
 ├── class25/ — CI/CD  
-└── class26/ — DevOps e GitHub Actions  
+├── class26/ — DevOps e GitHub Actions  
+├── class27/ — Estimativa de Software e Métricas de Processo/Projeto  
+├── class28/ — Gestão de Configuração, Versionamento e Manutenção  
+├── class29/ — Projeto Integrador Final  
+└── class30/ — Ética, Boas Práticas e Encerramento  
 ```  
 
 ---  
@@ -307,6 +311,83 @@ docker-compose -f GQS24-docker-compose-v2.yml up -d
 
 ---  
 
+## class27 — Estimativa de Software e Métricas de Processo/Projeto  
+
+**Origem:** conteúdo original desta expansão (UA9), não reaproveitado do 4M — criado para cobrir os itens de estimativa/pontos de função do plano de ensino `Gestão e qualidade de software.pdf` (UC 0016257).  
+
+### java/ + python/  
+
+| Arquivo | Descrição |  
+|---|---|  
+| `GQS2701-CalculadoraPontosFuncao.java` | Calculadora de Pontos de Função (ILF/EIF/EI/EO/EQ, fator de ajuste, PF ajustado) e estimativa COCOMO — executável |  
+| `GQS2701-CalculadoraPontosFuncao.py` | Mesma calculadora em Python — executável, mesmos resultados do Java |  
+
+### diagrams/  
+
+| Arquivo | Descrição |  
+|---|---|  
+| `GQS27-ProcessoEstimativa.mmd` | Diagrama Mermaid do processo de estimativa de software |  
+
+---  
+
+## class28 — Gestão de Configuração, Versionamento e Manutenção  
+
+**Origem:** conteúdo original desta expansão (UA9), não reaproveitado do 4M — cobre gestão de configuração, controle de versão (Git) e manutenção/reengenharia de software do plano de ensino `Gestão e qualidade de software.pdf` (UC 0016257).  
+
+### java/ + python/  
+
+| Arquivo | Descrição |  
+|---|---|  
+| `GQS2801-SimuladorVersionamento.java` | Simulador de histórico de commits/baseline e versionamento semântico (SemVer) — executável |  
+| `GQS2801-SimuladorVersionamento.py` | Mesmo simulador em Python — executável |  
+
+### diagrams/  
+
+| Arquivo | Descrição |  
+|---|---|  
+| `GQS28-BranchingStrategy.mmd` | Diagrama Mermaid (`gitGraph`) de estratégia de branching (Git Flow × Trunk-Based) |  
+| `GQS28-ProcessoManutencao.mmd` | Diagrama Mermaid do processo de manutenção/reengenharia de software |  
+
+---  
+
+## class29 — Projeto Integrador Final  
+
+**Origem:** renumerado de `class27` (posição original antes da expansão UA9); conteúdo inalterado.  
+
+### java/ + python/  
+
+| Arquivo | Descrição |  
+|---|---|  
+| `GQS2901-ChecklistQualidade.java` | Checklist de qualidade para o projeto final — executável |  
+| `GQS2901-ChecklistQualidade.py` | Mesmo checklist em Python — executável |  
+
+### diagrams/  
+
+| Arquivo | Descrição |  
+|---|---|  
+| `GQS29-MapaMentalTeste.mmd` | Mapa mental de testes (revisão para o projeto integrador) |  
+
+---  
+
+## class30 — Ética, Boas Práticas e Encerramento  
+
+**Origem:** renumerado de `class28` (posição original antes da expansão UA9); conteúdo inalterado.  
+
+### java/ + python/  
+
+| Arquivo | Descrição |  
+|---|---|  
+| `GQS3001-CodeReviewChecklist.java` | Checklist interativo de code review — executável |  
+| `GQS3001-CodeReviewChecklist.py` | Mesmo checklist em Python — executável |  
+
+### diagrams/  
+
+| Arquivo | Descrição |  
+|---|---|  
+| `GQS30-MapaMentalCurso.mmd` | Mapa mental completo do curso (encerramento) |  
+
+---  
+
 ## Resumo Geral  
 
 | Class | Aula | Arquivos | Tipo de conteúdo |  
@@ -325,4 +406,8 @@ docker-compose -f GQS24-docker-compose-v2.yml up -d
 | class24 | 24 — TestLink | 4 | Docker Compose + .env + Tutorial MD |  
 | class25 | 25 — CI/CD | 4 | YAML configs + TXT pipeline |  
 | class26 | 26 — DevOps | 5 | YAML + Docker + Shell script + zip |  
-| **Total** | | **191** | |  
+| class27 | 27 — Estimativa/Pontos de Função | 3 | Python + Java (calculadora PF/COCOMO) + Mermaid |  
+| class28 | 28 — Gestão de Configuração/Versionamento | 4 | Python + Java (simulador versionamento) + 2 Mermaid |  
+| class29 | 29 — Projeto Integrador Final | 3 | Python + Java (checklist qualidade) + Mermaid (renumerado de class27) |  
+| class30 | 30 — Ética e Encerramento | 3 | Python + Java (checklist code review) + Mermaid (renumerado de class28) |  
+| **Total** | | **204** | |  

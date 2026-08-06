@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """
-GQS2801 - Checklist de Code Review.
+GQS3001 - Checklist de Code Review.
 Ferramenta interativa para revisão de código antes do merge,
 cobrindo ética, boas práticas e qualidade do Pull Request.
-Uso: python3 GQS2801-CodeReviewChecklist.py
+Uso: python3 GQS3001-CodeReviewChecklist.py
 """
 
 CHECKLIST = {
@@ -37,7 +37,7 @@ CHECKLIST = {
 
 def executar_checklist() -> None:
     print("=" * 60)
-    print("  GQS2801 - CHECKLIST DE CODE REVIEW")
+    print("  GQS3001 - CHECKLIST DE CODE REVIEW")
     print("=" * 60)
 
     total = 0

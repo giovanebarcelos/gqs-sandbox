@@ -1,0 +1,24 @@
+flowchart TD
+    A[Sistema em producao] --> B{Tipo de solicitacao}
+    B -->|Defeito reportado| C[Manutencao Corretiva]
+    B -->|Mudanca no ambiente externo| D[Manutencao Adaptativa]
+    B -->|Nova funcionalidade pedida| E[Manutencao Evolutiva]
+    B -->|Risco identificado no codigo| F[Manutencao Preventiva]
+
+    C --> G[Controle de mudancas<br/>Slide 5]
+    D --> G
+    E --> G
+    F --> G
+
+    G --> H[Commit + testes<br/>Aulas 12-16]
+    H --> I[Pipeline CI/CD<br/>Aulas 25-26]
+    I --> J{Complexidade do<br/>sistema aumentando?}
+    J -->|Sim, ao longo do tempo| K[Avaliar Reengenharia<br/>Slide 12]
+    J -->|Nao| A
+    K --> L[Estrategia de migracao<br/>Strangler Fig]
+    L --> A
+
+    style A fill:#DBEAFE,stroke:#2563EB
+    style G fill:#DCFCE7,stroke:#059669
+    style K fill:#FEF3C7,stroke:#D97706
+    style L fill:#FEE2E2,stroke:#DC2626

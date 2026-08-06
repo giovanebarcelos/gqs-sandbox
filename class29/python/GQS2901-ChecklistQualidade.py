@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-GQS2701 - Checklist de Qualidade para Projeto Final.
+GQS2901 - Checklist de Qualidade para Projeto Final.
 Verifica se todos os itens do projeto A3 estão completos.
-Uso: python3 GQS2701-ChecklistQualidade.py
+Uso: python3 GQS2901-ChecklistQualidade.py
 """
 
 CHECKLIST = {
@@ -45,7 +45,7 @@ CHECKLIST = {
 
 def main():
     print("=" * 60)
-    print("  GQS2701 - CHECKLIST DE QUALIDADE - PROJETO A3")
+    print("  GQS2901 - CHECKLIST DE QUALIDADE - PROJETO A3")
     print("=" * 60)
     print("  Marque os itens concluídos (s/n):\n")
 

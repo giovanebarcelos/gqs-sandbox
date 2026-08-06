@@ -1,0 +1,21 @@
+gitGraph
+    commit id: "v1.0.0"
+    branch develop
+    checkout develop
+    commit id: "setup CI"
+    branch feature/relatorio-defeitos
+    checkout feature/relatorio-defeitos
+    commit id: "endpoint relatorio"
+    commit id: "testes relatorio"
+    checkout develop
+    merge feature/relatorio-defeitos
+    checkout main
+    branch hotfix/bug-disponibilidade
+    checkout hotfix/bug-disponibilidade
+    commit id: "corrige MTBF/MTTR"
+    checkout main
+    merge hotfix/bug-disponibilidade tag: "v1.0.1"
+    checkout develop
+    merge main
+    checkout main
+    merge develop tag: "v1.1.0"

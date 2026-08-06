@@ -1,15 +1,15 @@
 /**
- * GQS2801 - Checklist de Code Review.
+ * GQS3001 - Checklist de Code Review.
  * Ferramenta interativa para revisão de código antes do merge,
  * cobrindo ética, boas práticas e qualidade do Pull Request.
  *
  * Compilação e execução:
- *   javac GQS2801-CodeReviewChecklist.java
- *   java -cp . GQS2801_CodeReviewChecklist
+ *   javac GQS3001-CodeReviewChecklist.java
+ *   java -cp . GQS3001_CodeReviewChecklist
  */
 import java.util.*;
 
-class GQS2801_CodeReviewChecklist {
+class GQS3001_CodeReviewChecklist {
 
     /** Checklist de code review organizado por categoria, na ordem de exibição. */
     static LinkedHashMap<String, List<String>> criarChecklist() {
@@ -44,7 +44,7 @@ class GQS2801_CodeReviewChecklist {
 
     static void executarChecklist(Scanner sc) {
         System.out.println("=".repeat(60));
-        System.out.println("  GQS2801 - CHECKLIST DE CODE REVIEW");
+        System.out.println("  GQS3001 - CHECKLIST DE CODE REVIEW");
         System.out.println("=".repeat(60));
 
         LinkedHashMap<String, List<String>> checklist = criarChecklist();

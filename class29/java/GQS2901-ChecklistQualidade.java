@@ -1,14 +1,14 @@
 /**
- * GQS2701 - Checklist de Qualidade para Projeto Final.
+ * GQS2901 - Checklist de Qualidade para Projeto Final.
  * Verifica se todos os itens do projeto A3 estão completos.
  *
  * Compilação e execução:
- *   javac GQS2701-ChecklistQualidade.java
- *   java -cp . GQS2701_ChecklistQualidade
+ *   javac GQS2901-ChecklistQualidade.java
+ *   java -cp . GQS2901_ChecklistQualidade
  */
 import java.util.*;
 
-class GQS2701_ChecklistQualidade {
+class GQS2901_ChecklistQualidade {
 
     /** Checklist do projeto A3, organizado por categoria, na ordem de exibição. */
     static LinkedHashMap<String, List<String>> criarChecklist() {
@@ -52,7 +52,7 @@ class GQS2701_ChecklistQualidade {
 
     public static void main(String[] args) {
         System.out.println("=".repeat(60));
-        System.out.println("  GQS2701 - CHECKLIST DE QUALIDADE - PROJETO A3");
+        System.out.println("  GQS2901 - CHECKLIST DE QUALIDADE - PROJETO A3");
         System.out.println("=".repeat(60));
         System.out.println("  Marque os itens concluídos (s/n):\n");
 

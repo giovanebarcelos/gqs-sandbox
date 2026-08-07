@@ -1,7 +1,7 @@
 # Repositório de Código — Garantia da Qualidade de Software  
 
 **Curso:** Garantia da Qualidade de Software | **Período:** 2026/2  
-**Origem do material:** adaptado de `/2025-02/4M - Gestão e Qualidade de Software - FAPA` (classes 01-26, 29-30) + conteúdo original da UA9 (classes 27-28, ver §1 de `planejamento.md`)  
+**Origem do material:** adaptado de `/2025-02/4M - Gestão e Qualidade de Software - FAPA` (classes 01-26, 29-30) + conteúdo original da UA8 (classes 27-28, ver §1 de `planejamento.md`)  
 
 ---  
 
@@ -313,7 +313,7 @@ docker-compose -f GQS24-docker-compose-v2.yml up -d
 
 ## class27 — Estimativa de Software e Métricas de Processo/Projeto  
 
-**Origem:** conteúdo original desta expansão (UA9), não reaproveitado do 4M — criado para cobrir os itens de estimativa/pontos de função do plano de ensino `Gestão e qualidade de software.pdf` (UC 0016257).  
+**Origem:** conteúdo original desta expansão (UA8), não reaproveitado do 4M — criado para cobrir os itens de estimativa/pontos de função do plano de ensino `Gestão e qualidade de software.pdf` (UC 0016257).  
 
 ### java/ + python/  
 
@@ -332,7 +332,7 @@ docker-compose -f GQS24-docker-compose-v2.yml up -d
 
 ## class28 — Gestão de Configuração, Versionamento e Manutenção  
 
-**Origem:** conteúdo original desta expansão (UA9), não reaproveitado do 4M — cobre gestão de configuração, controle de versão (Git) e manutenção/reengenharia de software do plano de ensino `Gestão e qualidade de software.pdf` (UC 0016257).  
+**Origem:** conteúdo original desta expansão (UA8), não reaproveitado do 4M — cobre gestão de configuração, controle de versão (Git) e manutenção/reengenharia de software do plano de ensino `Gestão e qualidade de software.pdf` (UC 0016257).  
 
 ### java/ + python/  
 
@@ -352,7 +352,7 @@ docker-compose -f GQS24-docker-compose-v2.yml up -d
 
 ## class29 — Projeto Integrador Final  
 
-**Origem:** renumerado de `class27` (posição original antes da expansão UA9); conteúdo inalterado.  
+**Origem:** renumerado de `class27` (posição original antes da expansão UA8); conteúdo inalterado.  
 
 ### java/ + python/  
 
@@ -371,7 +371,7 @@ docker-compose -f GQS24-docker-compose-v2.yml up -d
 
 ## class30 — Ética, Boas Práticas e Encerramento  
 
-**Origem:** renumerado de `class28` (posição original antes da expansão UA9); conteúdo inalterado.  
+**Origem:** renumerado de `class28` (posição original antes da expansão UA8); conteúdo inalterado.  
 
 ### java/ + python/  
 

@@ -8,6 +8,7 @@ flowchart TD
         F --> PT[Postman]
         PT --> JM[JMeter]
         JM --> SK[SikuliX]
+        SK --> MOB["Appium / Maestro (Mobile)"]
     end
     subgraph UA7[UA7 - CI/CD]
         TL[TestLink] --> GA[GitHub Actions]

@@ -1,0 +1,10 @@
+appId: com.exemplo.meuapp
+---
+- launchApp
+- tapOn: "Usuário"
+- inputText: "admin"
+- tapOn: "Senha"
+- inputText: "senha123"
+- tapOn: "Entrar"
+- assertVisible: "Bem-vindo, admin!"
+- takeScreenshot: login_ok

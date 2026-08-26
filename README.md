@@ -18,6 +18,7 @@ repository/
 ├── class19/ — Postman: Testes de API REST  
 ├── class20/ — JMeter: Testes de Performance  
 ├── class21/ — SikuliX: Testes de Interface  
+├── class21B/ — Testes Mobile: Maestro e Appium  
 ├── class24/ — TestLink e Bug Tracking  
 ├── class25/ — CI/CD  
 ├── class26/ — DevOps e GitHub Actions  
@@ -263,6 +264,28 @@ repository/
 
 ---  
 
+## class21B — Testes Mobile: Maestro e Appium  
+
+### diagrams/  
+
+| Arquivo | Descrição |  
+|---|---|  
+| `GQS21B-TesteMobile-Enunciado.txt` | 10 enunciados de testes mobile (Appium e/ou Maestro) |  
+| `GQS21B-TesteMobile-Solucao.txt` | Scripts de solução dos 10 enunciados (flows Maestro + trechos Appium) |  
+| `GQS21B-ComandosAppiumMaestro.md` | Tabela completa de comandos do Appium (client) e do Maestro (flow YAML/CLI) |  
+| `GQS21B-ArquiteturaAppiumMaestro.mmd` | Diagrama Mermaid da arquitetura Appium (client/server/drivers) e Maestro (CLI) |  
+| `GQS21B-Maestro-Login-Flow.yaml` | Flow Maestro de exemplo — login com validação de mensagem de boas-vindas |  
+| `GQS21B-Appium-Maestro-Links-Download.txt` | Links de instalação do Appium e do Maestro (CLI, drivers, pré-requisitos) |  
+
+### java/ e python/  
+
+| Arquivo | Descrição |  
+|---|---|  
+| `GQS21B01-Appium_Conceitos.java` | Exemplo conceitual em Java de sessão Appium (mock, sem dependências externas) |  
+| `GQS21B01-Appium_Conceitos.py` | Exemplo conceitual em Python de sessão Appium (mock, sem dependências externas) |  
+
+---  
+
 ## class24 — TestLink e Bug Tracking  
 
 ### diagrams/  
@@ -403,6 +426,7 @@ docker-compose -f GQS24-docker-compose-v2.yml up -d
 | class19 | 19 — Postman | 6 | JS scripts + TXT enunciados/specs |  
 | class20 | 20 — JMeter | 17 | JMX plans + MD enunciados + API lab Flask |  
 | class21 | 21 — SikuliX | 4 | TXT enunciados/soluções + MD comandos + links download |  
+| class21B | 21B — Mobile (Maestro/Appium) | 8 | TXT enunciados/soluções + MD comandos + Mermaid + YAML flow + links download + Java/Python |  
 | class24 | 24 — TestLink | 4 | Docker Compose + .env + Tutorial MD |  
 | class25 | 25 — CI/CD | 4 | YAML configs + TXT pipeline |  
 | class26 | 26 — DevOps | 5 | YAML + Docker + Shell script + zip |  
@@ -410,4 +434,4 @@ docker-compose -f GQS24-docker-compose-v2.yml up -d
 | class28 | 28 — Gestão de Configuração/Versionamento | 4 | Python + Java (simulador versionamento) + 2 Mermaid |  
 | class29 | 29 — Projeto Integrador Final | 3 | Python + Java (checklist qualidade) + Mermaid (renumerado de class27) |  
 | class30 | 30 — Ética e Encerramento | 3 | Python + Java (checklist code review) + Mermaid (renumerado de class28) |  
-| **Total** | | **204** | |  
+| **Total** | | **212** | |  

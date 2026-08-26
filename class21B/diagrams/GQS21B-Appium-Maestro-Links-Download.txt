@@ -1,0 +1,27 @@
+Links para download e instalação — Appium e Maestro
+
+APPIUM
+- Site oficial: https://appium.io/
+- Servidor (via npm, requer Node.js 16+): npm install -g appium
+- Driver Android: appium driver install uiautomator2
+- Driver iOS (somente macOS): appium driver install xcuitest
+- Appium Inspector (GUI, releases): https://github.com/appium/appium-inspector/releases
+- Appium Doctor (validação de ambiente): npm install -g @appium/doctor
+- Java client: https://github.com/appium/java-client
+- Python client: pip install Appium-Python-Client
+
+MAESTRO
+- Site oficial (mobile.dev): https://maestro.mobile.dev/
+- Repositório (GitHub): https://github.com/mobile-dev-inc/maestro
+- Instalação (Linux/macOS): curl -Ls "https://get.maestro.mobile.dev" | bash
+- Instalação no Windows: usar WSL (Windows Subsystem for Linux) e rodar o comando acima
+
+Pré-Requisitos
+- Java 11+ (Appium e Maestro): https://www.oracle.com/java/technologies/downloads/
+- Node.js 16+ (Appium): https://nodejs.org/
+- Android SDK / emulador (Android Studio): https://developer.android.com/studio
+- Xcode + Simulator (iOS, somente macOS): https://developer.apple.com/xcode/
+
+Execução rápida (Android, Linux/macOS)
+appium &
+maestro test flow.yaml

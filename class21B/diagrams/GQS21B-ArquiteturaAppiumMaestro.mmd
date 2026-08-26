@@ -1,0 +1,11 @@
+flowchart LR
+    T[Teste Java/Python/JS] -->|Appium Client| C[Biblioteca Cliente]
+    C -->|HTTP / WebDriver Protocol| S[Appium Server]
+    S --> U[Driver UiAutomator2]
+    S --> X[Driver XCUITest]
+    U --> AD[Emulador/Dispositivo Android]
+    X --> ID[Simulador/Dispositivo iOS]
+
+    M[Flow YAML] -->|maestro test| CLI[Maestro CLI]
+    CLI --> AD
+    CLI --> ID

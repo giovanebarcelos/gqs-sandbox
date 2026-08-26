@@ -1,0 +1,32 @@
+Testes para serem realizados com Appium e/ou Maestro
+
+1. Abrir a Calculadora do Android e Realizar uma Operação de Adição:
+   Abra a Calculadora e realize a operação 12 + 34, validando o resultado 46.
+
+2. Abrir a Calculadora e Realizar uma Operação de Multiplicação:
+   Realize a operação 7 x 8, validando o resultado 56.
+
+3. Validar Mensagem de Boas-vindas em Tela de Login:
+   Preencha usuário e senha em um app de exemplo e valide a mensagem "Bem-vindo".
+
+4. Realizar Swipe em uma Lista:
+   Abra uma lista de contatos ou configurações e realize um swipe para baixo (scroll).
+
+5. Verificar Presença de um Botão:
+   Verifique se o botão "Entrar" está visível na tela inicial de um app.
+
+6. Rotacionar a Tela e Validar Layout:
+   Rotacione o dispositivo para paisagem e verifique se o botão principal continua visível.
+
+7. Fechar e Reabrir o Aplicativo:
+   Encerre o app (terminateApp/stopApp) e reabra-o, validando que a tela inicial aparece.
+
+8. Realizar Login com Credenciais Inválidas:
+   Preencha usuário/senha inválidos e valide que a mensagem de erro aparece.
+
+9. Capturar uma Tela de Resultado:
+   Após uma operação na calculadora, capture uma screenshot do resultado.
+
+10. Comparar Esforço Appium x Maestro:
+    Implemente o cenário do item 1 (12 + 34 = 46) tanto em Appium (Java ou Python)
+    quanto em um flow Maestro, e compare o número de linhas e o tempo de desenvolvimento.

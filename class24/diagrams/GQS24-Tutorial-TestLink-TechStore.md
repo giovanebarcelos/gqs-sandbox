@@ -1,5 +1,20 @@
 # Tutorial Completo TestLink 2.0.0 - Passo a Passo TechStore  
   
+> **MATERIAL DE REFERÊNCIA HISTÓRICA — NÃO É O LABORATÓRIO DA AULA 24.**  
+>  
+> A ferramenta adotada na disciplina é o **Kiwi TCMS**. O laboratório oficial, com  
+> passo a passo, scripts de API e gabarito, está em:  
+>  
+> - [`GQS24-Lab-KiwiTCMS-Enunciado.md`](GQS24-Lab-KiwiTCMS-Enunciado.md) — roteiro em 8 etapas  
+> - [`GQS24-kiwi-docker-compose.yml`](GQS24-kiwi-docker-compose.yml) — ambiente Docker  
+> - [`GQS24-kiwi-api-exemplo.py`](GQS24-kiwi-api-exemplo.py) — automação pela API  
+>  
+> Este tutorial é mantido porque o TestLink continua em uso em muitas empresas e  
+> porque os conceitos que ele consagrou (separar o banco de casos do planejamento  
+> da execução, o Build como rodada concreta, cobertura de requisitos) seguem  
+> válidos — são os mesmos do Kiwi TCMS, com outros nomes. Ver Slides 5 e 6 da Aula 24.  
+  
+  
 ## Projeto Exemplo: Sistema de E-commerce TechStore  
   
 Vamos gerenciar os testes de um sistema de e-commerce com funcionalidades de catálogo, carrinho, checkout e área do cliente.  

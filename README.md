@@ -210,7 +210,7 @@ repository/
 | `GQS18-Lab1-DiagramaClasse.plantuml` | Diagrama de classes Lab 1 (PlantUML) |  
 | `GQS18-Lab2-DiagramaClasse.plantuml` | Diagrama de classes Lab 2 (PlantUML) |  
 | `GQS18-FitNesse-Labs-Completo.md` | Todos os laboratórios FitNesse documentados |  
-| `GQS18-docker-compose-testlink.yml` | Docker Compose para TestLink (compartilhado) |  
+| `GQS18-docker-compose-testlink.yml` | Docker Compose para TestLink — **referência histórica**; o laboratório da Aula 24 usa `class24/diagrams/GQS24-kiwi-docker-compose.yml` |  
 | `GQS18-FitNesse-TesteGeral.wiki` | Página wiki real usada na aula 4M (TesteGeral) |  
 | `GQS18-FitNesse-RegistroVideoDigital.wiki` | Página wiki real usada na aula 4M (RegistroDeVideo) |  
 | `GQS18-FitNesse-FrontPage.txt` | FrontPage original do FitNesse da aula 4M |  
@@ -355,7 +355,9 @@ docker run --rm --network=host -e SONAR_TOKEN=$SONAR_TOKEN -v "$PWD:/usr/src" so
 | `GQS24-D02-FluxoKiwiTCMS.mmd` | Fluxo requisito → caso → execução → defeito → novo build |
 | `GQS24-D03-HierarquiaKiwiTCMS.mmd` | Hierarquia de objetos do Kiwi TCMS |
 
-### diagrams/ — material histórico do TestLink (referência, fora do laboratório)
+### diagrams/ — material histórico do TestLink
+
+Mantido como referência: o TestLink continua em uso em muitas empresas e os conceitos que ele consagrou são os mesmos do Kiwi TCMS, com outros nomes. **Não é o laboratório da aula** — a ferramenta adotada na disciplina é o Kiwi TCMS.
 
 | Arquivo | Descrição |
 |---|---|

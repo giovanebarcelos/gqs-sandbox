@@ -19,7 +19,8 @@ repository/
 ├── class20/ — JMeter: Testes de Performance  
 ├── class21/ — SikuliX: Testes de Interface  
 ├── class21B/ — Testes Mobile: Maestro e Appium  
-├── class24/ — TestLink e Bug Tracking  
+├── class23B/ — SonarQube: Análise Contínua e Quality Gate  
+├── class24/ — Kiwi TCMS e Bug Tracking  
 ├── class25/ — CI/CD  
 ├── class26/ — DevOps e GitHub Actions  
 ├── class27/ — Estimativa de Software e Métricas de Processo/Projeto  
@@ -286,26 +287,112 @@ repository/
 
 ---  
 
-## class24 — TestLink e Bug Tracking  
+## class23B — SonarQube: Análise Contínua e Quality Gate  
+
+Laboratório completo da Aula 23B. Todo o material foi executado contra um **SonarQube Community Build 26.9** real antes de ser publicado: os números citados nos slides e no gabarito são medições.  
 
 ### diagrams/  
 
 | Arquivo | Descrição |  
 |---|---|  
-| `GQS24-docker-compose.yml` | Docker Compose para TestLink 2.0 (v1) |  
-| `GQS24-docker-compose-v2.yml` | Docker Compose para TestLink 2.0 (v2 atualizado) |  
-| `GQS24-.env.example` | Variáveis de ambiente para TestLink |  
-| `GQS24-Tutorial-TestLink-TechStore.md` | Tutorial completo TestLink 2.0 — passo a passo e-commerce TechStore |  
+| `GQS23B-Lab-Enunciado.md` | Roteiro do laboratório em 7 etapas, com os números de referência de cada etapa |  
+| `GQS23B-Lab-Solucao.md` | Gabarito: código corrigido (compilado e analisado), antes/depois medido e erros mais comuns |  
+| `GQS23B-ArquiteturaSonarQube.mmd` | Diagrama Mermaid: scanner, servidor, Compute Engine, Quality Gate e pipeline |  
+| `GQS23B-FluxoCleanAsYouCode.mmd` | Diagrama Mermaid: refatorar tudo × limpar o que se toca, e a armadilha do gate verde |  
+| `GQS23B-docker-compose.yml` | SonarQube Community Build + PostgreSQL, com volumes nomeados |  
+| `GQS23B-.env.example` | Modelo do `.env` do compose (a senha nunca vai versionada) |  
+| `GQS23B-criar-quality-gate.sh` | Cria o gate "GQS — Código Legado" e o associa ao projeto, via Web API |  
+| `GQS23B-github-actions-sonar.yml` | Workflow com jobs Java e Python, incluindo o passo de Quality Gate |  
+| `GQS23B-Jenkinsfile` | Pipeline declarativo com `withSonarQubeEnv` e `waitForQualityGate` |  
+| `GQS23B-Links-Download.txt` | Downloads, extensões de IDE, actions e documentação oficial |  
 
-**Como iniciar TestLink:**  
+### java/  
+
+Projeto Maven no layout padrão (`src/main/java`, `src/test/java`), executável.  
+
+| Arquivo | Descrição |  
+|---|---|  
+| `pom.xml` | JUnit 5, JaCoCo 0.8.13 e `sonar-maven-plugin`, com o caminho do `jacoco.xml` já configurado |  
+| `src/main/java/GQS23B01-Biblioteca.java` | Sistema de empréstimo com 10 defeitos propositais, cada um mapeado à regra Sonar que dispara |  
+| `src/test/java/GQS23B01-BibliotecaTest.java` | Suíte verde e incompleta (46,2% de cobertura de linha) — o contraste central da aula |  
+
 ```bash  
-cd class24/diagrams  
-cp GQS24-.env.example .env  
-docker-compose -f GQS24-docker-compose-v2.yml up -d  
-# Acesse: http://localhost:8181 | admin / admin123  
+cd class23B/java  
+mvn clean verify                              # 9 testes verdes + jacoco.xml  
+mvn sonar:sonar -Dsonar.token=$SONAR_TOKEN    # 20 problemas, 44,7% de cobertura  
+```  
+
+### python/  
+
+| Arquivo | Descrição |  
+|---|---|  
+| `GQS23B01-Biblioteca.py` | O mesmo programa e os mesmos defeitos, em Python idiomático |  
+| `test_GQS23B01-Biblioteca.py` | Suíte espelhada da versão Java (import via `importlib`, por causa do hífen no nome) |  
+| `sonar-project.properties` | Configuração do SonarScanner CLI, com o caminho do `coverage.xml` |  
+
+```bash  
+cd class23B/python  
+pytest --cov=. --cov-report=xml  
+docker run --rm --network=host -e SONAR_TOKEN=$SONAR_TOKEN -v "$PWD:/usr/src" sonarsource/sonar-scanner-cli  
+# 7 problemas, 50,0% de cobertura  
 ```  
 
 ---  
+
+## class24 — Kiwi TCMS e Bug Tracking
+
+### diagrams/ — ambiente e scripts do Kiwi TCMS
+
+| Arquivo | Descrição |
+|---|---|
+| `GQS24-kiwi-docker-compose.yml` | Kiwi TCMS 16.3 + MariaDB 11; portas e senhas parametrizadas pelo `.env` |
+| `GQS24-kiwi-.env.example` | Modelo do `.env` (senhas do banco e portas alternativas) |
+| `GQS24-kiwi-api-exemplo.py` | Monta a hierarquia inteira pela API (`tcms-api`), com estratégia *get or create* |
+| `GQS24-kiwi-registrar-defeito.py` | Escala de severidade, defeito vinculado à execução e leitura da telemetria |
+| `GQS24-kiwi-publicar-resultados.py` | Publica um `junit.xml` no Kiwi usando o plugin oficial, com correção do carimbo de tempo do pytest 8 |
+| `GQS24-Lab-KiwiTCMS-Enunciado.md` | Roteiro do laboratório em 8 etapas (95-115 min) |
+| `GQS24-Lab-KiwiTCMS-Solucao.md` | Gabarito com os números medidos (uso do professor) |
+| `GQS24-D02-FluxoKiwiTCMS.mmd` | Fluxo requisito → caso → execução → defeito → novo build |
+| `GQS24-D03-HierarquiaKiwiTCMS.mmd` | Hierarquia de objetos do Kiwi TCMS |
+
+### diagrams/ — material histórico do TestLink (referência, fora do laboratório)
+
+| Arquivo | Descrição |
+|---|---|
+| `GQS24-docker-compose.yml` | Docker Compose para TestLink 2.0 (v1) |
+| `GQS24-docker-compose-v2.yml` | Docker Compose para TestLink 2.0 (v2 atualizado) |
+| `GQS24-.env.example` | Variáveis de ambiente para TestLink |
+| `GQS24-Tutorial-TestLink-TechStore.md` | Tutorial completo TestLink 2.0 — passo a passo e-commerce TechStore |
+| `GQS24-D01-flowchart.mmd` | Fluxo TestLink × Jira |
+
+### python/
+
+| Arquivo | Descrição |
+|---|---|
+| `GQS2401-RelatorioDefeitos.py` | Relatório de defeitos por severidade e prioridade |
+| `test_GQS2402-LoginTechStore.py` | Suíte pytest espelhando TS-001/TS-002/TS-003; publicada no Kiwi via JUnit XML |
+
+### java/
+
+| Arquivo | Descrição |
+|---|---|
+| `GQS2401-RelatorioDefeitos.java` | Versão Java do relatório de defeitos |
+
+**Como iniciar o Kiwi TCMS:**
+```bash
+cd class24/diagrams
+cp GQS24-kiwi-.env.example .env          # e troque as senhas dentro do .env
+docker compose -f GQS24-kiwi-docker-compose.yml up -d
+docker exec -it kiwi_web /Kiwi/manage.py initial_setup    # interativo: o -it e obrigatorio
+# Acesse: https://localhost:8443  (certificado autoassinado — aceite o aviso)
+```
+
+**Encerrar:**
+```bash
+docker compose -f GQS24-kiwi-docker-compose.yml down -v
+```
+
+---
 
 ## class25 — CI/CD  
 
@@ -427,11 +514,12 @@ docker-compose -f GQS24-docker-compose-v2.yml up -d
 | class20 | 20 — JMeter | 17 | JMX plans + MD enunciados + API lab Flask |  
 | class21 | 21 — SikuliX | 4 | TXT enunciados/soluções + MD comandos + links download |  
 | class21B | 21B — Mobile (Maestro/Appium) | 8 | TXT enunciados/soluções + MD comandos + Mermaid + YAML flow + links download + Java/Python |  
-| class24 | 24 — TestLink | 4 | Docker Compose + .env + Tutorial MD |  
+| class23B | 23B — SonarQube | 16 | Projeto Maven (src + tests + pom) + Python (módulo + testes + properties) + 2 Mermaid + Compose + .env + script de gate + workflow + Jenkinsfile + roteiro/gabarito |  
+| class24 | 24 — Kiwi TCMS | 17 | Compose Kiwi + .env + 3 scripts de API + roteiro/gabarito + suíte pytest + 3 Mermaid + material histórico do TestLink |  
 | class25 | 25 — CI/CD | 4 | YAML configs + TXT pipeline |  
 | class26 | 26 — DevOps | 5 | YAML + Docker + Shell script + zip |  
 | class27 | 27 — Estimativa/Pontos de Função | 3 | Python + Java (calculadora PF/COCOMO) + Mermaid |  
 | class28 | 28 — Gestão de Configuração/Versionamento | 4 | Python + Java (simulador versionamento) + 2 Mermaid |  
 | class29 | 29 — Projeto Integrador Final | 3 | Python + Java (checklist qualidade) + Mermaid (renumerado de class27) |  
 | class30 | 30 — Ética e Encerramento | 3 | Python + Java (checklist code review) + Mermaid (renumerado de class28) |  
-| **Total** | | **212** | |  
+| **Total** | | **240** | |  

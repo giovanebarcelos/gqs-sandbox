@@ -1,0 +1,118 @@
+# =============================================================================
+# GQS23B - Analise SonarQube no GitHub Actions (Etapa 7 do laboratorio)
+# =============================================================================
+# Copie para `.github/workflows/qualidade.yml` no seu repositorio.
+#
+# SECRETS necessarios (Settings > Secrets and variables > Actions):
+#   SONAR_TOKEN     token gerado em My Account > Security no SonarQube
+#   SONAR_HOST_URL  ex.: https://sonarqube.suaempresa.com
+#                   (para o SonarQube Cloud, use https://sonarcloud.io)
+#
+# ATENCAO: o servidor precisa estar acessivel pelo runner do GitHub. Um
+# SonarQube em `localhost:9000` na sua maquina NAO e alcancavel pelo runner
+# hospedado - use o SonarQube Cloud, um servidor publico ou um self-hosted
+# runner dentro da rede. Este e o erro mais comum ao levar o lab da Aula 23B
+# para o CI.
+#
+# Liga com: Aula 25 (CI/CD) e Aula 26 (DevOps e GitHub Actions).
+# =============================================================================
+name: Qualidade (SonarQube)
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+
+  # ---------------------------------------------------------------------------
+  # Projeto Java: o scanner e o proprio plugin Maven
+  # ---------------------------------------------------------------------------
+  analise-java:
+    name: Java - testes, cobertura e SonarQube
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # O Sonar precisa do historico completo para atribuir cada linha ao
+          # seu autor e calcular o New Code. Com fetch-depth 1 (padrao) a
+          # analise de codigo novo fica errada.
+          fetch-depth: 0
+
+      - name: Configurar JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+
+      # Cache da analise: acelera execucoes seguintes
+      - name: Cache do SonarQube
+        uses: actions/cache@v4
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+
+      # `verify` roda os testes E gera o jacoco.xml que alimenta a cobertura
+      - name: Testes + cobertura (JaCoCo)
+        working-directory: repository/class23B/java
+        run: mvn -B clean verify
+
+      - name: Analise SonarQube
+        working-directory: repository/class23B/java
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+        run: mvn -B sonar:sonar -Dsonar.host.url=$SONAR_HOST_URL
+
+      # Falha o job se o Quality Gate reprovar - e este passo que transforma
+      # o relatorio numa TRAVA de verdade (Aula 23, Slide "Quality Gate")
+      - name: Verificar o Quality Gate
+        uses: sonarsource/sonarqube-quality-gate-action@master
+        timeout-minutes: 5
+        with:
+          pollingTimeoutSec: 300
+          scanMetadataReportFile: repository/class23B/java/target/sonar/report-task.txt
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+  # ---------------------------------------------------------------------------
+  # Projeto Python: scanner CLI, configurado por sonar-project.properties
+  # ---------------------------------------------------------------------------
+  analise-python:
+    name: Python - testes, cobertura e SonarQube
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Instalar dependencias
+        run: pip install pytest pytest-cov
+
+      - name: Testes + cobertura (coverage.py)
+        working-directory: repository/class23B/python
+        run: pytest --cov=. --cov-report=xml
+
+      - name: Analise SonarQube
+        uses: SonarSource/sonarqube-scan-action@v7
+        with:
+          projectBaseDir: repository/class23B/python
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+
+      - name: Verificar o Quality Gate
+        uses: sonarsource/sonarqube-quality-gate-action@master
+        timeout-minutes: 5
+        with:
+          pollingTimeoutSec: 300
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

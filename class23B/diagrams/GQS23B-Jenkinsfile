@@ -1,0 +1,102 @@
+// =============================================================================
+// GQS23B - Pipeline Jenkins com SonarQube e Quality Gate
+// =============================================================================
+// Aula 23B - versao Jenkins do workflow do GitHub Actions. E a mesma ideia:
+// build -> testes -> analise -> ESPERAR o Quality Gate -> so entao empacotar.
+//
+// PRE-REQUISITOS no Jenkins:
+//   1. Plugin "SonarQube Scanner for Jenkins" instalado
+//   2. Manage Jenkins > System > SonarQube servers:
+//        Name: SonarQube-GQS   |   Server URL: http://sonarqube:9000
+//        Server authentication token: credencial do tipo "Secret text"
+//   3. No SonarQube: Administration > Configuration > Webhooks, criar
+//        URL: http://jenkins:8080/sonarqube-webhook/
+//      Sem esse webhook, `waitForQualityGate` fica esperando ate o timeout -
+//      e o erro mais comum desta integracao.
+//
+// Liga com: Aula 25, Slide "Pipeline como Codigo".
+// =============================================================================
+pipeline {
+    agent any
+
+    tools {
+        maven 'Maven-3.9'
+        jdk 'JDK-17'
+    }
+
+    options {
+        timeout(time: 30, unit: 'MINUTES')
+        buildDiscarder(logRotator(numToKeepStr: '20'))
+    }
+
+    stages {
+
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Build') {
+            steps {
+                dir('repository/class23B/java') {
+                    sh 'mvn -B clean compile'
+                }
+            }
+        }
+
+        stage('Testes + Cobertura') {
+            steps {
+                dir('repository/class23B/java') {
+                    // `verify` executa os testes e gera target/site/jacoco/jacoco.xml
+                    sh 'mvn -B verify'
+                }
+            }
+            post {
+                always {
+                    junit 'repository/class23B/java/target/surefire-reports/*.xml'
+                }
+            }
+        }
+
+        stage('Analise SonarQube') {
+            steps {
+                dir('repository/class23B/java') {
+                    // withSonarQubeEnv injeta SONAR_HOST_URL e SONAR_AUTH_TOKEN
+                    withSonarQubeEnv('SonarQube-GQS') {
+                        sh 'mvn -B sonar:sonar'
+                    }
+                }
+            }
+        }
+
+        stage('Quality Gate') {
+            steps {
+                // Espera o Compute Engine terminar e o webhook responder.
+                // abortPipeline: true -> se o gate reprovar, o build para aqui
+                // e os estagios seguintes nao rodam.
+                timeout(time: 10, unit: 'MINUTES') {
+                    waitForQualityGate abortPipeline: true
+                }
+            }
+        }
+
+        stage('Package') {
+            steps {
+                dir('repository/class23B/java') {
+                    sh 'mvn -B package -DskipTests'
+                }
+                archiveArtifacts artifacts: 'repository/class23B/java/target/*.jar', fingerprint: true
+            }
+        }
+    }
+
+    post {
+        failure {
+            echo 'Pipeline reprovado. Se parou no estagio Quality Gate, abra o dashboard do SonarQube e corrija os problemas do codigo novo antes de novo push.'
+        }
+        success {
+            echo 'Quality Gate aprovado - artefato pronto para deploy.'
+        }
+    }
+}

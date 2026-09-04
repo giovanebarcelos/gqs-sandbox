@@ -1,0 +1,40 @@
+flowchart LR
+    subgraph DEV["Estacao do desenvolvedor"]
+        IDE["SonarQube for IDE<br/>(ex-SonarLint)<br/>analise ao digitar"]
+        CODE["Codigo-fonte<br/>+ relatorio de cobertura<br/>(jacoco.xml / coverage.xml)"]
+    end
+
+    subgraph SCAN["Scanners"]
+        MVN["sonar-maven-plugin<br/>mvn sonar:sonar"]
+        CLI["sonar-scanner CLI<br/>sonar-project.properties"]
+        GHA["sonarqube-scan-action<br/>(GitHub Actions)"]
+    end
+
+    subgraph SRV["SonarQube Server :9000"]
+        CE["Compute Engine<br/>processa o relatorio"]
+        RULES["Quality Profile<br/>regras ativas por linguagem"]
+        GATE["Quality Gate<br/>criterios de aprovacao"]
+        DB[("Banco de dados<br/>PostgreSQL")]
+        UI["Dashboard web"]
+    end
+
+    subgraph CI["Pipeline CI/CD"]
+        BUILD["Build + Testes"]
+        CHECK["quality-gate-action<br/>falha o job se ERROR"]
+        DEPLOY["Deploy"]
+    end
+
+    CODE --> MVN
+    CODE --> CLI
+    IDE -. "Connected Mode<br/>mesmas regras do servidor" .-> RULES
+    BUILD --> GHA
+    MVN --> CE
+    CLI --> CE
+    GHA --> CE
+    RULES --> CE
+    CE --> DB
+    CE --> GATE
+    GATE --> UI
+    GATE -->|"status OK / ERROR"| CHECK
+    CHECK -->|OK| DEPLOY
+    CHECK -->|ERROR| STOP["Pipeline interrompido"]

@@ -1,0 +1,40 @@
+GQS23B - LINKS E DOWNLOADS (Aula 23B: SonarQube e Qualidade Continua)
+======================================================================
+
+FERRAMENTA PRINCIPAL
+  SonarQube (produto)          https://www.sonarsource.com/products/sonarqube/
+  SonarQube Community Build    https://docs.sonarsource.com/sonarqube-community-build
+  Download direto (zip)        https://www.sonarsource.com/products/sonarqube/downloads/
+  Imagem Docker oficial        https://hub.docker.com/_/sonarqube
+    docker pull sonarqube:community
+
+SCANNERS
+  SonarScanner CLI             https://docs.sonarsource.com/sonarqube-server/analyzing-source-code/scanners/sonarscanner/
+    docker pull sonarsource/sonar-scanner-cli
+  SonarScanner for Maven       https://docs.sonarsource.com/sonarqube-server/analyzing-source-code/scanners/sonarscanner-for-maven/
+  SonarScanner for Gradle      https://docs.sonarsource.com/sonarqube-server/analyzing-source-code/scanners/sonarscanner-for-gradle/
+  SonarScanner for .NET        https://docs.sonarsource.com/sonarqube-server/analyzing-source-code/scanners/sonarscanner-for-dotnet/
+
+IDE (ex-SonarLint, hoje "SonarQube for IDE")
+  VS Code                      https://marketplace.visualstudio.com/items?itemName=SonarSource.sonarlint-vscode
+  IntelliJ IDEA                https://plugins.jetbrains.com/plugin/7973-sonarqube-for-ide
+  Eclipse                      https://marketplace.eclipse.org/content/sonarqube-ide
+  Visual Studio                https://marketplace.visualstudio.com/items?itemName=SonarSource.SonarLintforVisualStudio2022
+
+CI/CD
+  GitHub Action (scan)         https://github.com/SonarSource/sonarqube-scan-action
+  GitHub Action (quality gate) https://github.com/SonarSource/sonarqube-quality-gate-action
+  Plugin Jenkins               https://plugins.jenkins.io/sonar/
+  ATENCAO: SonarSource/sonarcloud-github-action esta DESCONTINUADA -
+           use sonarqube-scan-action tambem para o SonarQube Cloud.
+
+DOCUMENTACAO DE CONCEITOS
+  Clean Code / Clean as You Code  https://docs.sonarsource.com/sonarqube-community-build/
+  Quality Gates                   https://docs.sonarsource.com/sonarqube-community-build/quality-standards-administration/managing-quality-gates/introduction-to-quality-gates
+  Modos MQR x Standard            https://docs.sonarsource.com/sonarqube-community-build/instance-administration/analysis-functions/instance-mode/instance-mode-overview
+  Web API do servidor             http://localhost:9000/web_api  (na propria instancia)
+  Catalogo de regras              https://rules.sonarsource.com/
+
+COBERTURA (entra no Sonar como relatorio importado, nao e medida por ele)
+  JaCoCo                       https://www.jacoco.org/jacoco/
+  coverage.py                  https://coverage.readthedocs.io/

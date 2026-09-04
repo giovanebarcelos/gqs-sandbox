@@ -10,6 +10,12 @@ flowchart TD
         JM --> SK[SikuliX]
         SK --> MOB["Appium / Maestro (Mobile)"]
     end
-    subgraph UA7[UA7 - CI/CD]
-        TL[TestLink] --> GA[GitHub Actions]
+    subgraph UA6[UA6 - Metricas]
+        JC[JaCoCo] --> CP["coverage.py"]
+        CP --> SQ[SonarQube]
     end
+    subgraph UA7[UA7 - CI/CD]
+        KW[Kiwi TCMS] --> GA[GitHub Actions]
+    end
+    MOB --> JC
+    SQ --> GA

@@ -1,0 +1,18 @@
+flowchart TD
+    CL["Classification<br/>Aplicacoes Web"] --> P["Product<br/>TechStore"]
+    P --> V["Version<br/>1.5.0"]
+    P --> CT["Category<br/>Autenticacao"]
+    V --> B["Build<br/>v1.5.0-RC1"]
+
+    P --> TP["TestPlan<br/>Sprint 5 - Modulo Autenticacao<br/>tipo System"]
+    TP --> TC1["TestCase TS-001<br/>P1 - CONFIRMED"]
+    TP --> TC2["TestCase TS-002<br/>P1 - CONFIRMED"]
+    TP --> TC3["TestCase TS-003<br/>P2 - CONFIRMED"]
+
+    TP --> TR["TestRun<br/>Execucao v1.5.0-RC1"]
+    B --> TR
+    TR --> TE1["TestExecution<br/>PASSED"]
+    TR --> TE2["TestExecution<br/>FAILED"]
+    TR --> TE3["TestExecution<br/>IDLE"]
+
+    TE2 --> BG["Bug<br/>severidade Alta"]

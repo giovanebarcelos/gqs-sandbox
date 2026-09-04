@@ -1,0 +1,15 @@
+flowchart TD
+    A["Codigo legado<br/>200 mil linhas<br/>3.000 problemas abertos"] --> B{"Estrategia"}
+
+    B -->|"Parar tudo e<br/>corrigir os 3.000"| C["Refatoracao total<br/>meses de trabalho<br/>risco alto de regressao<br/>time desmotivado"]
+    C --> D["Na pratica: nunca acontece"]
+
+    B -->|"Clean as You Code"| E["Define uma data-base<br/>(New Code Period)"]
+    E --> F["Codigo ANTIGO<br/>continua como esta"]
+    E --> G["Codigo NOVO ou ALTERADO<br/>precisa atender ao Quality Gate"]
+    G --> H["Cobertura do codigo novo >= 80%<br/>0 problema novo<br/>duplicacao do codigo novo <= 3%"]
+    H --> I["Cada commit deixa a base<br/>um pouco melhor"]
+    I --> J["Em 6-12 meses o codigo<br/>tocado com frequencia<br/>ja esta limpo"]
+
+    K["ARMADILHA<br/>Num projeto recem-importado<br/>nao ha 'codigo novo':<br/>o gate padrao passa<br/>mesmo com 20 problemas"] -.-> E
+    K --> L["Solucao da Etapa 4 do lab:<br/>gate com condicoes<br/>sobre o Overall Code"]

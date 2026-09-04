@@ -1,0 +1,12 @@
+flowchart LR
+    A["Requisito<br/>US-12"] --> B["TestCase<br/>TS-002<br/>status CONFIRMED"]
+    B --> C["TestPlan<br/>Sprint 5"]
+    C --> D["TestRun<br/>build v1.5.0-RC1"]
+    D --> E["TestExecution<br/>status IDLE"]
+    E -->|"testador executa"| F{"resultado"}
+    F -->|PASSED| G["caso encerrado<br/>neste build"]
+    F -->|FAILED| H["Bug<br/>tracker integrado<br/>severidade Alta"]
+    H -->|"Bug.add_execution"| E
+    H --> I["correcao pelo time"]
+    I --> J["novo Build<br/>v1.5.0-RC2"]
+    J --> D

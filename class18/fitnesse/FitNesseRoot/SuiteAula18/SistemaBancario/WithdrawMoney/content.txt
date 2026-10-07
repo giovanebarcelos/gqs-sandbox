@@ -1,0 +1,5 @@
+!1 RF3 - Sacar dinheiro
+!|script|BankAccountFixture|
+|createAccount;|12345|100.00|
+|withdraw;|12345|40.00|
+|check|showAccountBalance|12345|60.0|

@@ -1,0 +1,10 @@
+!1 Labs FitNesse - raiz da suíte
+
+!define TEST_SYSTEM {slim}
+!define COLLAPSE_SETUP {true}
+!define COLLAPSE_TEARDOWN {true}
+
+!path target/classes
+!path target/lib/*.jar
+
+!contents -R2 -g

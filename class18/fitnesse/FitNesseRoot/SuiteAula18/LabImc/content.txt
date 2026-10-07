@@ -1,0 +1,11 @@
+!1 Lab (Slide 22) - Calculadora de IMC
+
+IMC = peso / altura². Faixas: < 18.5 Abaixo do peso; 18.5-24.9 Normal; 25-29.9 Sobrepeso; >= 30 Obesidade.
+
+!|ImcFixture|
+|peso|altura|imc?|classificacao?|
+|50|1.75|16.3|Abaixo do peso|
+|70|1.75|22.9|Normal|
+|85|1.80|26.2|Sobrepeso|
+|100|1.75|32.7|Obesidade|
+|60|1.60|23.4|Normal|

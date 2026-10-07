@@ -1,0 +1,4 @@
+!1 RF6 - Conta inexistente
+!|script|BankAccountFixture|
+|check|showAccountBalance;|54321|EXCEPTION: =~/Account does not exist/|
+|reject|accountExists;|54321|

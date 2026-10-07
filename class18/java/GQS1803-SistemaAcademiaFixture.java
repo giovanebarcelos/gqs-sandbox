@@ -1,6 +1,5 @@
-import java.util.ArrayList;
-import java.util.List;
-
+// Fixture Slim (POJO). Salvar como SistemaAcademia.java em fitnesse/src/ (copia pronta em repository/class18/fitnesse/src/).
+// Obs.: neste arquivo unico, Usuario nao e public; em src/ ha Usuario.java separado.
 class Usuario {
     private String nome;
     private int idade;
@@ -8,6 +7,7 @@ class Usuario {
     private double altura;
     private double peso;
     private double metaPeso;
+    private int minutosAtividades;
 
     public Usuario(String nome, int idade, String sexo, double altura, double peso) {
         this.nome = nome;
@@ -17,60 +17,134 @@ class Usuario {
         this.peso = peso;
     }
 
-    // Getters e setters
+    public String getNome()  { return nome; }
+    public int getIdade()    { return idade; }
+    public String getSexo()  { return sexo; }
+    public double getAltura(){ return altura; }
+    public double getPeso()  { return peso; }
+    public void setPeso(double peso) { this.peso = peso; }
+    public double getMetaPeso() { return metaPeso; }
+    public void setMetaPeso(double metaPeso) { this.metaPeso = metaPeso; }
+    public int getMinutosAtividades() { return minutosAtividades; }
+    public void addMinutos(int minutos) { this.minutosAtividades += minutos; }
+
     public double calcularIMC() {
         return peso / (altura * altura);
     }
 
-    public double getPeso() {
-        return peso;
-    }
-
-    public double getMetaPeso() {
-        return metaPeso;
-    }
-
-    public void setMetaPeso(double metaPeso) {
-        this.metaPeso = metaPeso;
+    @Override
+    public String toString() {
+        return "Nome=" + nome + ", Idade=" + idade + ", Sexo=" + sexo
+             + ", Altura=" + altura + ", Peso=" + peso;
     }
 }
 
-class SistemaAcademia {
-    private List<Usuario> usuarios = new ArrayList<>();
+import java.util.*;
 
-    public void cadastrarUsuario(Usuario usuario) {
-        usuarios.add(usuario);
+/**
+ * Fixture Slim do Lab Academia (RF1..RF10). Os nomes dos metodos espelham o texto
+ * das linhas da Script Table: "cadastrar usuario" -> cadastrarUsuario(...).
+ * Usuarios sao identificados pelo indice (0, 1, ...) na ordem de cadastro.
+ */
+public class SistemaAcademia {
+    private final List<Usuario> usuarios = new ArrayList<>();
+    private final Map<Integer, List<String>> atividades = new HashMap<>();
+    private final List<String> notificacoes = new ArrayList<>();
+
+    // RF1
+    public void cadastrarUsuario(String nome, int idade, String sexo, double altura, double peso) {
+        usuarios.add(new Usuario(nome, idade, sexo, altura, peso));
     }
 
-    public void editarUsuario(int index, Usuario novoUsuario) {
-        usuarios.set(index, novoUsuario);
+    // RF2
+    public void atualizarPesoDoUsuario(int indice, double novoPeso) {
+        usuario(indice).setPeso(novoPeso);
+        verificarMeta(indice);
     }
 
-    public List<Usuario> listarUsuarios() {
-        return usuarios;
+    // RF3
+    public int totalDeUsuarios() {
+        return usuarios.size();
     }
 
-    public String recomendarAtividade(double imc) {
+    public String listarUsuarios() {
+        StringBuilder sb = new StringBuilder();
+        for (Usuario u : usuarios) {
+            if (sb.length() > 0) sb.append(" | ");
+            sb.append(u);
+        }
+        return sb.toString();
+    }
+
+    public String descricaoDoUsuario(int indice) {
+        return usuario(indice).toString();
+    }
+
+    public String nomeDoUsuario(int indice) {
+        return usuario(indice).getNome();
+    }
+
+    // RF4
+    public void registrarAtividade(int indice, String atividade, int minutos) {
+        usuario(indice).addMinutos(minutos);
+        atividades.computeIfAbsent(indice, k -> new ArrayList<>()).add(atividade + ":" + minutos);
+    }
+
+    // RF5
+    public double calcularImcParaUsuario(int indice) {
+        return Math.round(usuario(indice).calcularIMC() * 10.0) / 10.0;
+    }
+
+    // RF6
+    public String recomendarAtividadeParaUsuario(int indice) {
+        double imc = usuario(indice).calcularIMC();
         if (imc < 18.5) return "Ganhar peso com atividades leves";
-        else if (imc < 25) return "Manter rotina saudável";
-        else return "Focar em atividades de perda de peso";
+        if (imc < 25.0) return "Manter rotina saudavel";
+        return "Focar em atividades de perda de peso";
     }
 
-    public String gerarRelatorioMensal() {
-        // Implementação básica para ilustrar
-        return "Relatório mensal gerado.";
+    // RF7
+    public String gerarRelatorioMensalDoUsuario(int indice) {
+        Usuario u = usuario(indice);
+        return u.getNome() + ": " + u.getMinutosAtividades() + " min em "
+             + atividades.getOrDefault(indice, Collections.emptyList()).size() + " atividades";
     }
 
-    public void definirMetaPeso(int index, double meta) {
-        usuarios.get(index).setMetaPeso(meta);
+    // RF8
+    public void definirMetaDePesoParaUsuario(int indice, double meta) {
+        usuario(indice).setMetaPeso(meta);
     }
 
-    public boolean verificarMetaAtingida(int index) {
-        Usuario usuario = usuarios.get(index);
-        return usuario.getPeso() <= usuario.getMetaPeso();
+    public double progressoDaMetaDoUsuario(int indice) {
+        Usuario u = usuario(indice);
+        return Math.round((u.getPeso() - u.getMetaPeso()) * 10.0) / 10.0;
     }
 
-    public void excluirUsuario(int index) {
-        usuarios.remove(index);
+    public boolean metaAtingidaParaUsuario(int indice) {
+        Usuario u = usuario(indice);
+        return u.getMetaPeso() > 0 && u.getPeso() <= u.getMetaPeso();
+    }
+
+    // RF9
+    public String ultimaNotificacao() {
+        return notificacoes.isEmpty() ? "" : notificacoes.get(notificacoes.size() - 1);
+    }
+
+    // RF10
+    public void excluirUsuario(int indice) {
+        usuarios.remove(indice);
+    }
+
+    private void verificarMeta(int indice) {
+        if (metaAtingidaParaUsuario(indice)) {
+            notificacoes.add("Parabens " + usuario(indice).getNome() + ", meta atingida!");
+        }
+    }
+
+    private Usuario usuario(int indice) {
+        if (indice < 0 || indice >= usuarios.size()) {
+            throw new IllegalArgumentException("Usuario inexistente: " + indice);
+        }
+        return usuarios.get(indice);
     }
 }

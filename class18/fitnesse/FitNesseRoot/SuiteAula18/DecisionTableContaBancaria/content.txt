@@ -1,0 +1,9 @@
+!1 Decision Table - Conta Bancária (Slide 11)
+
+Cada linha é um caso de teste independente; a fixture é instanciada de novo a cada linha.
+
+!|ContaBancariaFixture|
+|saldoInicial|valor|depositar?|sacar?|saqueAprovado?|
+|1000|200|1200.0|800.0|true|
+|500|600|1100.0|500.0|false|
+|100|100|200.0|0.0|true|

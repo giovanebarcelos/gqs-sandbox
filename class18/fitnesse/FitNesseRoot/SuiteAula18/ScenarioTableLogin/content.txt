@@ -1,0 +1,20 @@
+!1 Scenario Table - "fazer login" reutilizável (Slide 15)
+
+Definição do cenário. Os nomes de parâmetro (''usuario'', ''senha'') são usados como '''@usuario''' e '''@senha''' no corpo.
+
+!|scenario|fazer login|usuario|com senha|senha|
+|enter username|@usuario|
+|enter password|@senha|
+|click login|
+
+Uso 1 - login válido:
+
+!|script|LoginFixture|
+|fazer login|joao|com senha|123456|
+|check|mensagem|Bem-vindo, joao!|
+
+Uso 2 - login inválido:
+
+!|script|LoginFixture|
+|fazer login|joao|com senha|senha-errada|
+|check|mensagem|Usuario ou senha invalidos|

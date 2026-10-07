@@ -1,0 +1,5 @@
+!1 Sistema Bancário - RF1..RF10 (Lab 1)
+
+Cada RF é uma Test Page filha. Rode esta página com '''Suite'''.
+
+!contents -R2 -g

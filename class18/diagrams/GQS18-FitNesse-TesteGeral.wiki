@@ -1,107 +1,111 @@
 !***< Hidden
 
 !define TEST_SYSTEM {slim}
-
-
 !define COLLAPSE_SETUP {true}
 !define COLLAPSE_TEARDOWN {true}
 
-!path /home/giovanebarcelos/Documents/tmp/fitnesse
-
+!path classes
 
 *!
 
-!1 Teste de Aceitação para um Sistema Bancário 
+!1 Teste de Aceitação para um Sistema Bancário
 
-!3 RF1 - Criar Conta com Saldo Inicial
+(Cada bloco abaixo é o conteúdo de uma Test Page em SuiteAula18.SistemaBancario.<Nome>; aqui estão juntos numa só página para estudo.)
 
-'''Página de Teste: !-CreateAccount-!'''
+----
+'''Página: !-CreateAccount-!'''
 
-!| script: BankAccountFixture | 
-| createAccount; | "12345" | 100.00 |
-| check | showAccountBalance | "12345" |  100.0 |
+!1 RF1 - Criar conta com saldo inicial
+!|script|BankAccountFixture|
+|createAccount;|12345|100.00|
+|check|showAccountBalance|12345|100.0|
 
-!3 RF2 - Depositar Dinheiro na Conta
+----
+'''Página: !-DepositMoney-!'''
 
-'''Página de Teste: !-DepositMoney-!'''
+!1 RF2 - Depositar dinheiro
+!|script|BankAccountFixture|
+|createAccount;|12345|100.00|
+|deposit;|12345|50.00|
+|check|showAccountBalance|12345|150.0|
 
-!| script: BankAccountFixture | 
-| createAccount; | "12345" | 100.00 |
-| deposit; | "12345" | 50.00 | 
-| check | showAccountBalance | "12345" |  150.0 |
+----
+'''Página: !-WithdrawMoney-!'''
 
+!1 RF3 - Sacar dinheiro
+!|script|BankAccountFixture|
+|createAccount;|12345|100.00|
+|withdraw;|12345|40.00|
+|check|showAccountBalance|12345|60.0|
 
-!3 RF3 - Sacar Dinheiro da Conta
+----
+'''Página: !-TransferMoney-!'''
 
-'''Página de Teste: !-WithdrawMoney-!'''
+!1 RF4 - Transferir entre contas
+!|script|BankAccountFixture|
+|createAccount;|12345|100.00|
+|createAccount;|54321|50.00|
+|transfer;|12345|54321|30.00|
+|check|showAccountBalance|12345|70.0|
+|check|showAccountBalance|54321|80.0|
 
-!| script: BankAccountFixture | 
-| createAccount; | "12345" | 100.00 |
-| withdraw; | "12345" | 40.00 | 
-| check | showAccountBalance | "12345" | 60.0 |
+----
+'''Página: !-InsufficientBalanceForWithdrawal-!'''
 
+!1 RF5 - Saldo insuficiente para saque
 
-!3 RF4 - Transferir Dinheiro entre Contas
+Quando um método lança exceção, a célula esperada com o prefixo '''EXCEPTION: =~/regex/''' confirma que a exceção ocorreu (e com qual mensagem).
 
-'''Página de Teste: !-TransferMoney-!'''
+!|script|BankAccountFixture|
+|createAccount;|12345|100.00|
+|check|withdraw;|12345|110.00|EXCEPTION: =~/Insufficient funds/|
+|check|showAccountBalance|12345|100.0|
 
-!| script: BankAccountFixture | 
-| createAccount; | "12345" | 100.00 |
-| createAccount;  | "54321" | 50.00 |
-| transfer;  | "12345" | "54321" | 30.00 |
-| check | showAccountBalance | "12345" | 70.0 |
-| check | showAccountBalance | "54321" | 80.0 |
+----
+'''Página: !-NonExistentAccount-!'''
 
-!3 RF5 - Verificar Saldo Insuficiente para Saque
+!1 RF6 - Conta inexistente
+!|script|BankAccountFixture|
+|check|showAccountBalance;|54321|EXCEPTION: =~/Account does not exist/|
+|reject|accountExists;|54321|
 
-'''Página de Teste: !-InsufficientBalanceForWithdrawal-!'''
+----
+'''Página: !-CloseAccount-!'''
 
-!| script: BankAccountFixture | 
-| createAccount; | "12345" | 100.00 |
-| check | withdraw  | "54321" | 110.00 | EXCEPTION: =~/__EXCEPTION__/|
-| check | showAccountBalance | "12345" |  100.0 |
+!1 RF7 - Fechar conta
+!|script|BankAccountFixture|
+|createAccount;|12345|100.00|
+|ensure|accountExists;|12345|
+|closeAccount;|12345|
+|reject|accountExists;|12345|
 
-!3 RF6 - Conta Inexistente
+----
+'''Página: !-ZeroBalanceAfterWithdrawal-!'''
 
-'''Página de Teste: !-NonExistentAccount-!'''
+!1 RF8 - Saldo zero após saque total
+!|script|BankAccountFixture|
+|createAccount;|12345|100.00|
+|withdraw;|12345|100.00|
+|check|showAccountBalance|12345|0.0|
 
-!| script: BankAccountFixture | 
-| check | showAccountBalance | "54321" | 100.0 | EXCEPTION: =~/__EXCEPTION__/|
+----
+'''Página: !-TransactionHistory-!'''
 
-!3 RF7 - Fechar Conta
+!1 RF9 - Histórico de transações
+!|script|BankAccountFixture|
+|createAccount;|12345|100.00|
+|deposit;|12345|50.00|
+|withdraw;|12345|30.00|
+|check|showTransactionHistory;|12345|[100.0 initial balance, 50.0 deposit, 30.0 withdrawal]|
 
-'''Página de Teste: !-CloseAccount-!'''
+----
+'''Página: !-FailedTransferDueToInsufficientFunds-!'''
 
-!| script: BankAccountFixture | 
-| createAccount; | "12345" | 100.00 |
-| closeAccount; | "12345" | 
+!1 RF10 - Transferência falha por saldo insuficiente
+!|script|BankAccountFixture|
+|createAccount;|12345|100.00|
+|createAccount;|54321|50.00|
+|check|transfer;|12345|54321|150.00|EXCEPTION: =~/Insufficient funds/|
+|check|showAccountBalance|12345|100.0|
+|check|showAccountBalance|54321|50.0|
 
-!3 RF8 - Saldo Zero após Saque
-
-'''Página de Teste: !-ZeroBalanceAfterWithdrawal-!'''
-
-!| script: BankAccountFixture | 
-| createAccount; | "12345" | 100.00 |
-| withdraw; | "12345" | 100.00 | 
-| check | showAccountBalance | "12345" | 0.0 |
-
-!3 RF9 - Verificar Histórico de Transações
-
-'''Página de Teste: !-TransactionHistory-!'''
-
-!| script: BankAccountFixture | 
-| createAccount; | "12345" | 100.00 |
-| deposit; | "12345" | 50.00 | 
-| withdraw; | "12345" | 30.00 | 
-| check | showTransactionHistory | "12345" | [100.0 initial balance, 50.0 deposit, 30.0 withdrawal] |
-
-!3 RF10 - Transferência Falha por Saldo Insuficiente
-
-'''Página de Teste: !-FailedTransferDueToInsufficientFunds-!'''
-
-!| script: BankAccountFixture | 
-| createAccount; | "12345" | 100.00 |
-| createAccount;  | "54321" | 50.00 |
-| check | transfer  | "12345" | "54321" | 150.00 | EXCEPTION: =~/__EXCEPTION__/|
-| check | showAccountBalance | "12345" | 100.0 |
-| check | showAccountBalance | "54321" | 50.0 |

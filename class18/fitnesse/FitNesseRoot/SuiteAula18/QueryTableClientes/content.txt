@@ -1,0 +1,6 @@
+!1 Query Table - Clientes Ativos (Slide 14)
+
+!|Query:ClientesAtivos|
+|id|nome|email|
+|1|Joao|joao@email.com|
+|2|Maria|maria@email.com|

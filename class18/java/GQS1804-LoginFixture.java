@@ -1,9 +1,10 @@
+// Fixture Slim (POJO). Salvar como LoginFixture.java em fitnesse/src/ (copia pronta em repository/class18/fitnesse/src/).
 /**
  * GQS1804 - Fixture Slim para o fluxo de login (FitNesse).
  * Demonstra uma Script Table Slim (POJO, sem herança de fit.*).
  * Usada no Slide 13/15 de Aula_18_FitNesse_Testes_Aceitacao.md.
  */
-class LoginFixture {
+public class LoginFixture {
 
     private String username;
     private String password;
@@ -21,7 +22,7 @@ class LoginFixture {
         if ("joao".equals(username) && "123456".equals(password)) {
             mensagem = "Bem-vindo, " + username + "!";
         } else {
-            mensagem = "Usuário ou senha inválidos";
+            mensagem = "Usuario ou senha invalidos";
         }
     }
 

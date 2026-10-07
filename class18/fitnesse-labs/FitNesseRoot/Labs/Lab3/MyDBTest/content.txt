@@ -1,0 +1,13 @@
+!1 Lab 3 - Query Table sobre o banco
+
+!|Query:UsuariosDb|
+|id|nome|email|
+|1|Alice|alice@example.com|
+|2|Bob|bob@example.com|
+
+Contagem via Script Table:
+
+!|script|DatabaseFixture|
+|check|count rows;|usuarios|2|
+|execute update;|INSERT INTO usuarios (nome, email) VALUES ('Carol','carol@example.com')|
+|check|count rows;|usuarios|3|

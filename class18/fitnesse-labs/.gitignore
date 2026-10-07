@@ -1,0 +1,5 @@
+target/
+fitnesse.jar
+FitNesseRoot/files/testResults/
+FitNesseRoot/ErrorLogs/
+FitNesseRoot/RerunLastFailures_*

@@ -1,41 +1,68 @@
 !***< Hidden
 
 !define TEST_SYSTEM {slim}
-
-
 !define COLLAPSE_SETUP {true}
 !define COLLAPSE_TEARDOWN {true}
 
-!path /home/giovanebarcelos/Documents/tmp/fitnesse
-
+!path classes
 
 *!
 
-!1 Teste de Aceitação para um Sistema de Gestão de Academia
+!1 Lab 2 - Sistema de Gestão de Academia (RF1..RF10)
 
-!3 RF1 - Cadastro de Usuários
+Usuários são identificados pelo '''índice''' (0, 1, ...) na ordem de cadastro. Cada tabela abaixo é um ''script'' independente: a fixture é recriada a cada tabela, então o primeiro usuário cadastrado em cada uma sempre é o índice 0.
 
-'''Página de Teste: !-CadastroUsuarios-!'''
+!3 RF1 / RF3 - Cadastrar e consultar usuários
+!|script|SistemaAcademia|
+|cadastrar usuario;|Joao|30|M|1.75|70|
+|cadastrar usuario;|Maria|25|F|1.60|60|
+|check|total de usuarios|2|
+|check|nome do usuario;|1|Maria|
+|check|descricao do usuario;|0|Nome=Joao, Idade=30, Sexo=M, Altura=1.75, Peso=70.0|
 
-!| script: SistemaAcademia | 
-| cadastrar usuario | João | 30 | M | 1.75 | 70 |
-| listar usuarios | Nome=João, Idade=30, Sexo=M, Altura=1.75, Peso=70 |
+!3 RF2 - Editar informações (peso)
+!|script|SistemaAcademia|
+|cadastrar usuario;|Joao|30|M|1.75|70|
+|atualizar peso do usuario;|0|68.5|
+|check|calcular imc para usuario;|0|22.4|
 
-!3 RF5 - Calcular o IMC (Índice de Massa Corporal) do usuário
+!3 RF4 / RF7 - Registrar atividades e gerar relatório mensal
+!|script|SistemaAcademia|
+|cadastrar usuario;|Ana|28|F|1.65|62|
+|registrar atividade;|0|corrida|40|
+|registrar atividade;|0|musculacao|50|
+|check|gerar relatorio mensal do usuario;|0|Ana: 90 min em 2 atividades|
 
-'''Página de Teste: !-CalcularIMC-!'''
+!3 RF5 - Calcular o IMC
+!|script|SistemaAcademia|
+|cadastrar usuario;|Maria|25|F|1.60|60|
+|check|calcular imc para usuario;|0|23.4|
 
-!| script: SistemaAcademia | 
-| cadastrar usuario | Maria | 25 | F | 1.60 | 60 |
-| calcular imc para usuario | 0 | => | 23.4 |
+!3 RF6 - Recomendar atividades com base no IMC
+!|script|SistemaAcademia|
+|cadastrar usuario;|Magro|20|M|1.80|55|
+|cadastrar usuario;|Normal|25|F|1.60|60|
+|cadastrar usuario;|Carlos|28|M|1.80|85|
+|check|recomendar atividade para usuario;|0|Ganhar peso com atividades leves|
+|check|recomendar atividade para usuario;|1|Manter rotina saudavel|
+|check|recomendar atividade para usuario;|2|Focar em atividades de perda de peso|
 
+!3 RF8 / RF9 - Meta de perda de peso, progresso e notificação
+!|script|SistemaAcademia|
+|cadastrar usuario;|Carlos|28|M|1.80|85|
+|definir meta de peso para usuario;|0|80|
+|check|progresso da meta do usuario;|0|5.0|
+|reject|meta atingida para usuario;|0|
+|check not|ultima notificacao|Parabens Carlos, meta atingida!|
+|atualizar peso do usuario;|0|79.5|
+|ensure|meta atingida para usuario;|0|
+|check|ultima notificacao|Parabens Carlos, meta atingida!|
 
-!3 RF6 - Verificar a recomendação de atividades com base no IMC
-
-'''Página de Teste: !-RecomendarAtividades-!'''
-
-!| script: SistemaAcademia | 
-| cadastrar usuario | Carlos | 28 | M | 1.80 | 85 |
-| calcular imc para usuario | 0 | => | 26.2 |
-| recomendar atividade para usuario | 0 | => | Focar em atividades de perda de peso |
-
+!3 RF10 - Excluir usuário
+!|script|SistemaAcademia|
+|cadastrar usuario;|Joao|30|M|1.75|70|
+|cadastrar usuario;|Maria|25|F|1.60|60|
+|excluir usuario;|0|
+|check|total de usuarios|1|
+|check|nome do usuario;|0|Maria|
+|check|nome do usuario;|1|EXCEPTION: =~/Usuario inexistente/|

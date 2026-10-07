@@ -1,0 +1,15 @@
+!1 Atividade 06 - Query Table: usuários ativos
+
+A Query Table compara o conjunto de linhas devolvido por ''query()'' com a tabela. A ordem não importa para o Query (use '''subset query:''' para checar apenas algumas linhas, ou '''ordered query:''' para exigir ordem).
+
+!|Query:UsuariosAtivos|
+|id|nome|email|status|
+|1|Maria Silva|maria@teste.com|Ativo|
+|2|Joao Souza|joao@teste.com|Ativo|
+|3|Ana Costa|ana@teste.com|Ativo|
+
+Apenas parte das linhas (subset):
+
+!|Subset Query:UsuariosAtivos|
+|nome|status|
+|Ana Costa|Ativo|

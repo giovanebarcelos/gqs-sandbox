@@ -1,0 +1,7 @@
+!1 RF4 - Transferir entre contas
+!|script|BankAccountFixture|
+|createAccount;|12345|100.00|
+|createAccount;|54321|50.00|
+|transfer;|12345|54321|30.00|
+|check|showAccountBalance|12345|70.0|
+|check|showAccountBalance|54321|80.0|

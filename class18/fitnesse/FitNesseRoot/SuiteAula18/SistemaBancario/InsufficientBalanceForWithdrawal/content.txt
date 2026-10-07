@@ -1,0 +1,8 @@
+!1 RF5 - Saldo insuficiente para saque
+
+Quando um método lança exceção, a célula esperada com o prefixo '''EXCEPTION: =~/regex/''' confirma que a exceção ocorreu (e com qual mensagem).
+
+!|script|BankAccountFixture|
+|createAccount;|12345|100.00|
+|check|withdraw;|12345|110.00|EXCEPTION: =~/Insufficient funds/|
+|check|showAccountBalance|12345|100.0|

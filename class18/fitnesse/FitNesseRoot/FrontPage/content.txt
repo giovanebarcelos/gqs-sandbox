@@ -1,0 +1,7 @@
+!1 Aula 18 - FitNesse: Testes de Aceitação
+!3 ''Workspace completo da disciplina de Garantia da Qualidade de Software''
+
+|'''Suíte'''|'''O que demonstra'''|
+|[[SuiteAula18][.SuiteAula18]]|Todos os exemplos da aula (rode com o botão '''Suite''')|
+
+Páginas individuais: veja os filhos de [[SuiteAula18][.SuiteAula18]].

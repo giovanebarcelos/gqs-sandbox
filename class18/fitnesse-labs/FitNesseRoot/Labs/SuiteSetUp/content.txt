@@ -1,0 +1,4 @@
+Executada antes de cada Test Page da suíte: permite usar as fixtures sem escrever o pacote.
+
+!|import|
+|com.example.fixtures|

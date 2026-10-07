@@ -1,0 +1,6 @@
+!1 RF9 - Histórico de transações
+!|script|BankAccountFixture|
+|createAccount;|12345|100.00|
+|deposit;|12345|50.00|
+|withdraw;|12345|30.00|
+|check|showTransactionHistory;|12345|[100.0 initial balance, 50.0 deposit, 30.0 withdrawal]|

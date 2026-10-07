@@ -1,0 +1,27 @@
+!1 Lab 5 - Fluxo encadeado com variáveis
+
+`!define` guarda um valor FIXO ('''${BASE}'''). Valores obtidos em tempo de execução (token, id) vão em '''símbolos''' com `$nome=` e são reutilizados como `$nome` na mesma página.
+
+!define BASE {http://127.0.0.1:18080/api}
+
+!|script|RestApiFixture|
+|call post;|${BASE}/login|{"user":"admin","pass":"admin"}|
+|check|status|200|
+|$TOKEN=|json field;|token|
+|check|json field;|token|abc123|
+|call post;|${BASE}/customers|{"name":"Joao","email":"joao@ex.com"}|
+|check|status|201|
+|$ID=|json field;|id|
+|call get;|${BASE}/customers/$ID|
+|check|status|200|
+|ensure|response contains;|Joao|
+|call delete;|${BASE}/customers/$ID|
+|check|status|204|
+|call get;|${BASE}/customers/$ID|
+|check|status|404|
+
+Login inválido:
+
+!|script|RestApiFixture|
+|call post;|${BASE}/login|{"user":"admin","pass":"errada"}|
+|check|status|401|

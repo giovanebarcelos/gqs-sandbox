@@ -1,0 +1,6 @@
+!1 RF7 - Fechar conta
+!|script|BankAccountFixture|
+|createAccount;|12345|100.00|
+|ensure|accountExists;|12345|
+|closeAccount;|12345|
+|reject|accountExists;|12345|

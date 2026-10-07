@@ -1,0 +1,4 @@
+!1 RF1 - Criar conta com saldo inicial
+!|script|BankAccountFixture|
+|createAccount;|12345|100.00|
+|check|showAccountBalance|12345|100.0|

@@ -1,0 +1,5 @@
+!|script|DatabaseFixture|
+|connect;|jdbc:h2:mem:fitdb;DB_CLOSE_DELAY=-1|sa||
+|execute update;|CREATE TABLE usuarios (id INT AUTO_INCREMENT PRIMARY KEY, nome VARCHAR(100), email VARCHAR(100))|
+|execute update;|INSERT INTO usuarios (nome, email) VALUES ('Alice','alice@example.com')|
+|execute update;|INSERT INTO usuarios (nome, email) VALUES ('Bob','bob@example.com')|

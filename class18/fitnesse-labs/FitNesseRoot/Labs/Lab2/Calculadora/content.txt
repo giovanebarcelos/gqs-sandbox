@@ -1,0 +1,9 @@
+!1 Lab 2 - Calculadora
+
+Valores `int` voltam sem casa decimal; `divide()` devolve `double` (usa `.0` ou `~=`).
+
+!|CalculadoraFixture|
+|a|b|soma?|subtrai?|multiplica?|divide?|
+|1|2|3|-1|2|0.5|
+|5|3|8|2|15|~=1.67|
+|10|5|15|5|50|2.0|

@@ -1,0 +1,10 @@
+!1 Script Table - Matrícula, mensalidade e liberação de treino (Slide 12)
+
+!|script|AcademiaFixture|
+|check|matricula ativa;|joao|2026-01-01|true|
+|check|mensalidade em dia;|joao|2026-06-01|true|
+|check|pode treinar;|joao|2026-06-15|true|
+|check|pode treinar;|joao|2026-08-15|false|
+|check|matricula ativa;|maria|2026-06-15|false|
+|ensure|pode treinar;|joao|2026-07-31|
+|reject|pode treinar;|maria|2026-07-31|

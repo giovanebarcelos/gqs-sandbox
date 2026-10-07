@@ -1,0 +1,14 @@
+!1 Suíte da Aula 18 - Exemplos FitNesse (Slim)
+
+Esta página é a '''raiz da suíte'''. Tudo que está aqui é herdado por TODAS as subpáginas:
+
+ * '''TEST_SYSTEM = slim''': usa o Slim (fixtures são POJOs, sem herança).
+ * '''!-!path-!''': classpath das fixtures compiladas (pasta ''classes'', relativa a onde o servidor foi iniciado).
+
+!define TEST_SYSTEM {slim}
+!define COLLAPSE_SETUP {true}
+!define COLLAPSE_TEARDOWN {true}
+
+!path classes
+
+!contents -R2 -g

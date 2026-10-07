@@ -1,0 +1,17 @@
+!1 Script Table - Fluxo de Login (Slide 13)
+
+Cada linha da Script Table vira uma chamada de método: ''enter username'' -> ''enterUsername(...)''.
+
+!|script|LoginFixture|
+|enter username|joao|
+|enter password|123456|
+|click login|
+|check|mensagem|Bem-vindo, joao!|
+
+Fluxo com senha errada:
+
+!|script|LoginFixture|
+|enter username|joao|
+|enter password|senha-errada|
+|click login|
+|check|mensagem|Usuario ou senha invalidos|

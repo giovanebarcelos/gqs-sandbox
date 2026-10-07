@@ -1,0 +1,3 @@
+!|script|DatabaseFixture|
+|execute update;|DROP TABLE usuarios|
+|close|

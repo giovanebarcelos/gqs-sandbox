@@ -1,0 +1,5 @@
+!1 RF8 - Saldo zero após saque total
+!|script|BankAccountFixture|
+|createAccount;|12345|100.00|
+|withdraw;|12345|100.00|
+|check|showAccountBalance|12345|0.0|

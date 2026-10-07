@@ -1,0 +1,6 @@
+!1 Decision Table - Desconto (Slide 3)
+
+!|DescontoFixture|
+|valor|percentual|valorFinal?|
+|100.0|10|90.0|
+|200.0|20|160.0|

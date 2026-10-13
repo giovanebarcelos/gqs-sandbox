@@ -1,0 +1,22 @@
+meta {
+  name: POST book - orientado a dados
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrlNode}}/api/books
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "title": "{{titulo}}",
+    "author": "{{autor}}"
+  }
+}
+
+assert {
+  res.status: eq {{statusEsperado}}
+}

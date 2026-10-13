@@ -1,0 +1,35 @@
+# .github/workflows/api-tests-bruno.yml
+name: Testes de API (Bruno)
+on: [push, pull_request]
+
+jobs:
+  bruno:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Subir a API Node
+        run: |
+          cd 3-Bruno/api-node
+          npm ci
+          nohup npm start &        # porta 3000, após o ajuste do Slide 8
+          sleep 3
+
+      - run: npm install -g @usebruno/cli
+
+      - name: Rodar a collection
+        run: |
+          cd 3-Bruno/collections/Biblioteca
+          bru run -r --env Local \
+            --env-var token=${{ secrets.API_TOKEN }} \
+            --reporter-junit ../../results/junit.xml \
+            --reporter-html  ../../results/relatorio.html
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: relatorio-bruno
+          path: 3-Bruno/results/

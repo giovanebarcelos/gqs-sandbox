@@ -1,0 +1,23 @@
+meta {
+  name: GET health (Node)
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrlNode}}/api/health
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+  res.body.status: eq healthy
+  res.body.timestamp: isDefined
+}
+
+tests {
+  test("status é healthy", function () {
+    expect(res.getBody().status).to.equal("healthy");
+  });
+}

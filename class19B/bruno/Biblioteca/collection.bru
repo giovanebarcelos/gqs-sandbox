@@ -1,0 +1,21 @@
+headers {
+  Content-Type: application/json
+}
+
+script:pre-request {
+  req.setHeader("X-Request-Id", "aula19b-" + Date.now());
+}
+
+tests {
+  test("Resposta em menos de 1s", function () {
+    expect(res.getResponseTime()).to.be.below(1000);
+  });
+}
+
+auth {
+  mode: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

@@ -1,0 +1,40 @@
+meta {
+  name: POST book - valido
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrlNode}}/api/books
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "title": "{{titulo}}",
+    "author": "Kent Beck"
+  }
+}
+
+script:pre-request {
+  bru.setVar("titulo", "TDD " + Date.now());
+}
+
+vars:post-response {
+  bookId: res.body.id
+}
+
+assert {
+  res.status: eq 201
+  res.body.id: isString
+  res.body.available: isTruthy
+}
+
+tests {
+  test("contrato: id, title e author", function () {
+    const b = res.getBody();
+    expect(b).to.have.all.keys("id", "title", "author", "available");
+    expect(b.title).to.equal(bru.getVar("titulo"));
+  });
+}

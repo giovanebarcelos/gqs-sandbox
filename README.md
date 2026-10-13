@@ -16,6 +16,7 @@ repository/
 ├── class17/ — Selenium WebDriver  
 ├── class18/ — FitNesse: Testes de Aceitação  
 ├── class19/ — Postman: Testes de API REST  
+├── class19B/ — Bruno: Testes de API REST  
 ├── class20/ — JMeter: Testes de Performance  
 ├── class21/ — SikuliX: Testes de Interface  
 ├── class21B/ — Testes Mobile: Maestro e Appium  
@@ -231,6 +232,23 @@ repository/
 | `GQS19-1Users-Postman.txt` | Especificação dos testes Postman Lab 1 |  
 | `GQS19-2Users-Enunciado.txt` | Enunciado Lab 2 Postman |  
 | `GQS19-2Users-Postman.txt` | Especificação dos testes Postman Lab 2 |  
+
+---  
+
+## class19B — Bruno: Testes de API REST  
+
+### bruno/  
+
+| Arquivo | Descrição |  
+|---|---|  
+| `Biblioteca/` | Collection Bruno completa: `bruno.json`, `collection.bru`, `environments/Local.bru`, pastas com `folder.bru` (ordem), requests com `assert`/`tests`, contrato com ajv e `Dados/dados.csv` |  
+
+### diagrams/  
+
+| Arquivo | Descrição |  
+|---|---|  
+| `GQS19B-OrdemExecucao.mmd` | Diagrama Mermaid da ordem de execução de uma request no Bruno |  
+| `GQS19B-GitHubActions-Bruno.yml` | Workflow do GitHub Actions que sobe a API e roda `bru run` com relatório JUnit |  
 
 ---  
 
@@ -513,6 +531,7 @@ docker compose -f GQS24-kiwi-docker-compose.yml down -v
 | class17 | 17 — Selenium | 6 | Markdown labs + TXT tutoriais |  
 | class18 | 18 — FitNesse | 16 | Java fixtures + TXT labs + PlantUML + Docker + wiki pages + scripts |  
 | class19 | 19 — Postman | 6 | JS scripts + TXT enunciados/specs |  
+| class19B | 19B — Bruno | 17 | Collection Bruno (.bru, ambiente, CSV) + Mermaid + workflow GitHub Actions |  
 | class20 | 20 — JMeter | 17 | JMX plans + MD enunciados + API lab Flask |  
 | class21 | 21 — SikuliX | 4 | TXT enunciados/soluções + MD comandos + links download |  
 | class21B | 21B — Mobile (Maestro/Appium) | 8 | TXT enunciados/soluções + MD comandos + Mermaid + YAML flow + links download + Java/Python |  

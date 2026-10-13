@@ -1,0 +1,7 @@
+flowchart LR
+    A[Pre Request Vars] --> B[Pre Request Script]
+    B --> C{{ENVIO HTTP}}
+    C --> D[Post Response Vars]
+    D --> E[Post Response Script]
+    E --> F[Assertions - bloco assert]
+    F --> G[Tests - bloco tests]

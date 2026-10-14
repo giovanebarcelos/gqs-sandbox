@@ -1,0 +1,11 @@
+%% Q16 — rampa de 10 a 200 usuários em 2 min, mantida por 1 min (duração total 180 s)
+flowchart LR
+    subgraph T0["t = 0 s"]
+        B["Thread Group BASE<br/>10 threads, ramp-up 0 s<br/>duração 180 s"]
+        R["Thread Group RAMPA<br/>190 threads, ramp-up 120 s<br/>duração 180 s"]
+    end
+    B --> S1["0 a 120 s: 10 + 0..190 usuários"]
+    R --> S1
+    S1 --> S2["120 a 180 s: 200 usuários (topo)"]
+    S2 --> F["t = 180 s: grupos terminam"]
+    A["Alternativa: 1 grupo, 200 threads,<br/>ramp-up 120 s, duração 180 s<br/>(começa em ~0, não em 10)"] -.-> S1

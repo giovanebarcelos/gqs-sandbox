@@ -18,6 +18,7 @@ repository/
 ├── class19A/ — Bruno: Testes de API REST  
 ├── class19B/ — Postman: Testes de API REST  
 ├── class20/ — JMeter: Testes de Performance  
+├── class20B/ — JMeter na A1: planos, script e modelo do JMeterTests.md  
 ├── class21/ — SikuliX: Testes de Interface  
 ├── class21B/ — Testes Mobile: Maestro e Appium  
 ├── class23B/ — SonarQube: Análise Contínua e Quality Gate  
@@ -265,6 +266,29 @@ repository/
 | `GQS20-info.txt` | Informações gerais de download e configuração |  
 | `jmeter_lab/` | API REST Flask para laboratório de JMeter |  
 | `jmeter_lab/api/` | Endpoints da API (requirements.txt + run.sh) |  
+
+---  
+
+## class20B — JMeter na Prática: Tema 4 da A1  
+
+### jmeter/  
+
+| Arquivo | Descrição |  
+|---|---|  
+| `prova/Q15-Carga.jmx` | Q15 da prova: `GET /api/books`, 50 threads, 30 s, assertions de status e de 300 ms |  
+| `prova/Q16-Estresse.jmx` | Q16 da prova: `POST /api/books`, rampa 10 a 200 em 2 min + 1 min (dois Thread Groups) |  
+| `prova/Q17-Cenario.jmx` | Q17 da prova: GET books, POST loans, POST calculate-fine, JSON Extractor, timers |  
+| `simulado/Q15-Carga.jmx` | Q15 do simulado: `GET /api/ping`, 100 threads, 60 s |  
+| `simulado/Q16-Estresse.jmx` | Q16 do simulado: `POST /api/orders`, rampa até 500 em 2 min + 1 min |  
+| `simulado/Q17-Cenario.jmx` | Q17 do simulado: `POST /api/process` com JSON, 50 threads, 60 s |  
+| `GQS20B-run.sh` | Roda um plano pela CLI limpando resultados antigos e gerando o dashboard HTML |  
+
+### Documentação e diagramas  
+
+| Arquivo | Descrição |  
+|---|---|  
+| `GQS20B-JMeterTests-Modelo.md` | Modelo do JMeterTests.md preenchido com resultados medidos |  
+| `diagrams/GQS20B-RampaEstresse.mmd` | Diagrama Mermaid da rampa 10 a 200 usuários com dois Thread Groups |  
 
 ---  
 
@@ -533,6 +557,7 @@ docker compose -f GQS24-kiwi-docker-compose.yml down -v
 | class19A | 19A — Bruno | 17 | Collection Bruno (.bru, ambiente, CSV) + Mermaid + workflow GitHub Actions |  
 | class19B | 19B — Postman | 6 | JS scripts + TXT enunciados/specs |  
 | class20 | 20 — JMeter | 17 | JMX plans + MD enunciados + API lab Flask |  
+| class20B | 20B — JMeter na A1 | 11 | 6 planos JMX (prova e simulado) + script de execução + modelo MD + Mermaid |  
 | class21 | 21 — SikuliX | 4 | TXT enunciados/soluções + MD comandos + links download |  
 | class21B | 21B — Mobile (Maestro/Appium) | 8 | TXT enunciados/soluções + MD comandos + Mermaid + YAML flow + links download + Java/Python |  
 | class23B | 23B — SonarQube | 16 | Projeto Maven (src + tests + pom) + Python (módulo + testes + properties) + 2 Mermaid + Compose + .env + script de gate + workflow + Jenkinsfile + roteiro/gabarito |  
@@ -543,4 +568,4 @@ docker compose -f GQS24-kiwi-docker-compose.yml down -v
 | class28 | 28 — Gestão de Configuração/Versionamento | 4 | Python + Java (simulador versionamento) + 2 Mermaid |  
 | class29 | 29 — Projeto Integrador Final | 3 | Python + Java (checklist qualidade) + Mermaid (renumerado de class27) |  
 | class30 | 30 — Ética e Encerramento | 3 | Python + Java (checklist code review) + Mermaid (renumerado de class28) |  
-| **Total** | | **240** | |  
+| **Total** | | **251** | |  

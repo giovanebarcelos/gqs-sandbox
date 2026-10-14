@@ -15,7 +15,7 @@ npm install -g @usebruno/cli
 cd bruno/SimuladoA1
 bru run Q12 Q13 Q14 -r --env Node                  # gabarito do simulado na API Node
 bru run Q12 Q13 Q14 -r --env Python                # o mesmo gabarito na API Python
-bru run Q12 Q13 Q14 Encadeamento Contrato -r --env Node --env-var token=abc123
+bru run -r --env Node --env-var token=abc123      # a collection inteira (o que o avaliador roda)
 bru run Dados -r --env Node --csv-file-path Dados/dados.csv
 ```
 

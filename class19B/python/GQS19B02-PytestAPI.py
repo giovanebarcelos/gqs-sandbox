@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """
-GQS1902 - Testes de API REST estruturados com pytest.
-Mesmos cenários de GQS1901-RequestsTeste.py, reescritos como
+GQS19B02 - Testes de API REST estruturados com pytest.
+Mesmos cenários de GQS19B01-RequestsTeste.py, reescritos como
 funções de teste pytest (fixtures + asserts nativos).
 
 Requisitos: pip install requests pytest
-Uso: pytest GQS1902-PytestAPI.py -v
+Uso: pytest GQS19B02-PytestAPI.py -v
 """
 import pytest
 import requests

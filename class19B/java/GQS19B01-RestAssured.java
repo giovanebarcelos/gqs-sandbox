@@ -1,5 +1,5 @@
 /**
- * GQS1901 - Testes de API REST com REST Assured.
+ * GQS19B01 - Testes de API REST com REST Assured.
  * Exercita o CRUD de usuários da API pública JSONPlaceholder,
  * validando status code e estrutura do JSON de resposta.
  *
@@ -12,8 +12,8 @@
  *   </dependency>
  *
  * Compilação e execução (com as dependências de rest-assured no classpath):
- *   javac -cp .:rest-assured-5.4.0.jar:... GQS1901-RestAssured.java
- *   java -cp .:rest-assured-5.4.0.jar:... GQS1901_RestAssured
+ *   javac -cp .:rest-assured-5.4.0.jar:... GQS19B01-RestAssured.java
+ *   java -cp .:rest-assured-5.4.0.jar:... GQS19B01_RestAssured
  *
  * Em um projeto Maven/Gradle real, prefira reescrever os métodos como
  * testes JUnit (@Test) em vez do main() usado aqui apenas para
@@ -27,7 +27,7 @@ import static org.hamcrest.Matchers.notNullValue;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 
-class GQS1901_RestAssured {
+class GQS19B01_RestAssured {
 
     static final String BASE_URL = "https://jsonplaceholder.typicode.com";
 
@@ -118,16 +118,16 @@ class GQS1901_RestAssured {
 
     public static void main(String[] args) {
         System.out.println("=".repeat(60));
-        System.out.println("  GQS1901 - TESTES DE API REST COM REST ASSURED");
+        System.out.println("  GQS19B01 - TESTES DE API REST COM REST ASSURED");
         System.out.println("=".repeat(60));
 
         Runnable[] testes = {
-            GQS1901_RestAssured::testarGetListaUsuarios,
-            GQS1901_RestAssured::testarGetUsuarioPorId,
-            GQS1901_RestAssured::testarPostCriarUsuario,
-            GQS1901_RestAssured::testarPutAtualizarUsuario,
-            GQS1901_RestAssured::testarDeleteUsuario,
-            GQS1901_RestAssured::testarGetComBearerToken,
+            GQS19B01_RestAssured::testarGetListaUsuarios,
+            GQS19B01_RestAssured::testarGetUsuarioPorId,
+            GQS19B01_RestAssured::testarPostCriarUsuario,
+            GQS19B01_RestAssured::testarPutAtualizarUsuario,
+            GQS19B01_RestAssured::testarDeleteUsuario,
+            GQS19B01_RestAssured::testarGetComBearerToken,
         };
 
         int falhas = 0;

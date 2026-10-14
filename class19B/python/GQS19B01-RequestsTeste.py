@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """
-GQS1901 - Testes de API REST com a biblioteca requests.
+GQS19B01 - Testes de API REST com a biblioteca requests.
 Exercita o CRUD de usuários da API pública JSONPlaceholder,
 validando status code e estrutura do JSON de resposta.
 
 Requisitos: pip install requests
-Uso: python3 GQS1901-RequestsTeste.py
+Uso: python3 GQS19B01-RequestsTeste.py
 """
 import requests
 
@@ -86,7 +86,7 @@ def testar_get_com_bearer_token_invalido() -> None:
 
 def main() -> None:
     print("=" * 60)
-    print("  GQS1901 - TESTES DE API REST COM REQUESTS")
+    print("  GQS19B01 - TESTES DE API REST COM REQUESTS")
     print("=" * 60)
 
     testes = [

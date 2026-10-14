@@ -1,6 +1,6 @@
-# class19B — Bruno: Testes de API REST
+# class19A — Bruno: Testes de API REST
 
-Material da **Aula 19B**. A collection foi executada com `@usebruno/cli` 4.2.1 contra as APIs da A1.
+Material da **Aula 19A**. A collection foi executada com `@usebruno/cli` 4.2.1 contra as APIs da A1.
 
 ## Como executar
 

@@ -1,6 +1,6 @@
 # class20B — JMeter na Prática: Tema 4 do Simulado da A1
 
-Material da **Aula 20B**, cujo passo a passo é a correção (gabarito comentado) do Tema 4 do **Simulado da A1**. Os quatro planos `.jmx` foram executados com **JMeter 5.6.3** contra a API Node do simulado (`A1/Simulado/WorkSpace/3-Bruno/api-node`). Os resultados medidos estão em `GQS20B-JMeterTests-Modelo.md`.
+Material da **Aula 20B**, cujo passo a passo é a correção (gabarito comentado) do Tema 4 do **Simulado da A1**. Os cinco planos `.jmx` foram executados com **JMeter 5.6.3** contra a API Node do simulado (`A1/Simulado/WorkSpace/3-Bruno/api-node`). Os resultados medidos estão em `GQS20B-JMeterTests-Modelo.md`.
 
 ## Como executar
 
@@ -9,6 +9,7 @@ Material da **Aula 20B**, cujo passo a passo é a correção (gabarito comentado
 cd A1/Simulado/WorkSpace/3-Bruno/api-node && npm install && node index.js
 
 # Terminal 2 — a partir de repository/class20B/jmeter
+./GQS20B-run.sh simulado/simuladoA1.jmx       # entregável completo, ~5 min
 ./GQS20B-run.sh simulado/Q15-Carga.jmx
 ./GQS20B-run.sh simulado/Q16-Estresse.jmx        # ~3 min
 ./GQS20B-run.sh simulado/Q17-Cenario.jmx
@@ -24,6 +25,7 @@ Os planos aceitam `-Jhost=` e `-Jporta=` (variáveis `${__P(host,localhost)}` e 
 
 | Plano | Questão | Configuração |
 |---|---|---|
+| `jmeter/simulado/simuladoA1.jmx` | **Entregável** | Q15, Q16 (um grupo de 500, ramp-up 120 s, 180 s) e Q17 em um arquivo, *Run Thread Groups consecutively*; ~5 min |  
 | `jmeter/simulado/Q15-Carga.jmx` | Q15 do simulado | `GET /api/ping`, 100 threads, 60 s; Response Code 200 + Duration 200 ms |
 | `jmeter/simulado/Q16-Estresse.jmx` | Q16 do simulado | `POST /api/orders`, 10 → 500 threads em 2 min + 1 min (dois grupos); alternativa de 1 grupo desabilitada |
 | `jmeter/simulado/Q17-Cenario.jmx` | Q17 do simulado | `POST /api/process`, 50 threads, 60 s; JSON Assertions `status == processed` e `input.qty == 2` |

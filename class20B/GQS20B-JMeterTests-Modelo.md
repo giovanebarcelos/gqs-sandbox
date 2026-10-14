@@ -12,6 +12,29 @@ cd 3-Bruno/api-node && npm install && node index.js
 curl http://localhost:5000/api/ping      # {"pong":"ok"} — confirma antes de testar
 ```
 
+## 1.1 O entregável `testes/simuladoA1.jmx`
+
+Um único plano com os três Thread Groups (Q15, Q16 e Q17) e **Run Thread Groups consecutively** marcado no Test Plan, para que as questões rodem uma depois da outra e não disputem a API. No arquivo único, a Q16 usa **um** grupo (500 threads, ramp-up 120 s, duração 180 s): com *consecutively*, dois grupos (base + rampa) rodariam em sequência e não somados.
+
+**Abrir e rodar na GUI:** `jmeter` → **File → Open** → `testes/simuladoA1.jmx` → **Start** (`Ctrl+R`) → acompanhar no **Aggregate Report** (*95% Line*, *Error %*). A GUI serve para conferir e depurar; a medição vale pela CLI:
+
+```bash
+cd 4-JMeter/testes
+rm -rf simulado.jtl ../relatorios/simulado
+jmeter -n -t simuladoA1.jmx -l simulado.jtl -e -o ../relatorios/simulado    # ~5 minutos
+# relatório: ../relatorios/simulado/index.html
+```
+
+**Resultado da execução completa** (Q15 de 0 a 60 s, Q16 de 60 a 240 s com pico de 500 threads, Q17 de 240 a 300 s):
+
+| Label (questão) | Amostras | Erro % | Média | 90th pct | 95th pct | Máx |
+|---|---|---|---|---|---|---|
+| `GET /api/ping` (Q15) | 918.500 | 0,00% | 6,0 ms | 8 ms | **8 ms** | 23 ms |
+| `POST /api/orders` (Q16) | 300.028 | **0,00%** | 0,4 ms | 1 ms | 1 ms | 19 ms |
+| `POST /api/process` (Q17) | 7.193 | 0,00% | 50,4 ms | 51 ms | 51 ms | 56 ms |
+
+As seções 2 a 4 detalham cada questão com os planos separados (`Q15-Carga.jmx`, `Q16-Estresse.jmx`, `Q17-Cenario.jmx`), úteis para medir uma questão por vez.
+
 ## 2. Q15 — Teste de carga (`Q15-Carga.jmx`)
 
 **Configuração**

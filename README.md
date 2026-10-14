@@ -283,6 +283,7 @@ repository/
 
 | Arquivo | Descrição |  
 |---|---|  
+| `simulado/simuladoA1.jmx` | Entregável do simulado: Q15, Q16 e Q17 em um arquivo, *Run Thread Groups consecutively* |  
 | `simulado/Q15-Carga.jmx` | Q15 do simulado: `GET /api/ping`, 100 threads, 60 s |  
 | `simulado/Q16-Estresse.jmx` | Q16 do simulado: `POST /api/orders`, rampa até 500 em 2 min + 1 min |  
 | `simulado/Q17-Cenario.jmx` | Q17 do simulado: `POST /api/process` com JSON, 50 threads, 60 s |  
@@ -563,7 +564,7 @@ docker compose -f GQS24-kiwi-docker-compose.yml down -v
 | class19A | 19A — Bruno | 23 | Collection Bruno do Simulado A1 (.bru, ambientes, CSV) + Mermaid + workflow GitHub Actions |  
 | class19B | 19B — Postman | 16 | Collection Postman do Simulado A1 + environments + CSV + JS scripts + TXT enunciados/specs |  
 | class20 | 20 — JMeter | 17 | JMX plans + MD enunciados + API lab Flask |  
-| class20B | 20B — JMeter na A1 | 8 | 4 planos JMX do simulado + script de execução + modelo MD + Mermaid |  
+| class20B | 20B — JMeter na A1 | 9 | 5 planos JMX do simulado + script de execução + modelo MD + Mermaid |  
 | class21 | 21 — SikuliX | 4 | TXT enunciados/soluções + MD comandos + links download |  
 | class21B | 21B — Mobile (Maestro/Appium) | 8 | TXT enunciados/soluções + MD comandos + Mermaid + YAML flow + links download + Java/Python |  
 | class23B | 23B — SonarQube | 16 | Projeto Maven (src + tests + pom) + Python (módulo + testes + properties) + 2 Mermaid + Compose + .env + script de gate + workflow + Jenkinsfile + roteiro/gabarito |  

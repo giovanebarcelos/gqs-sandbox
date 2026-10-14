@@ -18,7 +18,7 @@ repository/
 ├── class19A/ — Bruno: Testes de API REST  
 ├── class19B/ — Postman: Testes de API REST  
 ├── class20/ — JMeter: Testes de Performance  
-├── class20B/ — JMeter na A1: planos, script e modelo do JMeterTests.md  
+├── class20B/ — JMeter no Simulado da A1: planos, script e modelo do README-JMeter.md  
 ├── class21/ — SikuliX: Testes de Interface  
 ├── class21B/ — Testes Mobile: Maestro e Appium  
 ├── class23B/ — SonarQube: Análise Contínua e Quality Gate  
@@ -227,7 +227,7 @@ repository/
 
 | Arquivo | Descrição |  
 |---|---|  
-| `Biblioteca/` | Collection Bruno completa: `bruno.json`, `collection.bru`, `environments/Local.bru`, pastas com `folder.bru` (ordem), requests com `assert`/`tests`, contrato com ajv e `Dados/dados.csv` |  
+| `SimuladoA1/` | Gabarito do Tema 3 do Simulado da A1: `bruno.json`, `collection.bru`, `environments/Node.bru` e `Python.bru`, pastas `Q12`/`Q13`/`Q14` com `assert`/`tests`, `Encadeamento`, contrato com ajv e `Dados/dados.csv` |  
 
 ### diagrams/  
 
@@ -239,6 +239,14 @@ repository/
 ---  
 
 ## class19B — Postman: Testes de API REST  
+
+### postman/  
+
+| Arquivo | Descrição |  
+|---|---|  
+| `SimuladoA1.postman_collection.json` | Gabarito do Tema 3 do Simulado da A1 em Postman: pastas Q12, Q13, Q14, Encadeamento e Contrato |  
+| `SimuladoA1-Dados.postman_collection.json` + `pedidos.csv` | Request orientada a dados (`POST /api/orders`, 3 casos) |  
+| `Node.postman_environment.json` / `Python.postman_environment.json` | Environments com `baseUrl` (portas 3000 e 5000) |  
 
 ### diagrams/  
 
@@ -269,18 +277,16 @@ repository/
 
 ---  
 
-## class20B — JMeter na Prática: Tema 4 da A1  
+## class20B — JMeter na Prática: Tema 4 do Simulado da A1  
 
 ### jmeter/  
 
 | Arquivo | Descrição |  
 |---|---|  
-| `prova/Q15-Carga.jmx` | Q15 da prova: `GET /api/books`, 50 threads, 30 s, assertions de status e de 300 ms |  
-| `prova/Q16-Estresse.jmx` | Q16 da prova: `POST /api/books`, rampa 10 a 200 em 2 min + 1 min (dois Thread Groups) |  
-| `prova/Q17-Cenario.jmx` | Q17 da prova: GET books, POST loans, POST calculate-fine, JSON Extractor, timers |  
 | `simulado/Q15-Carga.jmx` | Q15 do simulado: `GET /api/ping`, 100 threads, 60 s |  
 | `simulado/Q16-Estresse.jmx` | Q16 do simulado: `POST /api/orders`, rampa até 500 em 2 min + 1 min |  
 | `simulado/Q17-Cenario.jmx` | Q17 do simulado: `POST /api/process` com JSON, 50 threads, 60 s |  
+| `simulado/Q17-Fluxo-Extra.jmx` | Extra: fluxo ping → orders (JSON Extractor do `id`) → process, Transaction Controller, 20 threads, 60 s |  
 | `GQS20B-run.sh` | Roda um plano pela CLI limpando resultados antigos e gerando o dashboard HTML |  
 
 ### Documentação e diagramas  
@@ -554,10 +560,10 @@ docker compose -f GQS24-kiwi-docker-compose.yml down -v
 | class16 | 16 — TDD | 65 | Java (9 exercícios TDD + tests + 6 TXT/notas TDD) |  
 | class17 | 17 — Selenium | 6 | Markdown labs + TXT tutoriais |  
 | class18 | 18 — FitNesse | 16 | Java fixtures + TXT labs + PlantUML + Docker + wiki pages + scripts |  
-| class19A | 19A — Bruno | 17 | Collection Bruno (.bru, ambiente, CSV) + Mermaid + workflow GitHub Actions |  
-| class19B | 19B — Postman | 6 | JS scripts + TXT enunciados/specs |  
+| class19A | 19A — Bruno | 23 | Collection Bruno do Simulado A1 (.bru, ambientes, CSV) + Mermaid + workflow GitHub Actions |  
+| class19B | 19B — Postman | 16 | Collection Postman do Simulado A1 + environments + CSV + JS scripts + TXT enunciados/specs |  
 | class20 | 20 — JMeter | 17 | JMX plans + MD enunciados + API lab Flask |  
-| class20B | 20B — JMeter na A1 | 11 | 6 planos JMX (prova e simulado) + script de execução + modelo MD + Mermaid |  
+| class20B | 20B — JMeter na A1 | 8 | 4 planos JMX do simulado + script de execução + modelo MD + Mermaid |  
 | class21 | 21 — SikuliX | 4 | TXT enunciados/soluções + MD comandos + links download |  
 | class21B | 21B — Mobile (Maestro/Appium) | 8 | TXT enunciados/soluções + MD comandos + Mermaid + YAML flow + links download + Java/Python |  
 | class23B | 23B — SonarQube | 16 | Projeto Maven (src + tests + pom) + Python (módulo + testes + properties) + 2 Mermaid + Compose + .env + script de gate + workflow + Jenkinsfile + roteiro/gabarito |  

@@ -1,6 +1,6 @@
-# JMeterTests.md — Modelo preenchido (A1 · Tema 4)
+# README-JMeter.md — Modelo preenchido (Simulado da A1 · Tema 4)
 
-Modelo de documentação para o Tema 4 da A1. Os números são de uma execução real (JMeter 5.6.3, Java 25, Linux) contra a API Node da **prova**; os seus serão diferentes. O que importa é a estrutura: **o que foi configurado → como rodar → o que foi medido → o que significa**.
+Modelo de documentação para o Tema 4 do **Simulado da A1**. Os números são de uma execução real (JMeter 5.6.3, Java 25, Linux) contra a API Node do simulado; os seus serão diferentes. O que importa é a estrutura: **o que foi configurado → como rodar → o que foi medido → o que significa**.
 
 ## 1. Pré-requisitos e como subir a API
 
@@ -9,7 +9,7 @@ Modelo de documentação para o Tema 4 da A1. Os números são de uma execução
 
 ```bash
 cd 3-Bruno/api-node && npm install && node index.js
-curl http://localhost:5000/api/books      # confirma antes de testar
+curl http://localhost:5000/api/ping      # {"pong":"ok"} — confirma antes de testar
 ```
 
 ## 2. Q15 — Teste de carga (`Q15-Carga.jmx`)
@@ -20,12 +20,12 @@ curl http://localhost:5000/api/books      # confirma antes de testar
 |---|---|
 | Variáveis | `HOST=${__P(host,localhost)}`, `PORT=${__P(porta,5000)}` |
 | HTTP Request Defaults | `${HOST}` / `${PORT}` / `http` |
-| Thread Group | 50 threads, ramp-up 10 s, Loop Count Infinite, *Specify Thread lifetime* = 30 s |
-| Sampler | `GET /api/books` |
-| Assertions | Response Code = 200; Duration Assertion = 300 ms |
+| Thread Group | 100 threads, ramp-up 10 s, Loop Count Infinite, *Specify Thread lifetime* = 60 s |
+| Sampler | `GET /api/ping` |
+| Assertions | Response Code = 200; Duration Assertion = 200 ms |
 | Listeners | Summary Report, Aggregate Report (View Results Tree desabilitado) |
 
-A duração de 30 s **inclui** o ramp-up de 10 s.
+A duração de 60 s **inclui** o ramp-up de 10 s.
 
 **Como executar**
 
@@ -39,25 +39,25 @@ jmeter -n -t Q15-Carga.jmx -l q15.jtl -e -o relatorios/q15
 
 | Label | Amostras | Erro % | Média | 90th pct | 95th pct | 99th pct | Máx | Vazão |
 |---|---|---|---|---|---|---|---|---|
-| `GET /api/books` | 242.461 | 0,00% | 5 ms | **7 ms** | 8 ms | 11 ms | 21 ms | 8.094/s |
+| `GET /api/ping` | 969.530 | 0,00% | 5,7 ms | 8 ms | **8 ms** | 10 ms | 32 ms | 16.164/s |
 
-**Interpretação.** Critério: 90% das respostas < 300 ms. O percentil 90 foi **7 ms**, portanto o critério foi **atendido** com ampla folga. A Duration Assertion de 300 ms não falhou nenhuma amostra (Error % = 0%), o que confirma a conclusão por um segundo caminho: com no máximo 10% de falhas por tempo, ao menos 90% das respostas ficam abaixo de 300 ms.
+**Interpretação.** Critério: 95% das respostas < 200 ms. O percentil 95 foi **8 ms**, portanto o critério foi **atendido** com ampla folga. A Duration Assertion de 200 ms não falhou nenhuma amostra (Error % = 0%), o que confirma a conclusão por um segundo caminho: com no máximo 5% de falhas por tempo, ao menos 95% das respostas ficam abaixo de 200 ms.
 
 ## 3. Q16 — Teste de estresse (`Q16-Estresse.jmx`)
 
-**Como a rampa de 10 a 200 usuários em 2 minutos, mantida por 1 minuto, foi modelada**
+**Como a rampa até 500 usuários em 2 minutos, mantida por 1 minuto, foi modelada**
 
 | Grupo | Threads | Ramp-up | Duração | Papel |
 |---|---|---|---|---|
 | Base fixa | 10 | 0 s | 180 s | 10 usuários desde o início |
-| Rampa | 190 | 120 s | 180 s | +190 usuários ao longo de 2 min |
+| Rampa | 490 | 120 s | 180 s | +490 usuários ao longo de 2 min |
 
-Somados: 10 → 200 usuários em 120 s, e 200 usuários mantidos até 180 s (a duração do grupo **inclui** o ramp-up: 120 s + 60 s). Medido na execução: 27 threads aos ~10 s, 122 aos ~60 s e 200 a partir de ~115 s.
+Somados: 10 → 500 usuários em 120 s, e 500 usuários mantidos até 180 s (a duração do grupo **inclui** o ramp-up: 120 s + 60 s). Medido na execução: 56 threads aos ~10 s, 260 aos ~60 s e 500 a partir de ~119 s; o teste durou 179,9 s.
 
-Sampler: `POST /api/books` com *HTTP Header Manager* (`Content-Type: application/json`) e corpo
+Sampler: `POST /api/orders` com *HTTP Header Manager* (`Content-Type: application/json`) e corpo
 
 ```json
-{"title": "Livro ${__threadNum}-${__UUID()}", "author": "Autor ${__time(HHmmss)}"}
+{"product": "Produto ${__threadNum}", "qty": ${__Random(1,5)}}
 ```
 
 Assertion: Response Code = 201. *Uniform Random Timer* de 100 a 300 ms (think time).
@@ -71,21 +71,21 @@ jmeter -n -t Q16-Estresse.jmx -l q16.jtl -e -o relatorios/q16     # ~3 minutos
 
 **Resultado**
 
-| Label | Amostras | Erro % | Tempo médio | 90th pct | Máx | Vazão |
-|---|---|---|---|---|---|---|
-| `POST /api/books` | 122.989 | **0,00%** | **0,7 ms** | 1 ms | 35 ms | 684/s |
+| Label | Amostras | Erro % | Tempo médio | 90th pct | 95th pct | Máx | Vazão |
+|---|---|---|---|---|---|---|---|
+| `POST /api/orders` | 301.164 | **0,00%** | **1,8 ms** | 6 ms | 8 ms | 39 ms | 1.674/s |
 
-**Interpretação.** Taxa de erro de 0% e tempo médio de 0,7 ms, estável durante toda a rampa. **O ponto de quebra não foi atingido com 200 usuários**: ele é maior que isso. Para localizá-lo seria preciso subir a carga (mais threads ou menos think time) até o erro ou o tempo começarem a crescer em *Response Times Over Time*.
+**Interpretação.** Taxa de erro de 0% e tempo médio de 1,8 ms durante toda a rampa. **O ponto de quebra não foi atingido com 500 usuários**: ele é maior que isso. Para localizá-lo seria preciso subir a carga (mais threads ou menos think time) até o erro ou o tempo começarem a crescer em *Response Times Over Time*.
 
 ## 4. Q17 — Cenário de negócio (`Q17-Cenario.jmx`)
 
-**Configuração.** Thread Group com 20 threads, ramp-up 5 s, Loop Infinite, duração 60 s. Dentro de um *Transaction Controller* (`Fluxo completo do empréstimo`), três samplers numerados:
+**Configuração.** Thread Group com 50 threads, ramp-up 5 s, Loop Infinite, duração 60 s. Sampler `POST /api/process` com o Header Manager JSON e corpo
 
-1. `1 GET /api/books` — *JSON Extractor* guarda `$.books[0].id` em `bookId` (default `L001`)
-2. `2 POST /api/loans` — corpo `{"userId": "U${__threadNum}", "bookId": "${bookId}", "daysLimit": 14}`; Response Code = 201; JSON Assertion `$.bookId == ${bookId}`
-3. `3 POST /api/calculate-fine` — corpo `{"daysLate": ${__Random(0,30)}}`; Response Code = 200; JSON Assertion `$.currency == BRL`
+```json
+{"orderId": "${__threadNum}-${__UUID()}", "qty": 2}
+```
 
-*Uniform Random Timer* de 500 a 1.500 ms entre as requisições. Todos os passos usam a mesma API (porta 5000).
+Assertions: Response Code = 200; JSON Assertion `$.status == processed`; JSON Assertion `$.input.qty == 2` (pega o corpo que não chegou: sem o Header Manager a API responde 200 com `input` vazio). *Uniform Random Timer* de 200 a 500 ms.
 
 **Como executar**
 
@@ -94,16 +94,24 @@ rm -rf q17.jtl relatorios/q17
 jmeter -n -t Q17-Cenario.jmx -l q17.jtl -e -o relatorios/q17
 ```
 
-**Tempos de cada etapa**
+**Resultado**
+
+| Label | Amostras | Erro % | Média | 90th pct | 95th pct | Máx | Vazão |
+|---|---|---|---|---|---|---|---|
+| `POST /api/process` | 7.155 | 0,00% | 50,4 ms | 51 ms | 51 ms | 69 ms | 120/s |
+
+**Interpretação.** A média de ~50 ms vem da própria API, que simula 50 ms de processamento (`setTimeout`). Nenhuma JSON Assertion falhou: todas as respostas vieram com `status == processed` e com o `qty` enviado.
+
+### Extra — fluxo `ping → orders → process` (`Q17-Fluxo-Extra.jmx`)
+
+20 threads, 60 s, *Transaction Controller* `Fluxo completo do pedido`, JSON Extractor `orderId ← $.id` no passo 2 e JSON Assertion (regex `^ORD-\d+$`) em `$.input.orderId` no passo 3.
 
 | Etapa | Amostras | Erro % | Média | 90th pct | Máx |
 |---|---|---|---|---|---|
-| `1 GET /api/books` | 387 | 0% | 1,4 ms | 2 ms | 25 ms |
-| `2 POST /api/loans` | 382 | 0% | 1,7 ms | 3 ms | 4 ms |
-| `3 POST /api/calculate-fine` | 377 | 0% | 1,7 ms | 2 ms | 3 ms |
-| **Fluxo completo** | 382 | 0% | 4,8 ms | 7 ms | 30 ms |
-
-**Interpretação.** O fluxo completo (4,8 ms) é a soma dos três passos; os timers não entram na medida. A diferença entre o número de amostras (387, 382, 377) vem do fim do teste, que interrompe algumas threads no meio do fluxo.
+| `1 GET /api/ping` | 379 | 0% | 0,5 ms | 1 ms | 21 ms |
+| `2 POST /api/orders` | 375 | 0% | 0,6 ms | 1 ms | 8 ms |
+| `3 POST /api/process` | 367 | 0% | 50,7 ms | 51 ms | 52 ms |
+| **Fluxo completo** | 375 | 0% | 50,7 ms | 53 ms | 75 ms |
 
 ## 5. Como gerar e interpretar o relatório HTML
 
@@ -128,15 +136,4 @@ Na tabela *Statistics*: `Error %` (taxa de erro), `Average` (tempo médio), `90t
 | API Node e Flask na mesma porta (`EADDRINUSE`) | subir só uma API |
 | `Cannot write to '...' as folder is not empty` | apagar a pasta do `-o` antes de rodar |
 | Relatório com dados de execuções antigas | apagar o `.jtl` antes de rodar |
-
----
-
-## Apêndice — Simulado (mesmos métodos, outras APIs)
-
-| Questão | Plano | Amostras | Erro % | Média | Percentil | Vazão |
-|---|---|---|---|---|---|---|
-| Q15 | `GET /api/ping`, 100 threads, 60 s | 481.083 | 0,00% | 11 ms | 95th = **16 ms** (< 200 ms) | 8.023/s |
-| Q16 | `POST /api/orders`, 10 → 500 threads em 2 min + 1 min | 302.867 | 0,00% | 0,5 ms | 95th = 1 ms | 1.683/s |
-| Q17 | `POST /api/process`, 50 threads, 60 s | 7.194 | 0,00% | 52 ms | 95th = 53 ms | 120/s |
-
-A API do simulado simula 50 ms de processamento em `/api/process`, o que explica a média de ~52 ms na Q17.
+| Q15, Q16 e Q17 no mesmo `simuladoA1.jmx` rodando juntas | marcar *Run Thread Groups consecutively* no Test Plan |

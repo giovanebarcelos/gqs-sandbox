@@ -2,7 +2,7 @@
 # Roda UM plano JMeter pela CLI, apagando resultados antigos antes (a pasta do -o precisa estar
 # vazia e o .jtl existente seria ACRESCENTADO, misturando execuções).
 # Uso: ./GQS20B-run.sh <plano.jmx> [porta] [host]
-#   ./GQS20B-run.sh prova/Q15-Carga.jmx
+#   ./GQS20B-run.sh simulado/Q15-Carga.jmx
 #   ./GQS20B-run.sh simulado/Q16-Estresse.jmx 3000
 set -euo pipefail
 

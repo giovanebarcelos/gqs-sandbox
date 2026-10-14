@@ -1,0 +1,33 @@
+meta {
+  name: Q13 - POST orders sem product
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/api/orders
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "qty": 2
+  }
+}
+
+assert {
+  res.status: eq 400
+  res.body.error: isDefined
+  res.body.error: contains product
+}
+
+tests {
+  test("Status code is 400", function () {
+    expect(res.getStatus()).to.equal(400);
+  });
+
+  test("Response has error field", function () {
+    expect(res.getBody()).to.have.property("error");
+  });
+}

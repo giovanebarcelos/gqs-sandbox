@@ -1,0 +1,26 @@
+meta {
+  name: Q14 - GET ping
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/api/ping
+  body: none
+  auth: inherit
+}
+
+assert {
+  res.status: eq 200
+  res.body.pong: eq ok
+}
+
+tests {
+  test("Status code is 200", function () {
+    expect(res.getStatus()).to.equal(200);
+  });
+
+  test("Pong is ok", function () {
+    expect(res.getBody().pong).to.equal("ok");
+  });
+}

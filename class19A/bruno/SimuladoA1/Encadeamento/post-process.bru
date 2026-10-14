@@ -1,0 +1,39 @@
+meta {
+  name: POST process - usa orderId
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/api/process
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "orderId": "{{orderId}}",
+    "qty": 2
+  }
+}
+
+script:pre-request {
+  const r = await bru.sendRequest({
+    method: "GET",
+    url: bru.interpolate("{{baseUrl}}/api/ping")
+  });
+  bru.setVar("pong", r.data.pong);
+}
+
+assert {
+  res.status: eq 200
+  res.body.status: eq processed
+  res.body.input.orderId: matches ^ORD-\d+$
+  res.body.input.qty: eq 2
+}
+
+tests {
+  test("API estava no ar antes do envio (ping)", function () {
+    expect(bru.getVar("pong")).to.equal("ok");
+  });
+}

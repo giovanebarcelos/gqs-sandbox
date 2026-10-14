@@ -1,0 +1,37 @@
+meta {
+  name: POST orders - contrato (JSON Schema)
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/api/orders
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "product": "Computer"
+  }
+}
+
+script:post-response {
+  const Ajv = require("ajv");
+  const ajv = new Ajv();
+
+  const schema = {
+    type: "object",
+    required: ["id", "product"],
+    additionalProperties: false,
+    properties: {
+      id:      { type: "string", pattern: "^ORD-\\d+$" },
+      product: { type: "string", minLength: 1 }
+    }
+  };
+
+  test("Resposta segue o contrato da API", function () {
+    const valido = ajv.validate(schema, res.getBody());
+    expect(valido, JSON.stringify(ajv.errors)).to.be.true;
+  });
+}

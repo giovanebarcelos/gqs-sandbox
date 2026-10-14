@@ -1,0 +1,36 @@
+meta {
+  name: POST order - gera orderId
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/api/orders
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "product": "{{produto}}"
+  }
+}
+
+script:pre-request {
+  // massa unica: evita colidir com dado ja criado
+  bru.setVar("produto", "Notebook " + Date.now());
+}
+
+vars:post-response {
+  orderId: res.body.id
+}
+
+assert {
+  res.status: eq 201
+}
+
+tests {
+  test("Devolve o produto gerado no pre-request", function () {
+    expect(res.getBody().product).to.equal(bru.getVar("produto"));
+  });
+}

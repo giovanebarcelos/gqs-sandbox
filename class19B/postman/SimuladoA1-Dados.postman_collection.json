@@ -1,0 +1,52 @@
+{
+  "info": {
+    "name": "SimuladoA1-Dados",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "POST orders - orientado a dados",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/orders",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "orders"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"product\": \"{{produto}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status conforme o caso de teste\", function () {",
+              "    pm.response.to.have.status(Number(pm.iterationData.get(\"statusEsperado\")));",
+              "});"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

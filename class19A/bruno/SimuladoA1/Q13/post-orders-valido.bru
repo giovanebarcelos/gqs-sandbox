@@ -1,0 +1,38 @@
+meta {
+  name: Q13 - POST orders valido
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/api/orders
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "product": "Computer"
+  }
+}
+
+assert {
+  res.status: eq 201
+  res.body.id: isString
+  res.body.id: matches ^ORD-\d+$
+  res.body.product: eq Computer
+}
+
+tests {
+  test("Status code is 201", function () {
+    expect(res.getStatus()).to.equal(201);
+  });
+
+  test("Contrato: id e product", function () {
+    expect(res.getBody()).to.have.all.keys("id", "product");
+  });
+
+  test("Devolve o product enviado", function () {
+    expect(res.getBody().product).to.equal("Computer");
+  });
+}

@@ -1,0 +1,26 @@
+meta {
+  name: Q12 - GET status
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/api/status
+  body: none
+  auth: inherit
+}
+
+assert {
+  res.status: eq 200
+  res.body.status: eq ok
+}
+
+tests {
+  test("Status code is 200", function () {
+    expect(res.getStatus()).to.equal(200);
+  });
+
+  test("Status is ok", function () {
+    expect(res.getBody().status).to.equal("ok");
+  });
+}

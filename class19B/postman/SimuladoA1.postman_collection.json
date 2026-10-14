@@ -1,0 +1,472 @@
+{
+  "info": {
+    "name": "SimuladoA1",
+    "description": "Gabarito do Tema 3 do Simulado da A1 (Aula 19B - Postman).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.request.headers.upsert({ key: \"X-Request-Id\", value: \"simulado-a1-\" + Date.now() });"
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test(\"Resposta em menos de 1s\", function () {",
+          "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+          "});"
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "orderId",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "Q12",
+      "item": [
+        {
+          "name": "Q12 - GET status",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/status",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "status"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Status is ok\", function () {",
+                  "    pm.expect(pm.response.json().status).to.eql(\"ok\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Q13",
+      "item": [
+        {
+          "name": "Q13 - POST orders sem product",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/orders",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "orders"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"qty\": 2\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 400\", function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "",
+                  "pm.test(\"Response has error field\", function () {",
+                  "    pm.expect(pm.response.json()).to.have.property(\"error\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Q13 - POST orders valido",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/orders",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "orders"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"product\": \"Computer\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 201\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "pm.test(\"Contrato: id e product\", function () {",
+                  "    pm.expect(pm.response.json()).to.have.all.keys(\"id\", \"product\");",
+                  "});",
+                  "",
+                  "pm.test(\"Devolve o product enviado\", function () {",
+                  "    pm.expect(pm.response.json().product).to.eql(\"Computer\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Q14",
+      "item": [
+        {
+          "name": "Q14 - GET ping",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/ping",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "ping"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Pong is ok\", function () {",
+                  "    pm.expect(pm.response.json().pong).to.eql(\"ok\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Q14 - POST process",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/process",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "process"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"orderId\": \"ORD-123\",\n  \"qty\": 2\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Contrato: status e input\", function () {",
+                  "    pm.expect(pm.response.json()).to.have.all.keys(\"status\", \"input\");",
+                  "});",
+                  "",
+                  "pm.test(\"input devolve o payload enviado\", function () {",
+                  "    const enviado = JSON.parse(pm.request.body.raw);",
+                  "    pm.expect(pm.response.json().input).to.eql(enviado);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Encadeamento",
+      "item": [
+        {
+          "name": "POST order - gera orderId",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/orders",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "orders"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"product\": \"{{produto}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Massa de teste única: evita colidir com pedido já criado",
+                  "pm.variables.set(\"produto\", \"Notebook \" + Date.now());"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 201\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "pm.test(\"Salva o orderId\", function () {",
+                  "    const response = pm.response.json();",
+                  "    pm.expect(response.product).to.eql(pm.variables.get(\"produto\"));",
+                  "    pm.collectionVariables.set(\"orderId\", response.id);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST process - usa orderId",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/process",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "process"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"orderId\": \"{{orderId}}\",\n  \"qty\": 2\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Buscar dado de outra rota sem sair da collection",
+                  "pm.sendRequest(pm.environment.get(\"baseUrl\") + \"/api/ping\", function (err, res) {",
+                  "    pm.variables.set(\"pong\", res.json().pong);",
+                  "});"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status is processed\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    pm.expect(pm.response.json().status).to.eql(\"processed\");",
+                  "});",
+                  "",
+                  "pm.test(\"Processou o pedido criado\", function () {",
+                  "    pm.expect(pm.response.json().input.orderId).to.match(/^ORD-\\d+$/);",
+                  "});",
+                  "",
+                  "pm.test(\"API estava no ar antes do envio (ping)\", function () {",
+                  "    pm.expect(pm.variables.get(\"pong\")).to.eql(\"ok\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Contrato",
+      "item": [
+        {
+          "name": "POST orders - contrato (JSON Schema)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/orders",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "orders"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"product\": \"Computer\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const schema = {",
+                  "    type: \"object\",",
+                  "    required: [\"id\", \"product\"],",
+                  "    additionalProperties: false,",
+                  "    properties: {",
+                  "        id:      { type: \"string\", pattern: \"^ORD-\\\\d+$\" },",
+                  "        product: { type: \"string\", minLength: 1 }",
+                  "    }",
+                  "};",
+                  "",
+                  "pm.test(\"Resposta segue o contrato da API\", function () {",
+                  "    pm.response.to.have.jsonSchema(schema);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

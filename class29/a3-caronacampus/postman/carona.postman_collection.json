@@ -1,0 +1,2674 @@
+{
+  "info": {
+    "name": "CaronaCampus — Testes de API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Cobre CRUD, regras RN-01 a RN-05 e autenticação. Rodar em ordem, contra a API em modo de teste (`api-teste`). Cada request cita o caso de teste (CT-xx)."
+  },
+  "item": [
+    {
+      "name": "0. Saúde",
+      "item": [
+        {
+          "name": "Saúde da API",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('status = ' + \"'ok'\".toString(), () => pm.expect(pm.response.json().status).to.eql('ok'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/saude",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "saude"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "1. Autenticação (CT-15)",
+      "item": [
+        {
+          "name": "CT-15 · Login da Ana",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));",
+                  "pm.collectionVariables.set('token_ana', pm.response.json().token);",
+                  "pm.collectionVariables.set('id_ana', pm.response.json().usuario_id);",
+                  "pm.test('token tem 32 caracteres', () => pm.expect(pm.response.json().token).to.have.lengthOf(32));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/auth/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"matricula\": \"2026001\",\n  \"senha\": \"ana123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "CT-15 · Login do Bruno",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));",
+                  "pm.collectionVariables.set('token_bruno', pm.response.json().token);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/auth/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"matricula\": \"2026002\",\n  \"senha\": \"bruno123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "CT-15 · Login da Carla",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));",
+                  "pm.collectionVariables.set('token_carla', pm.response.json().token);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/auth/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"matricula\": \"2026003\",\n  \"senha\": \"carla123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "CT-15 · Senha errada devolve 401",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 401', () => pm.response.to.have.status(401));",
+                  "pm.test('erro = ' + \"'nao_autenticado'\".toString(), () => pm.expect(pm.response.json().erro).to.eql('nao_autenticado'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/auth/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"matricula\": \"2026001\",\n  \"senha\": \"errada\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "CT-15 · Listar sem token devolve 401",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 401', () => pm.response.to.have.status(401));",
+                  "pm.test('erro = ' + \"'nao_autenticado'\".toString(), () => pm.expect(pm.response.json().erro).to.eql('nao_autenticado'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/viagens",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "viagens"
+              ]
+            }
+          }
+        },
+        {
+          "name": "CT-15 · Token inventado devolve 401",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.collectionVariables.set('token_falso', 'abc');"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 401', () => pm.response.to.have.status(401));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_falso}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/viagens",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "viagens"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Viagens — CRUD (CT-01, CT-02, CT-03, CT-04, CT-14)",
+      "item": [
+        {
+          "name": "CT-01 · Criar viagem válida (3 vagas, R$ 12,00)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const saida = new Date(Date.now() + 180 * 60 * 1000);",
+                  "pm.variables.set('saida', saida.toISOString().slice(0, 19));"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 201', () => pm.response.to.have.status(201));",
+                  "pm.collectionVariables.set('viagem_id', pm.response.json().id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_ana}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/viagens",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "viagens"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"origem\": \"Campus\",\n  \"destino\": \"Centro\",\n  \"vagas\": 3,\n  \"custo_total\": \"12.00\",\n  \"saida\": \"{{saida}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "CT-04 · Valor por vaga calculado (12 / 4 = 3,00)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('valor_por_vaga = ' + \"'3.00'\".toString(), () => pm.expect(pm.response.json().valor_por_vaga).to.eql('3.00'));",
+                  "pm.test('vagas = ' + '3'.toString(), () => pm.expect(pm.response.json().vagas).to.eql(3));",
+                  "pm.test('motorista é a Ana', () => pm.expect(pm.response.json().motorista_id).to.eql(Number(pm.collectionVariables.get('id_ana'))));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_bruno}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/viagens/{{viagem_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "viagens",
+                "{{viagem_id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "CT-01 · A viagem aparece na listagem",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));",
+                  "const ids = pm.response.json().map(v => v.id);",
+                  "pm.test('lista contém a viagem criada', () => pm.expect(ids).to.include(Number(pm.collectionVariables.get('viagem_id'))));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_bruno}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/viagens",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "viagens"
+              ]
+            }
+          }
+        },
+        {
+          "name": "CT-14 · Alterar vagas e custo (sem reservas)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('vagas = ' + '4'.toString(), () => pm.expect(pm.response.json().vagas).to.eql(4));",
+                  "pm.test('valor_por_vaga = ' + \"'4.00'\".toString(), () => pm.expect(pm.response.json().valor_por_vaga).to.eql('4.00'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_ana}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/viagens/{{viagem_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "viagens",
+                "{{viagem_id}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"vagas\": 4,\n  \"custo_total\": \"20.00\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "CT-02 · 0 vagas devolve 400",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const saida = new Date(Date.now() + 180 * 60 * 1000);",
+                  "pm.variables.set('saida', saida.toISOString().slice(0, 19));"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 400', () => pm.response.to.have.status(400));",
+                  "pm.test('erro = ' + \"'dado_invalido'\".toString(), () => pm.expect(pm.response.json().erro).to.eql('dado_invalido'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_ana}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/viagens",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "viagens"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"origem\": \"Campus\",\n  \"destino\": \"Centro\",\n  \"vagas\": 0,\n  \"custo_total\": \"12.00\",\n  \"saida\": \"{{saida}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "CT-02 · 7 vagas devolve 400",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const saida = new Date(Date.now() + 180 * 60 * 1000);",
+                  "pm.variables.set('saida', saida.toISOString().slice(0, 19));"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 400', () => pm.response.to.have.status(400));",
+                  "pm.test('erro = ' + \"'dado_invalido'\".toString(), () => pm.expect(pm.response.json().erro).to.eql('dado_invalido'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_ana}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/viagens",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "viagens"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"origem\": \"Campus\",\n  \"destino\": \"Centro\",\n  \"vagas\": 7,\n  \"custo_total\": \"12.00\",\n  \"saida\": \"{{saida}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "CT-03 · Saída com 20 min de antecedência devolve 400",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const saida = new Date(Date.now() + 20 * 60 * 1000);",
+                  "pm.variables.set('saida', saida.toISOString().slice(0, 19));"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 400', () => pm.response.to.have.status(400));",
+                  "pm.test('erro = ' + \"'dado_invalido'\".toString(), () => pm.expect(pm.response.json().erro).to.eql('dado_invalido'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_ana}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/viagens",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "viagens"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"origem\": \"Campus\",\n  \"destino\": \"Centro\",\n  \"vagas\": 3,\n  \"custo_total\": \"12.00\",\n  \"saida\": \"{{saida}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "CT-03 · Saída com 15 dias devolve 400",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const saida = new Date(Date.now() + 21600 * 60 * 1000);",
+                  "pm.variables.set('saida', saida.toISOString().slice(0, 19));"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 400', () => pm.response.to.have.status(400));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_ana}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/viagens",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "viagens"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"origem\": \"Campus\",\n  \"destino\": \"Centro\",\n  \"vagas\": 3,\n  \"custo_total\": \"12.00\",\n  \"saida\": \"{{saida}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "CT-04 · Preço no teto: R$ 100,00 com 1 vaga = R$ 25,00",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const saida = new Date(Date.now() + 180 * 60 * 1000);",
+                  "pm.variables.set('saida', saida.toISOString().slice(0, 19));"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 201', () => pm.response.to.have.status(201));",
+                  "pm.test('valor_por_vaga = ' + \"'25.00'\".toString(), () => pm.expect(pm.response.json().valor_por_vaga).to.eql('25.00'));",
+                  "pm.collectionVariables.set('viagem_teto_id', pm.response.json().id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_ana}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/viagens",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "viagens"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"origem\": \"Campus\",\n  \"destino\": \"Interior\",\n  \"vagas\": 1,\n  \"custo_total\": \"100.00\",\n  \"saida\": \"{{saida}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "CT-04 · Preço arredondado para cima: R$ 10,00 com 2 vagas = R$ 3,34",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const saida = new Date(Date.now() + 180 * 60 * 1000);",
+                  "pm.variables.set('saida', saida.toISOString().slice(0, 19));"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 201', () => pm.response.to.have.status(201));",
+                  "pm.test('valor_por_vaga = ' + \"'3.34'\".toString(), () => pm.expect(pm.response.json().valor_por_vaga).to.eql('3.34'));",
+                  "pm.collectionVariables.set('viagem_arred_id', pm.response.json().id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_ana}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/viagens",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "viagens"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"origem\": \"Campus\",\n  \"destino\": \"Bairro\",\n  \"vagas\": 2,\n  \"custo_total\": \"10.00\",\n  \"saida\": \"{{saida}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "CT-14 · Outro usuário não altera a viagem (403)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 403', () => pm.response.to.have.status(403));",
+                  "pm.test('erro = ' + \"'sem_permissao'\".toString(), () => pm.expect(pm.response.json().erro).to.eql('sem_permissao'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_bruno}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/viagens/{{viagem_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "viagens",
+                "{{viagem_id}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"vagas\": 2\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "CT-14 · Viagem inexistente (404)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 404', () => pm.response.to.have.status(404));",
+                  "pm.test('erro = ' + \"'nao_encontrado'\".toString(), () => pm.expect(pm.response.json().erro).to.eql('nao_encontrado'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_ana}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/viagens/999999",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "viagens",
+                "999999"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Reservas (CT-05, CT-06, CT-07)",
+      "item": [
+        {
+          "name": "CT-05 · Bruno reserva uma vaga",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 201', () => pm.response.to.have.status(201));",
+                  "pm.test('valor = ' + \"'4.00'\".toString(), () => pm.expect(pm.response.json().valor).to.eql('4.00'));",
+                  "pm.test('cancelada = ' + 'false'.toString(), () => pm.expect(pm.response.json().cancelada).to.eql(false));",
+                  "pm.collectionVariables.set('reserva_bruno_id', pm.response.json().id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_bruno}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/viagens/{{viagem_id}}/reservas",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "viagens",
+                "{{viagem_id}}",
+                "reservas"
+              ]
+            }
+          }
+        },
+        {
+          "name": "CT-07 · Reserva duplicada devolve 409",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 409', () => pm.response.to.have.status(409));",
+                  "pm.test('erro = ' + \"'conflito_de_regra'\".toString(), () => pm.expect(pm.response.json().erro).to.eql('conflito_de_regra'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_bruno}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/viagens/{{viagem_id}}/reservas",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "viagens",
+                "{{viagem_id}}",
+                "reservas"
+              ]
+            }
+          }
+        },
+        {
+          "name": "CT-07 · Motorista não reserva a própria viagem (409)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 409', () => pm.response.to.have.status(409));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_ana}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/viagens/{{viagem_id}}/reservas",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "viagens",
+                "{{viagem_id}}",
+                "reservas"
+              ]
+            }
+          }
+        },
+        {
+          "name": "CT-14 · Viagem com reserva não pode ser alterada (409)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 409', () => pm.response.to.have.status(409));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_ana}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/viagens/{{viagem_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "viagens",
+                "{{viagem_id}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"vagas\": 2\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "CT-14 · Viagem com reserva não pode ser cancelada (409)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 409', () => pm.response.to.have.status(409));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_ana}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/viagens/{{viagem_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "viagens",
+                "{{viagem_id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "CT-06 · Criar viagem de 1 vaga para a lotação",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const saida = new Date(Date.now() + 180 * 60 * 1000);",
+                  "pm.variables.set('saida', saida.toISOString().slice(0, 19));"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 201', () => pm.response.to.have.status(201));",
+                  "pm.collectionVariables.set('viagem_lotacao_id', pm.response.json().id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_ana}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/viagens",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "viagens"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"origem\": \"Campus\",\n  \"destino\": \"Centro\",\n  \"vagas\": 1,\n  \"custo_total\": \"12.00\",\n  \"saida\": \"{{saida}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "CT-06 · Bruno ocupa a única vaga",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 201', () => pm.response.to.have.status(201));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_bruno}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/viagens/{{viagem_lotacao_id}}/reservas",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "viagens",
+                "{{viagem_lotacao_id}}",
+                "reservas"
+              ]
+            }
+          }
+        },
+        {
+          "name": "CT-06 · Carla encontra a viagem lotada (409)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 409', () => pm.response.to.have.status(409));",
+                  "pm.test('mensagem diz lotada', () => pm.expect(pm.response.json().mensagem).to.include('lotada'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_carla}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/viagens/{{viagem_lotacao_id}}/reservas",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "viagens",
+                "{{viagem_lotacao_id}}",
+                "reservas"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Cancelamento de reserva (CT-08, CT-09)",
+      "item": [
+        {
+          "name": "CT-08 · Cancelar com 3 h de antecedência: sem taxa",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('taxa = ' + \"'0.00'\".toString(), () => pm.expect(pm.response.json().taxa).to.eql('0.00'));",
+                  "pm.test('cancelada = ' + 'true'.toString(), () => pm.expect(pm.response.json().cancelada).to.eql(true));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_bruno}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/reservas/{{reserva_bruno_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "reservas",
+                "{{reserva_bruno_id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "CT-10 · Cancelar de novo devolve 409",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 409', () => pm.response.to.have.status(409));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_bruno}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/reservas/{{reserva_bruno_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "reservas",
+                "{{reserva_bruno_id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "CT-09 · Criar viagem que sai em 31 min",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const saida = new Date(Date.now() + 31 * 60 * 1000);",
+                  "pm.variables.set('saida', saida.toISOString().slice(0, 19));"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 201', () => pm.response.to.have.status(201));",
+                  "pm.collectionVariables.set('viagem_tarde_id', pm.response.json().id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_ana}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/viagens",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "viagens"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"origem\": \"Campus\",\n  \"destino\": \"Centro\",\n  \"vagas\": 3,\n  \"custo_total\": \"12.00\",\n  \"saida\": \"{{saida}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "CT-09 · Carla reserva a viagem que sai em 31 min",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 201', () => pm.response.to.have.status(201));",
+                  "pm.collectionVariables.set('reserva_carla_id', pm.response.json().id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_carla}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/viagens/{{viagem_tarde_id}}/reservas",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "viagens",
+                "{{viagem_tarde_id}}",
+                "reservas"
+              ]
+            }
+          }
+        },
+        {
+          "name": "CT-09 · Cancelar com menos de 60 min: taxa de 50% (R$ 1,50)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('taxa = ' + \"'1.50'\".toString(), () => pm.expect(pm.response.json().taxa).to.eql('1.50'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_carla}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/reservas/{{reserva_carla_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "reservas",
+                "{{reserva_carla_id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "CT-10 · Ninguém cancela a reserva de outro (403)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 403', () => pm.response.to.have.status(403));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_carla}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/reservas/{{reserva_bruno_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "reservas",
+                "{{reserva_bruno_id}}"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. Avaliações e reputação (CT-11, CT-12)",
+      "item": [
+        {
+          "name": "CT-11 · Criar viagem 1 de 5 (sai em 31 min)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const saida = new Date(Date.now() + 31 * 60 * 1000);",
+                  "pm.variables.set('saida', saida.toISOString().slice(0, 19));"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 201', () => pm.response.to.have.status(201));",
+                  "pm.collectionVariables.set('viagem_av1_id', pm.response.json().id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_ana}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/viagens",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "viagens"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"origem\": \"Campus\",\n  \"destino\": \"Centro\",\n  \"vagas\": 2,\n  \"custo_total\": \"6.00\",\n  \"saida\": \"{{saida}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "CT-11 · Bruno reserva a viagem 1",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 201', () => pm.response.to.have.status(201));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_bruno}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/viagens/{{viagem_av1_id}}/reservas",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "viagens",
+                "{{viagem_av1_id}}",
+                "reservas"
+              ]
+            }
+          }
+        },
+        {
+          "name": "CT-11 · Criar viagem 2 de 5 (sai em 31 min)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const saida = new Date(Date.now() + 31 * 60 * 1000);",
+                  "pm.variables.set('saida', saida.toISOString().slice(0, 19));"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 201', () => pm.response.to.have.status(201));",
+                  "pm.collectionVariables.set('viagem_av2_id', pm.response.json().id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_ana}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/viagens",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "viagens"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"origem\": \"Campus\",\n  \"destino\": \"Centro\",\n  \"vagas\": 2,\n  \"custo_total\": \"6.00\",\n  \"saida\": \"{{saida}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "CT-11 · Bruno reserva a viagem 2",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 201', () => pm.response.to.have.status(201));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_bruno}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/viagens/{{viagem_av2_id}}/reservas",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "viagens",
+                "{{viagem_av2_id}}",
+                "reservas"
+              ]
+            }
+          }
+        },
+        {
+          "name": "CT-11 · Criar viagem 3 de 5 (sai em 31 min)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const saida = new Date(Date.now() + 31 * 60 * 1000);",
+                  "pm.variables.set('saida', saida.toISOString().slice(0, 19));"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 201', () => pm.response.to.have.status(201));",
+                  "pm.collectionVariables.set('viagem_av3_id', pm.response.json().id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_ana}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/viagens",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "viagens"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"origem\": \"Campus\",\n  \"destino\": \"Centro\",\n  \"vagas\": 2,\n  \"custo_total\": \"6.00\",\n  \"saida\": \"{{saida}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "CT-11 · Bruno reserva a viagem 3",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 201', () => pm.response.to.have.status(201));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_bruno}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/viagens/{{viagem_av3_id}}/reservas",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "viagens",
+                "{{viagem_av3_id}}",
+                "reservas"
+              ]
+            }
+          }
+        },
+        {
+          "name": "CT-11 · Criar viagem 4 de 5 (sai em 31 min)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const saida = new Date(Date.now() + 31 * 60 * 1000);",
+                  "pm.variables.set('saida', saida.toISOString().slice(0, 19));"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 201', () => pm.response.to.have.status(201));",
+                  "pm.collectionVariables.set('viagem_av4_id', pm.response.json().id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_ana}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/viagens",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "viagens"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"origem\": \"Campus\",\n  \"destino\": \"Centro\",\n  \"vagas\": 2,\n  \"custo_total\": \"6.00\",\n  \"saida\": \"{{saida}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "CT-11 · Bruno reserva a viagem 4",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 201', () => pm.response.to.have.status(201));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_bruno}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/viagens/{{viagem_av4_id}}/reservas",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "viagens",
+                "{{viagem_av4_id}}",
+                "reservas"
+              ]
+            }
+          }
+        },
+        {
+          "name": "CT-11 · Criar viagem 5 de 5 (sai em 31 min)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const saida = new Date(Date.now() + 31 * 60 * 1000);",
+                  "pm.variables.set('saida', saida.toISOString().slice(0, 19));"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 201', () => pm.response.to.have.status(201));",
+                  "pm.collectionVariables.set('viagem_av5_id', pm.response.json().id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_ana}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/viagens",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "viagens"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"origem\": \"Campus\",\n  \"destino\": \"Centro\",\n  \"vagas\": 2,\n  \"custo_total\": \"6.00\",\n  \"saida\": \"{{saida}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "CT-11 · Bruno reserva a viagem 5",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 201', () => pm.response.to.have.status(201));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_bruno}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/viagens/{{viagem_av5_id}}/reservas",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "viagens",
+                "{{viagem_av5_id}}",
+                "reservas"
+              ]
+            }
+          }
+        },
+        {
+          "name": "CT-11 · Avaliar antes da saída devolve 409",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 409', () => pm.response.to.have.status(409));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_bruno}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/viagens/{{viagem_av1_id}}/avaliacoes",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "viagens",
+                "{{viagem_av1_id}}",
+                "avaliacoes"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nota\": 5\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Avançar o relógio do servidor em 32 min (modo de teste)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/teste/avancar-relogio",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "teste",
+                "avancar-relogio"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"minutos\": 32\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "CT-11 · Nota 6 devolve 400",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 400', () => pm.response.to.have.status(400));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_bruno}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/viagens/{{viagem_av1_id}}/avaliacoes",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "viagens",
+                "{{viagem_av1_id}}",
+                "avaliacoes"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nota\": 6\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "CT-11 · Quem não viajou não avalia (403)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 403', () => pm.response.to.have.status(403));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_carla}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/viagens/{{viagem_av1_id}}/avaliacoes",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "viagens",
+                "{{viagem_av1_id}}",
+                "avaliacoes"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nota\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "CT-11 · Bruno avalia a viagem 1 com nota 4",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 201', () => pm.response.to.have.status(201));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_bruno}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/viagens/{{viagem_av1_id}}/avaliacoes",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "viagens",
+                "{{viagem_av1_id}}",
+                "avaliacoes"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nota\": 4\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "CT-11 · Avaliar duas vezes devolve 409",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 409', () => pm.response.to.have.status(409));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_bruno}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/viagens/{{viagem_av1_id}}/avaliacoes",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "viagens",
+                "{{viagem_av1_id}}",
+                "avaliacoes"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nota\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "CT-12 · Reputação com 1 avaliação: média 4.00, não suspensa",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('avaliacoes = ' + '1'.toString(), () => pm.expect(pm.response.json().avaliacoes).to.eql(1));",
+                  "pm.test('media = ' + \"'4.00'\".toString(), () => pm.expect(pm.response.json().media).to.eql('4.00'));",
+                  "pm.test('suspenso = ' + 'false'.toString(), () => pm.expect(pm.response.json().suspenso).to.eql(false));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_bruno}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/motoristas/{{id_ana}}/reputacao",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "motoristas",
+                "{{id_ana}}",
+                "reputacao"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "6. Relatório (CT-16)",
+      "item": [
+        {
+          "name": "CT-16 · Relatório de ocupação",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));",
+                  "const r = pm.response.json();",
+                  "pm.test('tem as chaves do contrato', () => pm.expect(r).to.have.all.keys('viagens', 'vagas', 'ocupadas', 'taxa_ocupacao', 'por_viagem'));",
+                  "pm.test('ocupadas <= vagas', () => pm.expect(r.ocupadas).to.be.at.most(r.vagas));",
+                  "pm.test('taxa entre 0 e 100', () => pm.expect(r.taxa_ocupacao).to.be.within(0, 100));",
+                  "pm.test('por_viagem soma as ocupadas', () => pm.expect(r.por_viagem.reduce((s, v) => s + v.ocupadas, 0)).to.eql(r.ocupadas));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_ana}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/relatorios/ocupacao",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "relatorios",
+                "ocupacao"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "7. Suspensão do motorista (CT-12, CT-13) — por último: o estado não volta",
+      "item": [
+        {
+          "name": "CT-12 · Bruno avalia a viagem 2 com nota 1",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 201', () => pm.response.to.have.status(201));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_bruno}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/viagens/{{viagem_av2_id}}/avaliacoes",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "viagens",
+                "{{viagem_av2_id}}",
+                "avaliacoes"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nota\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "CT-12 · Bruno avalia a viagem 3 com nota 1",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 201', () => pm.response.to.have.status(201));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_bruno}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/viagens/{{viagem_av3_id}}/avaliacoes",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "viagens",
+                "{{viagem_av3_id}}",
+                "avaliacoes"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nota\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "CT-12 · Bruno avalia a viagem 4 com nota 1",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 201', () => pm.response.to.have.status(201));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_bruno}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/viagens/{{viagem_av4_id}}/avaliacoes",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "viagens",
+                "{{viagem_av4_id}}",
+                "avaliacoes"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nota\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "CT-12 · Com 4 avaliações a Ana ainda não está suspensa",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('avaliacoes = ' + '4'.toString(), () => pm.expect(pm.response.json().avaliacoes).to.eql(4));",
+                  "pm.test('suspenso = ' + 'false'.toString(), () => pm.expect(pm.response.json().suspenso).to.eql(false));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_bruno}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/motoristas/{{id_ana}}/reputacao",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "motoristas",
+                "{{id_ana}}",
+                "reputacao"
+              ]
+            }
+          }
+        },
+        {
+          "name": "CT-12 · Bruno avalia a viagem 5 com nota 1",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 201', () => pm.response.to.have.status(201));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_bruno}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/viagens/{{viagem_av5_id}}/avaliacoes",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "viagens",
+                "{{viagem_av5_id}}",
+                "avaliacoes"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nota\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "CT-12 · Com 5 avaliações (média 1,60) a Ana está suspensa",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('avaliacoes = ' + '5'.toString(), () => pm.expect(pm.response.json().avaliacoes).to.eql(5));",
+                  "pm.test('media = ' + \"'1.60'\".toString(), () => pm.expect(pm.response.json().media).to.eql('1.60'));",
+                  "pm.test('suspenso = ' + 'true'.toString(), () => pm.expect(pm.response.json().suspenso).to.eql(true));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_bruno}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/motoristas/{{id_ana}}/reputacao",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "motoristas",
+                "{{id_ana}}",
+                "reputacao"
+              ]
+            }
+          }
+        },
+        {
+          "name": "CT-13 · Motorista suspenso não cria viagem (403)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const saida = new Date(Date.now() + 180 * 60 * 1000);",
+                  "pm.variables.set('saida', saida.toISOString().slice(0, 19));"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 403', () => pm.response.to.have.status(403));",
+                  "pm.test('erro = ' + \"'motorista_suspenso'\".toString(), () => pm.expect(pm.response.json().erro).to.eql('motorista_suspenso'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_ana}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/viagens",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "viagens"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"origem\": \"Campus\",\n  \"destino\": \"Centro\",\n  \"vagas\": 3,\n  \"custo_total\": \"12.00\",\n  \"saida\": \"{{saida}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": []
+}

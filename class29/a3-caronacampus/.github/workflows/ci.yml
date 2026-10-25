@@ -1,0 +1,80 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  testes:
+    name: Testes, cobertura e rastreabilidade
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: Rastreabilidade (cada caso tem teste; nenhum teste cita caso inexistente)
+        run: python scripts/matriz_rastreabilidade.py
+      - name: Testes com cobertura (falha abaixo de 70%)
+        run: pytest --cov --cov-config=.coveragerc --cov-fail-under=70 --cov-report=xml --junitxml=junit.xml
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: relatorios-pytest
+          path: |
+            coverage.xml
+            junit.xml
+
+  api:
+    name: Testes de API (Newman)
+    needs: testes
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Sobe a API em modo de teste
+        run: |
+          CARONA_DB=/tmp/carona-ci.db CARONA_MODO_TESTE=1 PYTHONPATH=src python -m carona.app &
+          for i in $(seq 1 20); do curl -fs http://localhost:5000/saude && break; sleep 1; done
+      - name: Coleção Postman
+        run: npx --yes newman@6 run postman/carona.postman_collection.json --env-var base_url=http://localhost:5000 --reporters cli,junit --reporter-junit-export newman.xml
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: relatorio-newman
+          path: newman.xml
+
+  docker:
+    name: Entrega em contêiner
+    needs: testes
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Testes dentro do contêiner
+        run: docker compose run --rm --build testes
+
+  mutacao:
+    name: Teste de mutação (manual)
+    if: github.event_name == 'workflow_dispatch'
+    needs: testes
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: 21 mutantes (falha se algum sobreviver)
+        run: python scripts/mutacao.py

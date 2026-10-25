@@ -1,0 +1,50 @@
+# docker compose up --build                                  -> sobe a API em http://localhost:5000
+# docker compose run --rm testes                             -> JUnit + Mockito + JaCoCo (falha abaixo de 70%)
+# docker compose --profile api up --build \
+#     --abort-on-container-exit --exit-code-from newman      -> a MESMA coleção Postman do exemplo Python
+# A primeira execução baixa as dependências do Maven e leva alguns minutos.
+services:
+  api:
+    build: .
+    image: carona-campus-java:1.0.0
+    ports: ["5000:5000"]
+    environment:
+      CARONA_DB: /data/carona.db
+    volumes: ["dados:/data"]
+    healthcheck:
+      test: ["CMD", "bash", "-c", "exec 3<>/dev/tcp/localhost/5000 && printf 'GET /saude HTTP/1.0\\r\\n\\r\\n' >&3 && grep -q ok <&3"]
+      interval: 3s
+      timeout: 3s
+      retries: 15
+
+  testes:
+    image: carona-campus-java:1.0.0
+    profiles: ["testes"]
+    command: ["mvn", "-B", "-o", "verify"]
+
+  # API em MODO DE TESTE (expõe POST /teste/avancar-relogio). Banco descartável dentro do contêiner.
+  api-teste:
+    image: carona-campus-java:1.0.0
+    profiles: ["api"]
+    ports: ["5001:5000"]
+    environment:
+      CARONA_DB: /tmp/carona-teste.db
+      CARONA_MODO_TESTE: "1"
+    healthcheck:
+      test: ["CMD", "bash", "-c", "exec 3<>/dev/tcp/localhost/5000 && printf 'GET /saude HTTP/1.0\\r\\n\\r\\n' >&3 && grep -q ok <&3"]
+      interval: 2s
+      timeout: 3s
+      retries: 20
+
+  newman:
+    image: postman/newman:latest
+    profiles: ["api"]
+    depends_on:
+      api-teste:
+        condition: service_healthy
+    volumes: ["./postman:/etc/newman:ro"]
+    command: ["run", "/etc/newman/carona.postman_collection.json",
+              "--env-var", "base_url=http://api-teste:5000", "--color", "off"]
+
+volumes:
+  dados:

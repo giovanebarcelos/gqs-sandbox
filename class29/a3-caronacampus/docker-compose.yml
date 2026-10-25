@@ -1,0 +1,49 @@
+# docker compose up --build                                  -> sobe a API em http://localhost:5000
+# docker compose run --rm testes                             -> pytest + cobertura (falha abaixo de 70%)
+# docker compose --profile api up --build \
+#     --abort-on-container-exit --exit-code-from newman      -> testes de API (Newman) contra a API em modo de teste
+services:
+  api:
+    build: .
+    image: carona-campus:1.0.0
+    ports: ["5000:5000"]
+    environment:
+      CARONA_DB: /data/carona.db
+    volumes: ["dados:/data"]
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:5000/saude')"]
+      interval: 3s
+      timeout: 3s
+      retries: 10
+
+  testes:
+    image: carona-campus:1.0.0
+    profiles: ["testes"]
+    command: ["pytest", "--cov", "--cov-config=.coveragerc", "--cov-fail-under=70"]
+
+  # API em MODO DE TESTE (expõe POST /teste/avancar-relogio). Banco descartável em memória do contêiner.
+  api-teste:
+    image: carona-campus:1.0.0
+    profiles: ["api"]
+    ports: ["5001:5000"]
+    environment:
+      CARONA_DB: /tmp/carona-teste.db
+      CARONA_MODO_TESTE: "1"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:5000/saude')"]
+      interval: 2s
+      timeout: 3s
+      retries: 15
+
+  newman:
+    image: postman/newman:latest
+    profiles: ["api"]
+    depends_on:
+      api-teste:
+        condition: service_healthy
+    volumes: ["./postman:/etc/newman:ro"]
+    command: ["run", "/etc/newman/carona.postman_collection.json",
+              "--env-var", "base_url=http://api-teste:5000", "--color", "off"]
+
+volumes:
+  dados:

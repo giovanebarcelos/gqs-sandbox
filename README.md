@@ -9,6 +9,7 @@
 
 ```  
 repository/  
+├── class01B/ — Aula 01B: modelos do agente de IA (opencode.json, AGENTS.md)  
 ├── class12/ — Fundamentos de Automação de Testes  
 ├── class13/ — JUnit: Testes Unitários em Java  
 ├── class15/ — Mocks, Stubs e Doubles (Mockito)  
@@ -27,7 +28,7 @@ repository/
 ├── class26/ — DevOps e GitHub Actions  
 ├── class27/ — Estimativa de Software e Métricas de Processo/Projeto  
 ├── class28/ — Gestão de Configuração, Versionamento e Manutenção  
-├── class29/ — Projeto Integrador Final  
+├── class29/ — Projeto Integrador Final (+ modelos de AGENTS.md e do registro de Uso de IA)  
 └── class30/ — Ética, Boas Práticas e Encerramento  
 ```  
 
@@ -51,6 +52,18 @@ repository/
 |---|---|  
 | `GQS11-Requisitos-Dinamica.txt` | Dinâmica de requisitos de software (origem: GQS0102 4M) |  
 | `GQS11-EXGA03-Requisitos.txt` | Exercício EXGA03 — 7 perguntas sobre requisitos (origem: GQS0106 4M) |  
+
+---  
+
+## class01B — IA Assistida na Qualidade de Software (material complementar)  
+
+**Origem:** novo — modelos do agente de IA usados da Aula 02 à 30 (padrão da UC de referência *Projeto e Engenharia de Software*, Aula 09B).  
+
+| Arquivo | Descrição |  
+|---|---|  
+| `opencode.json` | Modelo gratuito (`:free`) e permissões do OpenCode: comandos com `ask`, `git push` negado — a chave de API **não** vai aqui (Aula 01B, Slides 14 e 31) |  
+| `AGENTS.md` | Memória do projeto para o agente, curta; cresce a cada unidade (Aula 01B, Slide 33) |  
+| `README.md` | Como usar os dois modelos |  
 
 ---  
 
@@ -528,6 +541,14 @@ docker compose -f GQS24-kiwi-docker-compose.yml down -v
 |---|---|  
 | `GQS29-MapaMentalTeste.mmd` | Mapa mental de testes (revisão para o projeto integrador) |  
 
+### IA na A3  
+
+| Arquivo | Descrição |  
+|---|---|  
+| `AGENTS.md` | Modelo de memória do agente para o projeto da A3 (Aula 29, Slides 7 e 17) |  
+| `opencode.json` | Modelo e permissões do agente (push negado) |  
+| `USO_DE_IA_modelo.md` | Modelo da seção **Uso de IA** do README, com a tabela de registros (2 pts do item Relatório) |  
+
 ---  
 
 ## class30 — Ética, Boas Práticas e Encerramento  
@@ -555,6 +576,7 @@ docker compose -f GQS24-kiwi-docker-compose.yml down -v
 |---|---|---|---|  
 | class01 | 01 — Fundamentos Qualidade | 1 | TXT dinâmica |  
 | class11 | 11 — Inspeção/Revisão | 2 | TXT exercícios de requisitos |  
+| class01B | 01B — IA Assistida | 3 | JSON (opencode.json) + MD (AGENTS.md modelo, README) |  
 | class12 | 12 — Fundamentos Automação | 1 | Imagem PNG |  
 | class13 | 13 — JUnit | 12 | Java (5 exercícios + tests + pom.xml) |  
 | class15 | 15 — Mocks/Mockito | 47 | Java (6 exercícios + tests + exemplos base + md) |  
@@ -573,6 +595,6 @@ docker compose -f GQS24-kiwi-docker-compose.yml down -v
 | class26 | 26 — DevOps | 5 | YAML + Docker + Shell script + zip |  
 | class27 | 27 — Estimativa/Pontos de Função | 3 | Python + Java (calculadora PF/COCOMO) + Mermaid |  
 | class28 | 28 — Gestão de Configuração/Versionamento | 4 | Python + Java (simulador versionamento) + 2 Mermaid |  
-| class29 | 29 — Projeto Integrador Final | 3 | Python + Java (checklist qualidade) + Mermaid (renumerado de class27) |  
+| class29 | 29 — Projeto Integrador Final | 6 | Python + Java (checklist qualidade) + Mermaid (renumerado de class27) + AGENTS.md, opencode.json e modelo de Uso de IA |  
 | class30 | 30 — Ética e Encerramento | 3 | Python + Java (checklist code review) + Mermaid (renumerado de class28) |  
-| **Total** | | **251** | |  
+| **Total** | | **257** | |  

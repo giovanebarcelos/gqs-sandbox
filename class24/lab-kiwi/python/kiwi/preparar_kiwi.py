@@ -35,42 +35,42 @@ API = "API REST"
 # (resumo, categoria, prioridade, script automatizado, roteiro Dado/Quando/Entao)
 CASOS = [
     ("CT01 - Calcular subtotal de multiplos itens", UNIT, "P2",
-     "app/tests/test_carrinho.py::test_CT01_subtotal_de_multiplos_itens",
+     "python/app/tests/test_carrinho.py::test_CT01_subtotal_de_multiplos_itens",
      "Dado um carrinho com 2 Mouse Gamer (R$ 120,00) e 1 Cabo HDMI (R$ 25,00)\n"
      "Quando o subtotal for calculado\n"
      "Entao o subtotal deve ser R$ 265,00"),
     ("CT02 - Aplicar cupom GQS10 com 10% de desconto", UNIT, "P1",
-     "app/tests/test_carrinho.py::test_CT02_cupom_GQS10_aplica_10_por_cento",
+     "python/app/tests/test_carrinho.py::test_CT02_cupom_GQS10_aplica_10_por_cento",
      "Dado um carrinho com 1 Teclado Mecanico (R$ 250,00)\n"
      "Quando o cupom GQS10 for aplicado\n"
      "Entao o desconto deve ser R$ 25,00, o frete gratis e o total R$ 225,00"),
     ("CT03 - Frete gratis no limite exato de R$ 200,00", UNIT, "P1",
-     "app/tests/test_carrinho.py::test_CT03_frete_gratis_no_limite_exato_de_200",
+     "python/app/tests/test_carrinho.py::test_CT03_frete_gratis_no_limite_exato_de_200",
      "Dado um valor de compra de exatamente R$ 200,00\n"
      "Quando o frete for calculado\n"
      "Entao o frete deve ser R$ 0,00 (RN03: a partir de 200,00 inclusive)"),
     ("CT04 - Cobrar frete abaixo de R$ 200,00", UNIT, "P2",
-     "app/tests/test_carrinho.py::test_CT04_frete_cobrado_abaixo_de_200",
+     "python/app/tests/test_carrinho.py::test_CT04_frete_cobrado_abaixo_de_200",
      "Dado um valor de compra de R$ 199,99\n"
      "Quando o frete for calculado\n"
      "Entao o frete deve ser R$ 15,00"),
     ("CT05 - Rejeitar quantidade menor que 1", UNIT, "P1",
-     "app/tests/test_carrinho.py::test_CT05_rejeita_quantidade_menor_que_1",
+     "python/app/tests/test_carrinho.py::test_CT05_rejeita_quantidade_menor_que_1",
      "Dado um item com quantidade 0 (e depois -1)\n"
      "Quando a quantidade for validada\n"
      "Entao o sistema deve recusar o item (RN04: minimo 1)"),
     ("CT06 - Validar limite maximo de 10 unidades", UNIT, "P2",
-     "app/tests/test_carrinho.py::test_CT06_rejeita_quantidade_maior_que_10",
+     "python/app/tests/test_carrinho.py::test_CT06_rejeita_quantidade_maior_que_10",
      "Dado um item com quantidade 1, 10, 11 e 50\n"
      "Quando a quantidade for validada\n"
      "Entao 1 e 10 sao aceitos e 11 e 50 sao recusados"),
     ("CT07 - Rejeitar cupom invalido", UNIT, "P3",
-     "app/tests/test_carrinho.py::test_CT07_rejeita_cupom_invalido",
+     "python/app/tests/test_carrinho.py::test_CT07_rejeita_cupom_invalido",
      "Dado um carrinho valido\n"
      "Quando o cupom NATAL50 (inexistente) for aplicado\n"
      "Entao o sistema deve recusar o cupom"),
     ("CT08 - Rejeitar produto inexistente", UNIT, "P3",
-     "app/tests/test_carrinho.py::test_CT08_rejeita_produto_inexistente",
+     "python/app/tests/test_carrinho.py::test_CT08_rejeita_produto_inexistente",
      "Dado um item com produto_id 999\n"
      "Quando o subtotal for calculado\n"
      "Entao o sistema deve informar que o produto nao existe"),
@@ -161,7 +161,7 @@ def main():
             "product_version": versao["id"],
             "type": tipo["id"],
             "text": "Regressao da API de carrinho: regras RN01 a RN05 "
-                    "(testes unitarios com pytest e testes de API com Bruno).",
+                    "(testes unitarios com JUnit/pytest e testes de API com Bruno).",
         },
     )
     print(f"TestPlan {plano['id']:>3}  {PLANO}   <-- use este id em TCMS_PLAN_ID")

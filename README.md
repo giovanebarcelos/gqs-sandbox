@@ -403,20 +403,21 @@ docker run --rm --network=host -e SONAR_TOKEN=$SONAR_TOKEN -v "$PWD:/usr/src" so
 
 ## class24 — Kiwi TCMS e Bug Tracking
 
-### lab-kiwi/ — laboratório completo: Kiwi TCMS + TechStore API + Traefik
+### lab-kiwi/ — laboratório completo: Kiwi TCMS + TechStore API (Java e Python) + Traefik
 
-Tutorial passo a passo em `lab-kiwi/GQS24-Tutorial-KiwiTCMS-TechStore.md`. Acesso por `https://kiwi.localhost` e `http://app.localhost`.
+Tutorial passo a passo em `lab-kiwi/GQS24-Tutorial-KiwiTCMS-TechStore.md` — Parte I em **Java** (principal), Parte II em **Python**. Acesso por `https://kiwi.localhost`, `http://app.localhost` (Java) e `http://app-python.localhost` (Python).
 
 | Arquivo | Descrição |
 |---|---|
-| `GQS24-Tutorial-KiwiTCMS-TechStore.md` | Tutorial em 10 etapas: caso manual → defeito → execução automatizada (pytest e Bruno) → correção → reteste no build 1.0.1 |
-| `docker-compose.yml` | Traefik 3.6 + Kiwi TCMS + MariaDB 11 + TechStore API; portas e senhas pelo `.env` |
-| `.env.example` | Senhas do banco, `APP_VERSION` e portas alternativas do Traefik |
-| `app/` | API Flask de carrinho com **dois defeitos plantados** (valor limite em RN03 e RN04), Dockerfile e testes unitários `pytest` (CT01–CT08) |
-| `bruno/TechStore-Carrinho/` | Coleção Bruno com os testes de API CT10–CT16 (ambientes `Traefik` e `Local`) |
-| `kiwi/preparar_kiwi.py` | Cria produto, versão, build, plano, severidades e os casos CT01–CT16 (*get or create*) |
-| `kiwi/publicar_resultados.py` | Publica `junit.xml` (pytest ou Bruno) no Kiwi, localizando o caso pelo prefixo `CTxx` do Summary |
-| `scripts/executar-testes.sh` | Roda pytest + Bruno e publica as duas rodadas; sai com erro se alguma suíte falhar |
+| `GQS24-Tutorial-KiwiTCMS-TechStore.md` | Tutorial: caso manual → defeito → execução automatizada (JUnit/pytest e Bruno) → correção → reteste no build 1.0.1 |
+| `docker-compose.yml` | Traefik 3.6 + Kiwi TCMS + MariaDB 11 + API Java; API Python no profile `python` |
+| `.env.example` / `tcms.conf.example` | Senhas, versões e portas do ambiente; modelo do `~/.tcms.conf` |
+| `java/app/` | API Spring Boot com **dois defeitos plantados** (valor limite em RN03 e RN04) e testes JUnit 5 (CT01–CT08) |
+| `java/kiwi/` | `kiwi-tools.jar`: cliente JSON-RPC do Kiwi em Java — `preparar` (produto, plano, casos CT01–CT16) e `publicar` (junit.xml → execuções, pelo prefixo `CTxx`) |
+| `python/app/` | Mesma API em Flask, mesmos defeitos, testes pytest |
+| `python/kiwi/` | `preparar_kiwi.py` e `publicar_resultados.py` com a biblioteca oficial `tcms-api` |
+| `bruno/TechStore-Carrinho/` | Testes de API CT10–CT16, servem às duas APIs (ambientes `Traefik` e `TraefikPython`) |
+| `scripts/executar-testes.sh` / `executar-testes-python.sh` | Rodam as suítes e publicam as rodadas no Kiwi; saem com erro se alguma suíte falhar |
 
 ### diagrams/ — ambiente e scripts do Kiwi TCMS
 

@@ -3,7 +3,7 @@ Testes unitarios das regras de carrinho (pytest) - Aula 24.
 
 Convencao que liga o codigo ao Kiwi TCMS: o nome de cada teste comeca com o
 identificador do caso de teste cadastrado no Kiwi (CT01, CT02, ...). O script
-kiwi/publicar_resultados.py le o junit.xml, extrai esse identificador e grava
+python/kiwi/publicar_resultados.py le o junit.xml, extrai esse identificador e grava
 o resultado na TestExecution do caso de teste que tem o mesmo prefixo no
 Summary. Ou seja: o caso escrito a mao no Kiwi passa a ser executado por
 este codigo.

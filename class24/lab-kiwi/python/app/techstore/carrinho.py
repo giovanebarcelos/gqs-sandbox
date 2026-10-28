@@ -16,7 +16,7 @@ Regras de negocio (sao elas que viram casos de teste no Kiwi TCMS):
     RN05  produto inexistente e' recusado
 
 ATENCAO, ALUNO: esta versao (1.0.0) contem DOIS defeitos plantados de
-proposito. Nao corrija antes de executar a Etapa 6 do tutorial - a graca
+proposito. Nao corrija antes de executar a Etapa 7 do tutorial - a graca
 e' ver o Kiwi TCMS registrar as falhas e o defeito.
 """
 

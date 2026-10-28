@@ -2,8 +2,15 @@ docs {
   # TechStore - testes de API (Aula 24 - Kiwi TCMS)
 
   Cada `test("CTxx - ...")` comeca com o identificador do caso de teste
-  cadastrado no Kiwi TCMS. O script `kiwi/publicar_resultados.py` usa esse
+  cadastrado no Kiwi TCMS. O publicador (java/kiwi ou python/kiwi) usa esse
   prefixo para gravar o resultado na execucao do caso certo.
+
+  A mesma colecao testa as duas implementacoes da API - so muda o ambiente:
+
+      Traefik        http://app.localhost          API Java (principal)
+      TraefikPython  http://app-python.localhost   API Python
+      Local          http://localhost:8080         API Java fora do Docker
+      LocalPython    http://localhost:5000         API Python fora do Docker
 
   Rodar pela linha de comando (dentro desta pasta):
 

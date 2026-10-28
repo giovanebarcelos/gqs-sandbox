@@ -30,8 +30,8 @@ VARIAVEIS DE AMBIENTE
     + credenciais: KIWI_URL/KIWI_USERNAME/KIWI_PASSWORD ou ~/.tcms.conf
 
 USO
-    python3 publicar_resultados.py ../resultados-unit.xml
-    TCMS_PREFIX="[bruno]" python3 publicar_resultados.py ../resultados-api.xml
+    python3 python/kiwi/publicar_resultados.py resultados-unit.xml
+    TCMS_PREFIX="[bruno]" python3 python/kiwi/publicar_resultados.py resultados-api.xml
 """
 
 import os

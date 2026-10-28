@@ -1,7 +1,8 @@
 # Tutorial GQS24 — Kiwi TCMS na prática: do caso de teste manual à execução automatizada
 
 **Aula 24 — Garantia da Qualidade de Software** | Prof. Giovane Barcelos
-**Duração estimada:** 2h a 2h30 | **Pré-requisitos:** Docker + Docker Compose, Python 3.10+, Node.js 18+ (para o Bruno CLI), Git
+**Duração estimada:** 2h a 2h30 (Parte I, Java) + 30 min (Parte II, Python)
+**Pré-requisitos:** Docker + Docker Compose, **JDK 17+ e Maven 3.9+**, Node.js 18+ (para o Bruno CLI), Git — e, para a Parte II, Python 3.10+
 
 ---
 
@@ -12,65 +13,85 @@ Um ambiente completo de gestão de testes rodando na sua máquina, acessado por 
 | URL | O que é |
 |---|---|
 | `https://kiwi.localhost` | **Kiwi TCMS** — planos, casos de teste, rodadas de execução e bug tracker |
-| `http://app.localhost` | **TechStore API** — a aplicação sob teste (carrinho de compras) |
+| `http://app.localhost` | **TechStore API em Java** (Spring Boot) — a aplicação sob teste |
+| `http://app-python.localhost` | **TechStore API em Python** (Flask) — a mesma API, para a Parte II |
 | `http://traefik.localhost` | Painel do **Traefik** — o proxy reverso que distribui as requisições |
 
-A TechStore API **vem com dois defeitos plantados**. Ao longo do tutorial você vai:
+A TechStore API existe em **duas implementações idênticas** — mesmas rotas, mesmas regras e **os mesmos dois defeitos plantados**:
+
+| | Parte I — Java (principal) | Parte II — Python |
+|---|---|---|
+| Aplicação | Spring Boot 3.5 (`java/app`) | Flask 3 (`python/app`) |
+| Teste unitário | JUnit 5 + Maven Surefire | pytest |
+| Teste de API | Bruno (ambiente `Traefik`) | Bruno (ambiente `TraefikPython`) |
+| Integração com o Kiwi | `java/kiwi` — cliente JSON-RPC em Java (`kiwi-tools.jar`) | `python/kiwi` — biblioteca oficial `tcms-api` |
+| Script de execução | `scripts/executar-testes.sh` | `scripts/executar-testes-python.sh` |
+
+Ao longo do tutorial você vai:
 
 1. escrever um caso de teste no Kiwi, executá-lo **à mão** e ver que ele falha;
 2. registrar o defeito no bug tracker do próprio Kiwi, ligado à execução que o encontrou;
-3. rodar **testes unitários (pytest)** e **testes de API (Bruno)** e publicar os resultados no Kiwi **automaticamente** — cada teste automatizado atualiza o caso de teste correspondente;
+3. rodar **testes unitários (JUnit)** e **testes de API (Bruno)** e publicar os resultados no Kiwi **automaticamente** — cada teste automatizado atualiza o caso de teste correspondente;
 4. descobrir o segundo defeito pela automação;
-5. **corrigir** o código, gerar um novo build e provar, no Kiwi, que tudo passou.
+5. **corrigir** o código Java, gerar um novo build e provar, no Kiwi, que tudo passou;
+6. repetir o ciclo automatizado com a versão **Python**.
 
 ```mermaid
 flowchart LR
-    nav[Navegador] -->|kiwi.localhost<br/>app.localhost| T[Traefik :80/:443]
+    nav[Navegador] -->|kiwi.localhost<br/>app.localhost<br/>app-python.localhost| T[Traefik :80/:443]
     T --> K[Kiwi TCMS<br/>kiwi_web :8443]
-    T --> A[TechStore API<br/>app :5000]
+    T --> AJ[TechStore Java<br/>app :8080]
+    T --> AP[TechStore Python<br/>app-python :5000]
     K --> DB[(MariaDB<br/>kiwi_db)]
     subgraph host[Sua máquina]
-      P[pytest] -->|resultados-unit.xml| PUB[publicar_resultados.py]
+      J[mvn test / pytest] -->|junit.xml| PUB[kiwi-tools.jar publicar<br/>ou publicar_resultados.py]
       B[bru run] -->|resultados-api.xml| PUB
     end
     B -->|HTTP| T
-    PUB -->|XML-RPC<br/>kiwi.localhost/xml-rpc/| T
+    PUB -->|JSON-RPC / XML-RPC<br/>kiwi.localhost| T
 ```
 
 ### Estrutura da pasta
 
 ```
 class24/lab-kiwi/
-├── GQS24-Tutorial-KiwiTCMS-TechStore.md   ← este tutorial
-├── docker-compose.yml                      ← Traefik + Kiwi TCMS + MariaDB + TechStore API
-├── .env.example                            ← senhas e portas (copie para .env)
-├── app/                                    ← aplicação sob teste (Python/Flask)
-│   ├── Dockerfile
-│   ├── techstore/carrinho.py               ← regras de negócio (com 2 defeitos!)
-│   ├── techstore/app.py                    ← endpoints REST
-│   └── tests/test_carrinho.py              ← testes unitários (pytest)
-├── bruno/TechStore-Carrinho/               ← coleção Bruno (testes de API)
-├── kiwi/
-│   ├── preparar_kiwi.py                    ← cria produto, plano e casos via API
-│   ├── publicar_resultados.py              ← junit.xml → execuções no Kiwi
-│   ├── kiwi_conexao.py                     ← conexão/credenciais compartilhadas
-│   └── tcms.conf.example
-└── scripts/executar-testes.sh              ← roda pytest + Bruno e publica tudo
+├── GQS24-Tutorial-KiwiTCMS-TechStore.md    ← este tutorial
+├── docker-compose.yml                       ← Traefik + Kiwi TCMS + MariaDB + as duas APIs
+├── .env.example                             ← senhas, versões e portas (copie para .env)
+├── tcms.conf.example                        ← modelo do ~/.tcms.conf (Java e Python)
+├── java/                                    ← PARTE I
+│   ├── app/                                 ← API Spring Boot + testes JUnit 5
+│   │   ├── pom.xml  ·  Dockerfile
+│   │   ├── src/main/java/br/edu/gqs/techstore/CalculadoraCarrinho.java  ← regras (2 defeitos!)
+│   │   ├── src/main/java/br/edu/gqs/techstore/CarrinhoController.java   ← endpoints REST
+│   │   └── src/test/java/br/edu/gqs/techstore/CalculadoraCarrinhoTest.java
+│   └── kiwi/                                ← kiwi-tools.jar: "preparar" e "publicar"
+│       └── src/main/java/br/edu/gqs/kiwi/   (KiwiClient, PrepararKiwi, PublicarResultados)
+├── python/                                  ← PARTE II
+│   ├── app/                                 ← API Flask + testes pytest
+│   └── kiwi/                                ← preparar_kiwi.py e publicar_resultados.py (tcms-api)
+├── bruno/TechStore-Carrinho/                ← coleção Bruno — serve às duas APIs
+└── scripts/
+    ├── executar-testes.sh                   ← JUnit + Bruno + publicação (Java)
+    └── executar-testes-python.sh            ← pytest + Bruno + publicação (Python)
 ```
 
 ### Números de referência
 
-Medidos numa execução real deste tutorial (Kiwi TCMS **16.6**, Traefik 3.6, MariaDB 11, `tcms-api` 15.0, pytest 9.2, Bruno CLI 4.3). Os seus devem bater:
+Medidos numa execução real deste tutorial (Kiwi TCMS **16.6**, Traefik 3.6, MariaDB 11, Spring Boot 3.5.6, JUnit 5 / Surefire 3.5, pytest 9.2, Bruno CLI 4.3). Os seus devem bater:
 
 | Rodada | Build | Casos | PASSED | FAILED |
 |---|---|---|---|---|
 | Rodada manual | 1.0.0 | 1 (CT14) | 0 | 1 |
-| `[pytest]` automatizada | 1.0.0 | 8 | 6 | 2 (CT03, CT05) |
-| `[bruno]` automatizada | 1.0.0 | 7 | 5 | 2 (CT14, CT15) |
-| `[pytest]` após correção | 1.0.1 | 8 | 8 | 0 |
+| `[junit]` automatizada (Java) | 1.0.0 | 8 | 6 | 2 (CT03, CT05) |
+| `[bruno]` automatizada (API Java) | 1.0.0 | 7 | 5 | 2 (CT14, CT15) |
+| `[junit]` após correção | 1.0.1 | 8 | 8 | 0 |
 | `[bruno]` após correção | 1.0.1 | 7 | 7 | 0 |
+| `[pytest]` / `[bruno]` (Parte II) | 1.0.0 → 1.0.1 | 8 / 7 | 6 / 5 → 8 / 7 | 2 / 2 → 0 / 0 |
 
 ---
+
+# PARTE I — Versão Java
 
 ## Etapa 1 — Subir o ambiente (15 min)
 
@@ -94,7 +115,7 @@ sudo ss -ltnp | grep -E ':(80|443) '      # ou: sudo lsof -i :80 -i :443
 netstat -ano | findstr ":80 :443"
 ```
 
-Se aparecer alguma coisa (Apache, Nginx, IIS, Skype, outro Traefik...), **não edite o compose** — descomente no `.env`:
+Se aparecer alguma coisa (Apache, Nginx, IIS, outro Traefik...), **não edite o compose** — descomente no `.env`:
 
 ```ini
 HTTP_PORT=8880
@@ -110,17 +131,19 @@ docker compose up -d --build
 docker compose ps
 ```
 
-São quatro containers:
+A primeira subida demora alguns minutos: o Maven compila a API Java **dentro** de um container (`java/app/Dockerfile`, build em dois estágios), então você não precisa de JDK só para subir o ambiente. São quatro containers:
 
 | Container | Imagem | Papel |
 |---|---|---|
 | `gqs24_traefik` | `traefik:v3.6` | proxy reverso; lê os *labels* dos outros containers e cria as rotas |
-| `gqs24_techstore_api` | construída de `./app` | a aplicação sob teste |
+| `gqs24_techstore_java` | construída de `./java/app` | a aplicação sob teste (Spring Boot, porta interna 8080) |
 | `gqs24_kiwi_db` | `mariadb:11` | banco do Kiwi |
 | `gqs24_kiwi_web` | `kiwitcms/kiwi:latest` | o Kiwi TCMS (Django) |
 
-> **Como o Traefik sabe para onde mandar cada nome?** Abra o `docker-compose.yml` e procure os `labels`. Por exemplo, no serviço `app`:
-> `traefik.http.routers.app.rule=Host(\`app.localhost\`)` + `loadbalancer.server.port=5000`.
+A API Python (`gqs24_techstore_python`) **não** sobe agora: ela pertence ao *profile* `python` e só entra na Parte II.
+
+> **Como o Traefik sabe para onde mandar cada nome?** Abra o `docker-compose.yml` e procure os `labels`. No serviço `app`:
+> `traefik.http.routers.app.rule=Host(\`app.localhost\`)` + `loadbalancer.server.port=8080`.
 > Nenhuma porta da aplicação ou do Kiwi é publicada no host — **só o Traefik** recebe conexões de fora.
 
 ### 1.4 Esperar o Kiwi ficar pronto
@@ -152,23 +175,23 @@ Sem `-it` o superusuário **não** é criado (*"Superuser creation skipped due t
 | Teste | Esperado |
 |---|---|
 | `http://app.localhost/api/health` | `{"status":"ok","versao":"1.0.0"}` |
-| `http://traefik.localhost` | painel do Traefik, com os routers `app`, `kiwi`, `kiwi-http` e `painel` em verde |
+| `http://traefik.localhost` | painel do Traefik, com os routers `app`, `kiwi`, `kiwi-http` e `painel` |
 | `http://kiwi.localhost` | redireciona para `https://kiwi.localhost` |
 | `https://kiwi.localhost` | tela de login do Kiwi |
 
 O certificado HTTPS é **autoassinado** (gerado pelo próprio Traefik), então o navegador vai avisar — clique em *Avançado → Continuar*. Entre com o usuário criado no passo 1.5. A versão do Kiwi aparece no menu de ajuda (`?`, canto superior direito).
 
-> **E se `*.localhost` não resolver?** Chrome, Edge e Firefox resolvem qualquer `*.localhost` para `127.0.0.1` sozinhos, assim como o Linux com `systemd-resolved`. Se o `bru`, o `python` ou o `curl` não encontrarem o nome (`ENOTFOUND`, `Name or service not known`), acrescente ao arquivo de hosts (`/etc/hosts` no Linux/macOS, `C:\Windows\System32\drivers\etc\hosts` no Windows, editando como administrador):
+> **E se `*.localhost` não resolver?** Chrome, Edge e Firefox resolvem qualquer `*.localhost` para `127.0.0.1` sozinhos, assim como o Linux com `systemd-resolved`. Se o `bru`, o Java, o Python ou o `curl` não encontrarem o nome (`ENOTFOUND`, `UnknownHostException`, `Name or service not known`), acrescente ao arquivo de hosts (`/etc/hosts` no Linux/macOS, `C:\Windows\System32\drivers\etc\hosts` no Windows, editando como administrador):
 >
 > ```
-> 127.0.0.1  app.localhost kiwi.localhost traefik.localhost
+> 127.0.0.1  app.localhost app-python.localhost kiwi.localhost traefik.localhost
 > ```
 
 ---
 
 ## Etapa 2 — Conhecer a aplicação sob teste (10 min)
 
-A **TechStore API** calcula o valor de um carrinho de compras. O código das regras está em `app/techstore/carrinho.py`, separado do Flask (`app/techstore/app.py`) justamente para poder ser testado por **teste unitário**, sem subir servidor.
+A **TechStore API** calcula o valor de um carrinho de compras. As regras estão em `java/app/src/main/java/br/edu/gqs/techstore/CalculadoraCarrinho.java` — uma classe **Java pura, sem nenhuma anotação do Spring**, para poder ser testada por **teste unitário** sem subir servidor. O `CarrinhoController` só traduz HTTP para chamadas dessa classe.
 
 ### 2.1 Regras de negócio (o "requisito")
 
@@ -199,8 +222,10 @@ curl http://app.localhost/api/produtos
 curl -X POST http://app.localhost/api/carrinho/calcular \
      -H "Content-Type: application/json" \
      -d '{"itens":[{"produto_id":2,"quantidade":1}],"cupom":"GQS10"}'
-# {"subtotal":250.0,"desconto":25.0,"frete":0.0,"total":225.0}
+# {"subtotal":250.00,"desconto":25.00,"frete":0.00,"total":225.00}
 ```
+
+Os valores monetários são `BigDecimal` no Java — nunca `double` para dinheiro.
 
 **Pergunta para o relatório:** olhando só as regras RN03 e RN04, quais valores você testaria usando **análise de valor limite** (Aula 08)? Guarde a resposta — é exatamente onde estão os defeitos.
 
@@ -242,7 +267,7 @@ Ao salvar o produto, o Kiwi cria sozinho a versão `unspecified` e a categoria `
 | Name | `TechStore Carrinho v1.0 - Regressao` |
 | Product / Version | `TechStore Carrinho` / `1.0` |
 | Type | `Regression` |
-| Text | `Regressão da API de carrinho: regras RN01 a RN05 (testes unitários com pytest e testes de API com Bruno).` |
+| Text | `Regressão da API de carrinho: regras RN01 a RN05 (testes unitários e testes de API com Bruno).` |
 
 Salve e **anote o número do plano** que aparece no título (`TP-1: ...`). Ele será o `TCMS_PLAN_ID` da Etapa 7.
 
@@ -250,11 +275,11 @@ Salve e **anote o número do plano** que aparece no título (`TP-1: ...`). Ele s
 
 O Kiwi numera os casos sozinho: `TC-1`, `TC-2`... Esse número depende da ordem de criação e **muda de uma instalação para outra**. Por isso, neste laboratório, **o Summary de cada caso começa com um identificador nosso, fixo: `CT01`, `CT02`... `CT16`** (CT = Caso de Teste).
 
-É esse identificador que liga o Kiwi ao código: o teste `test_CT03_...` do pytest e o `test("CT14 - ...")` do Bruno atualizam, respectivamente, os casos `CT03 - ...` e `CT14 - ...` do Kiwi (Etapa 7). Não confunda: **`TC-13` é o id do Kiwi; `CT14` é o nosso**.
+É esse identificador que liga o Kiwi ao código: o método `ct03_freteGratisNoLimiteExatoDe200()` do JUnit e o `test("CT14 - ...")` do Bruno atualizam, respectivamente, os casos `CT03 - ...` e `CT14 - ...` do Kiwi (Etapa 7). Não confunda: **`TC-13` é o id do Kiwi; `CT14` é o nosso**.
 
 ### 4.3 Escrever o caso CT14
 
-Dentro do plano, use `TESTING > New Test Case` (ou o botão de novo caso no próprio plano):
+Use `TESTING > New Test Case`:
 
 | Campo | Valor |
 |---|---|
@@ -279,10 +304,10 @@ Dentro do plano, use `TESTING > New Test Case` (ou o botão de novo caso no pró
 
 **Resultado esperado**
 - status 200
-- subtotal 200.0, frete 0.0, total 200.0
+- subtotal 200.00, frete 0.00, total 200.00
 ```
 
-Se o caso não estiver no plano, adicione-o na lista `Test cases` do plano.
+Depois, na página do plano, adicione o caso à lista `Test cases`.
 
 > **Status importa:** só casos `CONFIRMED` podem entrar numa rodada de execução. `PROPOSED`, `DISABLED` e `NEED_UPDATE` ficam de fora.
 
@@ -316,10 +341,10 @@ curl -X POST http://app.localhost/api/carrinho/calcular \
 Resultado obtido:
 
 ```json
-{"subtotal":200.0,"desconto":0.0,"frete":15.0,"total":215.0}
+{"subtotal":200.00,"desconto":0.00,"frete":15.00,"total":215.00}
 ```
 
-O esperado era `frete 0.0` e `total 200.0`. **Falhou.**
+O esperado era `frete 0.00` e `total 200.00`. **Falhou.**
 
 ### 5.3 Registrar o resultado
 
@@ -342,7 +367,7 @@ O Kiwi tem **bug tracker próprio** — não precisa de Jira nem Mantis. Duas co
 | Alta | 3 | `fa fa-exclamation-circle` | `#ec7a08` |
 | Critica | 4 | `fa fa-fire` | `#cc0000` |
 
-(O `preparar_kiwi.py` da Etapa 6 também cria essas quatro, se você preferir.)
+(O `preparar` da Etapa 6 também cria essas quatro, se você preferir.)
 
 **b) Bug tracker "Kiwi TCMS"** — habilita o botão de *1 clique* nas execuções. Em `ADMIN > Everything else > Testcases > Bug trackers > Add`:
 
@@ -384,22 +409,28 @@ E escreva no comentário os **três itens que todo relatório de defeito precisa
 
 ---
 
-## Etapa 6 — Completar o catálogo de casos pela API (10 min)
+## Etapa 6 — Completar o catálogo de casos pela API, em Java (10 min)
 
-Escrever 15 casos à mão é o tipo de trabalho que se automatiza. O script `kiwi/preparar_kiwi.py` cria (ou **reaproveita**) produto, versão, build, categorias, plano, severidades e os casos `CT01` a `CT16`.
+Escrever 15 casos à mão é o tipo de trabalho que se automatiza. O comando `preparar` do `kiwi-tools.jar` cria (ou **reaproveita**) produto, versão, build, categorias, plano, severidades e os casos `CT01` a `CT16`.
 
-### 6.1 Ambiente Python
+### 6.1 Compilar o `kiwi-tools.jar`
 
 ```bash
-cd repository/class24/lab-kiwi
-python3 -m venv .venv
-source .venv/bin/activate              # Windows: .venv\Scripts\activate
-pip install -r app/requirements-dev.txt -r kiwi/requirements.txt
+mvn -q -f java/kiwi/pom.xml package
+ls java/kiwi/target/kiwi-tools.jar
 ```
+
+O projeto `java/kiwi` tem **uma única dependência** (Jackson, para JSON). HTTP e XML vêm do próprio JDK (`java.net.http.HttpClient` e `javax.xml`). Abra `KiwiClient.java` e veja como é simples conversar com o Kiwi: toda chamada é um `POST` em `/json-rpc/` com
+
+```json
+{"jsonrpc": "2.0", "method": "TestCase.filter", "params": [{"summary__startswith": "CT14 "}], "id": 1}
+```
+
+e o login (`Auth.login`) devolve um cookie de sessão que o `CookieManager` reaproveita nas chamadas seguintes.
 
 ### 6.2 Credenciais — fora do código
 
-Crie `~/.tcms.conf` a partir de `kiwi/tcms.conf.example`:
+Crie `~/.tcms.conf` a partir de `tcms.conf.example` (o mesmo arquivo serve para as ferramentas Java e Python):
 
 ```ini
 [tcms]
@@ -420,12 +451,12 @@ export KIWI_USERNAME=admin
 export KIWI_PASSWORD=sua-senha
 ```
 
-Se você trocou a porta HTTPS, a URL fica `https://kiwi.localhost:8443/xml-rpc/`.
+No Windows (PowerShell): `$env:KIWI_URL="https://kiwi.localhost/xml-rpc/"` e assim por diante. Se você trocou a porta HTTPS, a URL fica `https://kiwi.localhost:8443/xml-rpc/`. O cliente Java troca `xml-rpc` por `json-rpc` sozinho.
 
 ### 6.3 Rodar
 
 ```bash
-python3 kiwi/preparar_kiwi.py
+java -jar java/kiwi/target/kiwi-tools.jar preparar
 ```
 
 Saída esperada (os ids podem variar):
@@ -442,13 +473,13 @@ TestPlan   1  TechStore Carrinho v1.0 - Regressao   <-- use este id em TCMS_PLAN
 Severidades: Baixa, Media, Alta, Critica
 ```
 
-Repare no **`reuse`** do CT14: o script procura os casos pelo **prefixo** `CT14 ` e aproveita o que você escreveu à mão. Rode de novo — nada é duplicado (estratégia *get or create*).
+Repare no **`reuse`** do CT14: o programa procura os casos pelo **prefixo** `CT14 ` e aproveita o que você escreveu à mão. Rode de novo — nada é duplicado (estratégia *get or create*).
 
-Abra o plano no Kiwi. Agora ele tem 15 casos, todos com **Automated = True**. Abra um deles e clique em *Edit*: o campo **Script** diz qual código executa o caso (ex.: `app/tests/test_carrinho.py::test_CT03_frete_gratis_no_limite_exato_de_200`). É assim que o Kiwi documenta a automação de um caso que nasceu manual.
+Abra o plano no Kiwi. Agora ele tem 15 casos, todos com **Automated = True**. Abra um deles e clique em *Edit*: o campo **Script** diz qual código executa o caso (ex.: `java/app/src/test/java/br/edu/gqs/techstore/CalculadoraCarrinhoTest.java#ct03_freteGratisNoLimiteExatoDe200`). É assim que o Kiwi documenta a automação de um caso que nasceu manual.
 
 | Casos | Categoria | Executados por |
 |---|---|---|
-| CT01 a CT08 | Regras de Negocio | pytest — `app/tests/test_carrinho.py` |
+| CT01 a CT08 | Regras de Negocio | JUnit 5 — `CalculadoraCarrinhoTest.java` |
 | CT10 a CT16 | API REST | Bruno — `bruno/TechStore-Carrinho/CT1x-*.bru` |
 
 ---
@@ -460,46 +491,52 @@ Aqui está o coração do tutorial: **o caso escrito no Kiwi passa a ser executa
 ```mermaid
 sequenceDiagram
     participant Dev as Você / CI
-    participant Runner as pytest ou bru
-    participant Pub as publicar_resultados.py
+    participant Runner as mvn test ou bru
+    participant Pub as kiwi-tools.jar publicar
     participant Kiwi as Kiwi TCMS
     Dev->>Runner: executar suíte
     Runner->>Runner: gera junit.xml
     Dev->>Pub: publicar junit.xml
-    Pub->>Kiwi: cria TestRun "[pytest] Results for ..., 1.0.0"
+    Pub->>Kiwi: TestRun.create "[junit] Results for ..., 1.0.0"
     loop cada teste do junit.xml
         Pub->>Pub: extrai "CT03" do nome do teste
-        Pub->>Kiwi: TestCase com Summary "CT03 ..."
+        Pub->>Kiwi: TestCase.filter summary começa com "CT03 "
         Pub->>Kiwi: TestRun.add_case + TestExecution.update(PASSED/FAILED)
     end
 ```
 
-### 7.1 Testes unitários com pytest
+### 7.1 Testes unitários com JUnit 5
 
 ```bash
-cd app
-pytest -v
+mvn -f java/app/pom.xml test
 ```
 
 ```
-tests/test_carrinho.py::test_CT01_subtotal_de_multiplos_itens PASSED
-tests/test_carrinho.py::test_CT02_cupom_GQS10_aplica_10_por_cento PASSED
-tests/test_carrinho.py::test_CT03_frete_gratis_no_limite_exato_de_200 FAILED
-tests/test_carrinho.py::test_CT04_frete_cobrado_abaixo_de_200 PASSED
-tests/test_carrinho.py::test_CT05_rejeita_quantidade_menor_que_1[0] FAILED
-tests/test_carrinho.py::test_CT05_rejeita_quantidade_menor_que_1[-1] PASSED
-...
-========================= 2 failed, 10 passed =========================
+[ERROR] Tests run: 12, Failures: 2, Errors: 0, Skipped: 0
+[ERROR]   CalculadoraCarrinhoTest.ct03_freteGratisNoLimiteExatoDe200:54 expected: <0.00> but was: <15.00>
+[ERROR]   CalculadoraCarrinhoTest.ct05_rejeitaQuantidadeMenorQue1:67 Expected br.edu.gqs.techstore.CarrinhoInvalidoException to be thrown, but nothing was thrown.
 ```
 
 Dois testes falham: o **CT03** (o mesmo defeito do BUG-1, agora pego pelo teste unitário) e o **CT05** — um **defeito novo**, que ninguém tinha visto ainda: a quantidade `0` é aceita.
 
-Gere o relatório no formato JUnit, que é o "idioma comum" entre ferramentas de teste:
+Abra `CalculadoraCarrinhoTest.java` e veja a convenção: o nome do método começa com o id do caso, e o `@DisplayName` repete o id para quem lê o relatório na IDE:
 
-```bash
-pytest -v --junitxml=../resultados-unit.xml
-cd ..
+```java
+@Test
+@DisplayName("CT03 - RN03: valor limite - exatamente R$ 200,00 ja tem frete gratis")
+void ct03_freteGratisNoLimiteExatoDe200() {
+    assertEquals(new BigDecimal("0.00"), calculadora.calcularFrete(new BigDecimal("200.00")));
+}
+
+@ParameterizedTest(name = "quantidade {0}")
+@ValueSource(ints = {0, -1})
+@DisplayName("CT05 - RN04: limite inferior - 0 e -1 devem ser recusados")
+void ct05_rejeitaQuantidadeMenorQue1(int quantidade) {
+    assertThrows(CarrinhoInvalidoException.class, () -> calculadora.validarQuantidade(quantidade));
+}
 ```
+
+O **relatório JUnit XML** — o "idioma comum" entre ferramentas de teste — não precisa ser pedido: o **Maven Surefire** já grava um arquivo por classe em `java/app/target/surefire-reports/TEST-*.xml`, mesmo quando há falhas.
 
 ### 7.2 Testes de API com Bruno
 
@@ -509,7 +546,7 @@ Instale o Bruno CLI (uma vez):
 npm install -g @usebruno/cli
 ```
 
-Rode a coleção contra a API publicada pelo Traefik:
+Rode a coleção contra a API Java publicada pelo Traefik:
 
 ```bash
 cd bruno/TechStore-Carrinho
@@ -528,7 +565,7 @@ CT15-quantidade-zero (200 OK)
 │ Tests         │          5/7           │
 ```
 
-> Se trocou a porta HTTP, edite `bruno/TechStore-Carrinho/environments/Traefik.bru` e use `baseUrl: http://app.localhost:8880`. Para rodar a API **fora** do Docker (`cd app && python -m techstore.app`), use o ambiente `Local` (`http://localhost:5000`).
+> Se trocou a porta HTTP, edite `bruno/TechStore-Carrinho/environments/Traefik.bru` e use `baseUrl: http://app.localhost:8880`. Para rodar a API **fora** do Docker (`mvn -f java/app/pom.xml spring-boot:run`), use o ambiente `Local` (`http://localhost:8080`).
 
 Abra um `.bru` e veja como o teste é escrito — o nome começa com o identificador do caso:
 
@@ -547,11 +584,11 @@ tests {
 ### 7.3 Publicar os resultados no Kiwi
 
 ```bash
-export TCMS_PLAN_ID=1          # o número do plano (Etapa 4.1 / saída do preparar_kiwi.py)
+export TCMS_PLAN_ID=1          # o número do plano (Etapa 4.1 / saída do "preparar")
 export TCMS_BUILD=1.0.0        # o build que foi testado
 
-TCMS_PREFIX="[pytest]" python3 kiwi/publicar_resultados.py resultados-unit.xml
-TCMS_PREFIX="[bruno]"  python3 kiwi/publicar_resultados.py resultados-api.xml
+TCMS_PREFIX="[junit]" java -jar java/kiwi/target/kiwi-tools.jar publicar java/app/target/surefire-reports
+TCMS_PREFIX="[bruno]" java -jar java/kiwi/target/kiwi-tools.jar publicar resultados-api.xml
 ```
 
 ```
@@ -564,31 +601,33 @@ TestRun TR-2 (plano TP-1)
   PASSED  TC-7   CT06 - Validar limite maximo de 10 unidades
   PASSED  TC-8   CT07 - Rejeitar cupom invalido
   PASSED  TC-9   CT08 - Rejeitar produto inexistente
-Rodada TR-2 concluida -> FAILED: 2, PASSED: 6
+Rodada TR-2 concluida -> {FAILED=2, PASSED=6}
 TestRun TR-3 (plano TP-1)
   ...
   FAILED  TC-1   CT14 - API: frete gratis no limite de R$ 200,00
   FAILED  TC-14  CT15 - API: quantidade zero retorna 400
   ...
-Rodada TR-3 concluida -> FAILED: 2, PASSED: 5
+Rodada TR-3 concluida -> {FAILED=2, PASSED=5}
 ```
 
-Abra o plano no Kiwi: há duas rodadas novas, `[pytest] Results for TechStore Carrinho, 1.0, 1.0.0` e `[bruno] Results for ...`. Clique numa execução `FAILED` e leia o comentário: ele traz o nome do teste e a **mensagem de falha** do junit.xml — a evidência, sem ninguém digitar nada.
+O `publicar` aceita uma **pasta** (lê todos os `TEST-*.xml` do Surefire) ou arquivos `.xml` avulsos (como o do Bruno).
 
-**Como o script decide qual caso atualizar** (leia `kiwi/publicar_resultados.py`):
+Abra o plano no Kiwi: há duas rodadas novas, `[junit] Results for TechStore Carrinho, 1.0, 1.0.0` e `[bruno] Results for ...`. Clique numa execução `FAILED` e leia o comentário: ele traz o nome do teste e a **mensagem de falha** do junit.xml — a evidência, sem ninguém digitar nada.
+
+**Como o `PublicarResultados.java` decide qual caso atualizar:**
 
 | No junit.xml | Identificador extraído | Caso no Kiwi |
 |---|---|---|
-| `test_CT03_frete_gratis_no_limite_exato_de_200` | `CT03` | `CT03 - Frete gratis no limite exato de R$ 200,00` |
-| `test_CT05_rejeita_quantidade_menor_que_1[0]` e `[-1]` | `CT05` (2 testes) | **uma** execução; fica `FAILED` se qualquer um falhar |
+| `ct03_freteGratisNoLimiteExatoDe200` | `CT03` | `CT03 - Frete gratis no limite exato de R$ 200,00` |
+| `ct05_rejeitaQuantidadeMenorQue1(int)[1]` e `[2]` | `CT05` (2 testes) | **uma** execução; fica `FAILED` se qualquer um falhar |
 | `CT14 - Carrinho de exatamente 200,00 tem frete gratis` | `CT14` | `CT14 - API: frete gratis no limite de R$ 200,00` |
 | um teste sem `CTxx` no nome | — | cria um caso novo com o nome do teste |
 
-O trabalho pesado (criar Version, Build e TestRun, mudar status) é feito pela classe `Backend` da biblioteca `tcms-api` — a mesma do plugin oficial `kiwitcms-junit.xml-plugin`. O nosso script só acrescenta a regra "achar o caso pelo prefixo `CTxx`", que o plugin oficial não tem (ele procura pelo Summary **exato** e, por isso, criaria casos paralelos `test_CT03_...` em vez de usar o caso que você escreveu).
+As variáveis `TCMS_PLAN_ID`, `TCMS_BUILD`, `TCMS_PRODUCT_VERSION`, `TCMS_PREFIX` e `TCMS_RUN_ID` têm os mesmos nomes usados pelos plugins oficiais do Kiwi — quem conhecer um, entende o outro. A diferença está na regra "achar o caso pelo prefixo `CTxx`": os plugins oficiais procuram o Summary **exato** e, por isso, criariam casos paralelos (`ct03_freteGratis...`) em vez de usar o caso que você escreveu.
 
 ### 7.4 Tudo de uma vez: `scripts/executar-testes.sh`
 
-O script roda as duas suítes e publica as duas rodadas. É o que um pipeline de CI chamaria:
+O script roda as duas suítes e publica as duas rodadas (compilando o `kiwi-tools.jar` se ele ainda não existir). É o que um pipeline de CI chamaria:
 
 ```bash
 TCMS_PLAN_ID=1 TCMS_BUILD=1.0.0 ./scripts/executar-testes.sh
@@ -600,6 +639,8 @@ Use `PUBLICAR=0` para só rodar os testes, sem enviar ao Kiwi. No Windows, rode 
 > **Integração contínua:** num GitHub Actions o mesmo script roda depois do `docker compose up`, com as credenciais em *secrets*:
 >
 > ```yaml
+> - uses: actions/setup-java@v4
+>   with: { distribution: temurin, java-version: '17' }
 > - run: ./scripts/executar-testes.sh
 >   env:
 >     KIWI_URL: ${{ secrets.KIWI_URL }}
@@ -613,7 +654,7 @@ Use `PUBLICAR=0` para só rodar os testes, sem enviar ao Kiwi. No Windows, rode 
 
 ### 7.5 Registrar o defeito que a automação achou
 
-O CT05 (pytest) e o CT15 (Bruno) revelaram um defeito que a rodada manual não cobria. Na rodada `[bruno] Results ... 1.0.0`, execução `FAILED` do **CT15** → **Report bug** → `Kiwi TCMS interno`. Renomeie para `API aceita item com quantidade zero`, severidade `Media`, e preencha passos/esperado/obtido. Esse é o **BUG-2**.
+O CT05 (JUnit) e o CT15 (Bruno) revelaram um defeito que a rodada manual não cobria. Na rodada `[bruno] Results ... 1.0.0`, execução `FAILED` do **CT15** → **Report bug** → `Kiwi TCMS interno`. Renomeie para `API aceita item com quantidade zero`, severidade `Media`, e preencha passos/esperado/obtido. Esse é o **BUG-2**.
 
 Ligue também o BUG-1 às execuções automatizadas do CT03 e do CT14: na execução, *Add hyperlink* → URL `https://kiwi.localhost/bugs/1/` → marque **Is a defect**.
 
@@ -623,7 +664,7 @@ Ligue também o BUG-1 às execuções automatizadas do CT03 e do CT14: na execu�
 
 | O que ver | Onde | O que você deve encontrar |
 |---|---|---|
-| Visão do plano | `TP-1` | 15 casos e 3 rodadas (manual, `[pytest]`, `[bruno]`) |
+| Visão do plano | `TP-1` | 15 casos e 3 rodadas (manual, `[junit]`, `[bruno]`) |
 | Progresso de uma rodada | página da rodada | barra com PASSED/FAILED e o percentual |
 | Histórico de um caso | página do `CT14` → *Executions* | uma execução manual e uma automatizada, ambas `FAILED` no build 1.0.0 |
 | Defeitos e suas execuções | `SEARCH > Search Bugs` → `BUG-1` | lista de execuções ligadas ao defeito |
@@ -639,31 +680,32 @@ Ligue também o BUG-1 às execuções automatizadas do CT03 e do CT14: na execu�
 
 ## Etapa 9 — Corrigir os defeitos e retestar (20 min)
 
-Agora você é o desenvolvedor. Os dois defeitos estão em `app/techstore/carrinho.py`, marcados com o comentário `DEFEITO PLANTADO`.
+Agora você é o desenvolvedor. Os dois defeitos estão em `CalculadoraCarrinho.java`, marcados com o comentário `DEFEITO PLANTADO`.
 
 ### 9.1 A correção
 
-**BUG-1 — frete (RN03):** a regra diz "maior **ou igual**".
+**BUG-1 — frete (RN03):** a regra diz "maior **ou igual**". Com `BigDecimal`, isso é `compareTo(...) >= 0`.
 
 ```diff
- def calcular_frete(valor_com_desconto):
-     """RN03 - frete gratis a partir de R$ 200,00 (inclusive)."""
--    # DEFEITO PLANTADO #1 (BUG-1): a regra diz "maior OU IGUAL".
--    # Com ">", um carrinho de exatamente R$ 200,00 paga frete.
--    if valor_com_desconto > LIMITE_FRETE_GRATIS:
-+    if valor_com_desconto >= LIMITE_FRETE_GRATIS:
-         return Decimal("0.00")
-     return VALOR_FRETE
+     public BigDecimal calcularFrete(BigDecimal valorComDesconto) {
+-        // DEFEITO PLANTADO #1 (BUG-1): a regra diz "maior OU IGUAL".
+-        // Com "> 0", um carrinho de exatamente R$ 200,00 paga frete.
+-        if (valorComDesconto.compareTo(LIMITE_FRETE_GRATIS) > 0) {
++        if (valorComDesconto.compareTo(LIMITE_FRETE_GRATIS) >= 0) {
+             return centavos(BigDecimal.ZERO);
+         }
+         return VALOR_FRETE;
+     }
 ```
 
 **BUG-2 — quantidade (RN04):** o limite inferior é 1, não 0.
 
 ```diff
--    # DEFEITO PLANTADO #2 (BUG-2): o limite inferior deveria ser
--    # QUANTIDADE_MINIMA (1). Com "< 0", a quantidade 0 passa na validacao.
--    if quantidade < 0 or quantidade > QUANTIDADE_MAXIMA:
-+    if quantidade < QUANTIDADE_MINIMA or quantidade > QUANTIDADE_MAXIMA:
-         raise CarrinhoInvalido(
+-        // DEFEITO PLANTADO #2 (BUG-2): o limite inferior deveria ser
+-        // QUANTIDADE_MINIMA (1). Com "< 0", a quantidade 0 passa na validacao.
+-        if (quantidade < 0 || quantidade > QUANTIDADE_MAXIMA) {
++        if (quantidade < QUANTIDADE_MINIMA || quantidade > QUANTIDADE_MAXIMA) {
+             throw new CarrinhoInvalidoException(
 ```
 
 Os dois são **erros de valor limite** — por isso só um teste que escolhe *exatamente* o limite (200,00 e 0) os encontra. Um teste com R$ 300,00 ou quantidade 5 passaria sempre.
@@ -671,13 +713,14 @@ Os dois são **erros de valor limite** — por isso só um teste que escolhe *ex
 ### 9.2 Confirmar localmente (teste unitário)
 
 ```bash
-cd app && pytest -q && cd ..
-# 12 passed
+mvn -f java/app/pom.xml test
+# Tests run: 12, Failures: 0, Errors: 0, Skipped: 0
+# BUILD SUCCESS
 ```
 
 ### 9.3 Gerar o build 1.0.1 da aplicação
 
-No `.env`, troque `APP_VERSION=1.0.0` por `APP_VERSION=1.0.1` e reconstrua **só** a API:
+No `.env`, troque `APP_VERSION=1.0.0` por `APP_VERSION=1.0.1` e reconstrua **só** a API Java:
 
 ```bash
 docker compose up -d --build app
@@ -692,33 +735,162 @@ TCMS_PLAN_ID=1 TCMS_BUILD=1.0.1 ./scripts/executar-testes.sh
 ```
 
 ```
-Rodada TR-4 concluida -> PASSED: 8
-Rodada TR-5 concluida -> PASSED: 7
-pytest: OK   bruno: OK
+Rodada TR-4 concluida -> {PASSED=8}
+Rodada TR-5 concluida -> {PASSED=7}
+junit: OK   bruno: OK
 ```
 
-O Build `1.0.1` **não precisou ser criado à mão**: o `Backend` do `tcms-api` cria o build se ele não existir.
+O Build `1.0.1` **não precisou ser criado à mão**: o `publicar` cria o build se ele não existir.
 
-Feche também o ciclo da rodada manual: crie a rodada `Rodada manual - build 1.0.1` com o CT14, repita o `curl` da Etapa 5.2 (agora `frete 0.0`, `total 200.0`) e marque `PASSED`.
+Feche também o ciclo da rodada manual: crie a rodada `Rodada manual - build 1.0.1` com o CT14, repita o `curl` da Etapa 5.2 (agora `frete 0.00`, `total 200.00`) e marque `PASSED`.
 
 ### 9.5 Fechar os defeitos
 
 Abra o `BUG-1` e o `BUG-2`, escreva no comentário a evidência da correção e clique em **Close**:
 
-> Corrigido no build 1.0.1 (`>=` em `calcular_frete`). Reteste: CT03 PASSED (TR-4), CT14 PASSED (TR-5 e rodada manual 1.0.1).
+> Corrigido no build 1.0.1 (`>= 0` em `calcularFrete`). Reteste: CT03 PASSED (TR-4), CT14 PASSED (TR-5 e rodada manual 1.0.1).
 
 Agora a página do **CT14** conta a história completa: `FAILED` no 1.0.0 (manual e Bruno) → `BUG-1` → `PASSED` no 1.0.1. É essa rastreabilidade **requisito → caso → execução → defeito → correção → reteste** que uma planilha não oferece.
 
 ---
 
-## Etapa 10 — Encerrar o ambiente
+# PARTE II — Versão Python
+
+A mesma API, com as mesmas regras e **os mesmos dois defeitos**, implementada em Python/Flask. Os casos de teste do Kiwi são **os mesmos** (`CT01` a `CT16`): o que muda é o código que os executa. Por isso as Etapas 3, 4, 5 e 8 não se repetem — você só refaz o ciclo automatizado.
+
+> Fez a Parte I até o fim? Então no Kiwi o build `1.0.1` já está verde para o Java. As rodadas Python ficam no mesmo plano, com o prefixo `[pytest]` — compare as duas linguagens lado a lado.
+
+## Etapa 10 — Ciclo completo com Python (30 min)
+
+### 10.1 Subir a API Python
+
+Ela está no *profile* `python` do compose:
 
 ```bash
-docker compose down        # para, mantendo os dados do Kiwi
-docker compose down -v     # para e APAGA o banco do Kiwi (recomeça do zero)
+docker compose --profile python up -d --build
+curl http://app-python.localhost/api/health
+# {"status":"ok","versao":"1.0.0"}
 ```
 
-Para refazer o laboratório com os defeitos, desfaça a correção: `git checkout app/techstore/carrinho.py` e volte o `APP_VERSION` para `1.0.0`.
+As regras ficam em `python/app/techstore/carrinho.py` (Python puro, sem Flask) e as rotas em `python/app/techstore/app.py` — a mesma separação da `CalculadoraCarrinho` × `CarrinhoController` do Java.
+
+### 10.2 Ambiente Python
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate              # Windows: .venv\Scripts\activate
+pip install -r python/app/requirements-dev.txt -r python/kiwi/requirements.txt
+```
+
+As credenciais são as mesmas da Etapa 6.2 (`~/.tcms.conf` ou `KIWI_*`). As ferramentas Python usam a biblioteca **oficial** do Kiwi, `tcms-api`, que fala XML-RPC.
+
+### 10.3 Preparar o Kiwi (opcional)
+
+Se você **não** fez a Parte I, crie o catálogo com a versão Python do `preparar`:
+
+```bash
+python3 python/kiwi/preparar_kiwi.py
+```
+
+Ele faz o mesmo que o `kiwi-tools.jar preparar` — inclusive reaproveitar casos pelo prefixo `CTxx` — e aponta o campo **Script** dos casos CT01–CT08 para `python/app/tests/test_carrinho.py::test_CT0x_...`. Se você já fez a Parte I, pode pular: os casos já existem.
+
+### 10.4 Testes unitários com pytest
+
+```bash
+cd python/app
+pytest -v --junitxml=../../resultados-unit.xml
+cd ../..
+```
+
+```
+tests/test_carrinho.py::test_CT03_frete_gratis_no_limite_exato_de_200 FAILED
+tests/test_carrinho.py::test_CT05_rejeita_quantidade_menor_que_1[0] FAILED
+...
+========================= 2 failed, 10 passed =========================
+```
+
+Mesma convenção do JUnit: o nome da função começa com o id do caso.
+
+```python
+def test_CT03_frete_gratis_no_limite_exato_de_200():
+    """RN03 - valor limite: exatamente R$ 200,00 ja tem frete gratis."""
+    assert calcular_frete(Decimal("200.00")) == Decimal("0.00")
+```
+
+### 10.5 Testes de API com Bruno contra a API Python
+
+A coleção é **a mesma** — só muda o ambiente:
+
+```bash
+cd bruno/TechStore-Carrinho
+bru run --env TraefikPython --reporter-junit ../../resultados-api.xml
+cd ../..
+```
+
+Resultado idêntico ao da Parte I: CT14 e CT15 falham. É a prova de que o teste de API testa o **comportamento** e não a implementação — ele não sabe (nem precisa saber) em que linguagem a API foi escrita.
+
+### 10.6 Publicar no Kiwi
+
+```bash
+TCMS_PREFIX="[pytest]" python3 python/kiwi/publicar_resultados.py resultados-unit.xml
+TCMS_PREFIX="[bruno]"  python3 python/kiwi/publicar_resultados.py resultados-api.xml
+```
+
+Ou tudo de uma vez:
+
+```bash
+TCMS_PLAN_ID=1 TCMS_BUILD=1.0.0 ./scripts/executar-testes-python.sh
+```
+
+```
+Rodada TR-6 concluida -> FAILED: 2, PASSED: 6
+Rodada TR-7 concluida -> FAILED: 2, PASSED: 5
+pytest: FALHOU   bruno: FALHOU
+```
+
+O `publicar_resultados.py` usa a classe `Backend` do `tcms-api` — a mesma do plugin oficial `kiwitcms-junit.xml-plugin` — e acrescenta a regra do prefixo `CTxx`. Compare com o `PublicarResultados.java`: é o mesmo algoritmo, em outra linguagem.
+
+### 10.7 Corrigir, reconstruir e retestar
+
+Os defeitos estão em `python/app/techstore/carrinho.py`:
+
+```diff
+ def validar_quantidade(quantidade):
+-    if quantidade < 0 or quantidade > QUANTIDADE_MAXIMA:
++    if quantidade < QUANTIDADE_MINIMA or quantidade > QUANTIDADE_MAXIMA:
+
+ def calcular_frete(valor_com_desconto):
+-    if valor_com_desconto > LIMITE_FRETE_GRATIS:
++    if valor_com_desconto >= LIMITE_FRETE_GRATIS:
+```
+
+```bash
+(cd python/app && pytest -q)                     # 12 passed
+# no .env: APP_VERSION_PYTHON=1.0.1
+docker compose --profile python up -d --build app-python
+TCMS_PLAN_ID=1 TCMS_BUILD=1.0.1 ./scripts/executar-testes-python.sh
+```
+
+```
+Rodada TR-10 concluida -> PASSED: 8
+Rodada TR-11 concluida -> PASSED: 7
+pytest: OK   bruno: OK
+```
+
+---
+
+## Etapa 11 — Encerrar o ambiente
+
+```bash
+docker compose --profile python down        # para, mantendo os dados do Kiwi
+docker compose --profile python down -v     # para e APAGA o banco do Kiwi (recomeça do zero)
+```
+
+Para refazer o laboratório com os defeitos, desfaça as correções e volte as versões do `.env` para `1.0.0`:
+
+```bash
+git checkout java/app/src/main/java/br/edu/gqs/techstore/CalculadoraCarrinho.java python/app/techstore/carrinho.py
+```
 
 ---
 
@@ -729,15 +901,18 @@ Para refazer o laboratório com os defeitos, desfaça a correção: `git checkou
 | `Bind for 0.0.0.0:80 failed: port is already allocated` | outro serviço usa a 80/443 | `HTTP_PORT`/`HTTPS_PORT` no `.env` (Etapa 1.2) |
 | `kiwi.localhost` → `404 page not found` | Kiwi ainda `starting`; o Traefik ignora containers não saudáveis | espere o `healthy` (Etapa 1.4) |
 | Traefik não cria rota nenhuma e o log reclama da versão da API do Docker (`client version ... is too old`) | Traefik < 3.6 com Docker Engine 29+ | use `traefik:v3.6` ou mais novo (já está no compose) |
-| `ENOTFOUND app.localhost` no `bru` / `Name or service not known` no Python | o sistema não resolve `*.localhost` | linha no arquivo de hosts (Etapa 1.6) |
+| `app-python.localhost` → `404 page not found` | a API Python é do *profile* `python` | `docker compose --profile python up -d` |
+| `ENOTFOUND app.localhost` no `bru` / `UnknownHostException` no Java | o sistema não resolve `*.localhost` | linha no arquivo de hosts (Etapa 1.6) |
 | Não consegue logar depois do setup | `initial_setup` rodou sem `-it` | rode de novo com `docker exec -it` |
 | Lista de classificações vazia | instalação nova não tem nenhuma | crie a classificação antes do produto (Etapa 3.1) |
 | Caso não aparece para adicionar à rodada | status `PROPOSED` | mude para `CONFIRMED` |
 | `Enable reporting to this Issue Tracker by configuring its base_url!` | bug tracker sem Base URL | Etapa 5.4 b |
-| `RuntimeError: Config file ... not found` | sem `~/.tcms.conf` e sem `KIWI_*` | Etapa 6.2 |
-| `SSLCertVerificationError` | certificado autoassinado | os scripts já tratam (comentário "APENAS EM LABORATÓRIO" em `kiwi_conexao.py`) |
-| Rodada automatizada cria casos `test_CT...` duplicados | usou o plugin oficial em vez do `publicar_resultados.py` | use o script do laboratório (Etapa 7.3) |
-| Teste passou mas a API do container continua errada | corrigiu o código e não reconstruiu a imagem | `docker compose up -d --build app` |
+| `Configure ~/.tcms.conf ou exporte KIWI_URL...` | sem credenciais | Etapa 6.2 |
+| `invalid target release: 17` no Maven | JDK antigo | instale o JDK 17 ou mais novo (`java -version`) |
+| `Unable to access jarfile java/kiwi/target/kiwi-tools.jar` | jar não compilado | `mvn -q -f java/kiwi/pom.xml package` |
+| `SSLCertVerificationError` (Python) / `PKIX path building failed` (Java) | certificado autoassinado | as ferramentas do laboratório já tratam (comentários "APENAS EM LABORATÓRIO" em `KiwiClient.java` e `kiwi_conexao.py`) |
+| Rodada automatizada cria casos `ct03_...` / `test_CT03_...` duplicados | usou um plugin oficial em vez das ferramentas do laboratório | use `kiwi-tools.jar publicar` ou `publicar_resultados.py` |
+| Teste unitário passa mas a API do container continua errada | corrigiu o código e não reconstruiu a imagem | `docker compose up -d --build app` (ou `app-python`) |
 
 ---
 
@@ -748,14 +923,16 @@ Para refazer o laboratório com os defeitos, desfaça a correção: `git checkou
 3. (Etapa 4) Por que usar um identificador próprio (`CT14`) no Summary em vez do id do Kiwi (`TC-13`)?
 4. (Etapa 5) Severidade × prioridade do BUG-1: quem define cada uma?
 5. (Etapa 7) O BUG-2 só foi encontrado pela automação. O que isso diz sobre a cobertura da rodada manual?
-6. (Etapa 7) O CT05 tem dois testes no pytest (`[0]` e `[-1]`) e só um passou. Por que a execução no Kiwi deve ficar `FAILED` e não "meio aprovada"?
+6. (Etapa 7) O CT05 tem dois testes no JUnit (`[1]` e `[2]`) e só um passou. Por que a execução no Kiwi deve ficar `FAILED` e não "meio aprovada"?
 7. (Etapa 9) Por que o reteste precisa ser registrado no build **1.0.1**, e não sobrescrever o resultado do 1.0.0?
+8. (Etapa 10) A coleção Bruno rodou sem nenhuma alteração contra as APIs Java e Python. Que vantagem isso traz? E o teste unitário — dá para reaproveitar entre as linguagens? Por quê?
 
 ## O que entregar
 
 1. Print do plano `TP-1` com os 15 casos (coluna *Automated*).
 2. Print da rodada manual com o CT14 `FAILED` e do `BUG-1` mostrando a execução vinculada.
-3. Print das rodadas `[pytest]` e `[bruno]` do build 1.0.0 (com as falhas) e do build 1.0.1 (tudo `PASSED`).
+3. Print das rodadas `[junit]` e `[bruno]` do build 1.0.0 (com as falhas) e do build 1.0.1 (tudo `PASSED`).
 4. Print da página do CT14 mostrando o histórico de execuções.
-5. O `diff` da correção (`git diff app/techstore/carrinho.py`).
-6. As respostas às perguntas acima.
+5. O `diff` da correção Java (`git diff java/app`).
+6. (Parte II) Print das rodadas `[pytest]` dos builds 1.0.0 e 1.0.1 e o `diff` da correção Python.
+7. As respostas às perguntas acima.

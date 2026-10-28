@@ -9,7 +9,7 @@ Credenciais NUNCA vao no codigo. Duas formas aceitas, nesta ordem:
          export KIWI_PASSWORD=sua-senha
 
   2. arquivo ~/.tcms.conf (forma oficial do tcms-api), com chmod 600 -
-     modelo em tcms.conf.example
+     modelo em lab-kiwi/tcms.conf.example (o mesmo arquivo serve para Java e Python)
 """
 
 import os

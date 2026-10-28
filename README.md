@@ -23,7 +23,7 @@ repository/
 ├── class21/ — SikuliX: Testes de Interface  
 ├── class21B/ — Testes Mobile: Maestro e Appium  
 ├── class23B/ — SonarQube: Análise Contínua e Quality Gate  
-├── class24/ — Kiwi TCMS e Bug Tracking  
+├── class24/ — Kiwi TCMS e Bug Tracking (+ lab-kiwi/: Kiwi + TechStore API Java/Python + Bruno + Traefik)  
 ├── class25/ — CI/CD  
 ├── class26/ — DevOps e GitHub Actions  
 ├── class27/ — Estimativa de Software e Métricas de Processo/Projeto  
@@ -225,7 +225,7 @@ repository/
 | `GQS18-Lab1-DiagramaClasse.plantuml` | Diagrama de classes Lab 1 (PlantUML) |  
 | `GQS18-Lab2-DiagramaClasse.plantuml` | Diagrama de classes Lab 2 (PlantUML) |  
 | `GQS18-FitNesse-Labs-Completo.md` | Todos os laboratórios FitNesse documentados |  
-| `GQS18-docker-compose-testlink.yml` | Docker Compose para TestLink — **referência histórica**; o laboratório da Aula 24 usa `class24/diagrams/GQS24-kiwi-docker-compose.yml` |  
+| `GQS18-docker-compose-testlink.yml` | Docker Compose para TestLink — **referência histórica**; o laboratório da Aula 24 usa `class24/lab-kiwi/docker-compose.yml` |  
 | `GQS18-FitNesse-TesteGeral.wiki` | Página wiki real usada na aula 4M (TesteGeral) |  
 | `GQS18-FitNesse-RegistroVideoDigital.wiki` | Página wiki real usada na aula 4M (RegistroDeVideo) |  
 | `GQS18-FitNesse-FrontPage.txt` | FrontPage original do FitNesse da aula 4M |  
@@ -403,23 +403,55 @@ docker run --rm --network=host -e SONAR_TOKEN=$SONAR_TOKEN -v "$PWD:/usr/src" so
 
 ## class24 — Kiwi TCMS e Bug Tracking
 
-### lab-kiwi/ — laboratório completo: Kiwi TCMS + TechStore API (Java e Python) + Traefik
+**Laboratório principal:** `lab-kiwi/` — Kiwi TCMS, Traefik e uma API de carrinho (**TechStore**) com dois defeitos plantados, implementada em **Java** (principal) e em **Python** (secundária). O aluno escreve um caso de teste no Kiwi, executa à mão, registra o defeito no bug tracker do próprio Kiwi, roda testes unitários (JUnit 5 / pytest) e de API (Bruno), publica os resultados automaticamente no Kiwi, corrige o código e retesta no build 1.0.1.
 
-Tutorial passo a passo em `lab-kiwi/GQS24-Tutorial-KiwiTCMS-TechStore.md` — Parte I em **Java** (principal), Parte II em **Python**. Acesso por `https://kiwi.localhost`, `http://app.localhost` (Java) e `http://app-python.localhost` (Python).
+O laboratório anterior, só com Kiwi + MariaDB e scripts Python (`diagrams/GQS24-Lab-KiwiTCMS-*`), continua disponível como roteiro alternativo.
 
-| Arquivo | Descrição |
+### lab-kiwi/ — Kiwi TCMS + TechStore API (Java e Python) + Bruno + Traefik
+
+| URL | Serviço |
 |---|---|
-| `GQS24-Tutorial-KiwiTCMS-TechStore.md` | Tutorial: caso manual → defeito → execução automatizada (JUnit/pytest e Bruno) → correção → reteste no build 1.0.1 |
-| `docker-compose.yml` | Traefik 3.6 + Kiwi TCMS + MariaDB 11 + API Java; API Python no profile `python` |
-| `.env.example` / `tcms.conf.example` | Senhas, versões e portas do ambiente; modelo do `~/.tcms.conf` |
-| `java/app/` | API Spring Boot com **dois defeitos plantados** (valor limite em RN03 e RN04) e testes JUnit 5 (CT01–CT08) |
-| `java/kiwi/` | `kiwi-tools.jar`: cliente JSON-RPC do Kiwi em Java — `preparar` (produto, plano, casos CT01–CT16) e `publicar` (junit.xml → execuções, pelo prefixo `CTxx`) |
-| `python/app/` | Mesma API em Flask, mesmos defeitos, testes pytest |
-| `python/kiwi/` | `preparar_kiwi.py` e `publicar_resultados.py` com a biblioteca oficial `tcms-api` |
-| `bruno/TechStore-Carrinho/` | Testes de API CT10–CT16, servem às duas APIs (ambientes `Traefik` e `TraefikPython`) |
-| `scripts/executar-testes.sh` / `executar-testes-python.sh` | Rodam as suítes e publicam as rodadas no Kiwi; saem com erro se alguma suíte falhar |
+| `https://kiwi.localhost` | Kiwi TCMS (planos, casos, rodadas e bug tracker) |
+| `http://app.localhost` | TechStore API em Java (Spring Boot) |
+| `http://app-python.localhost` | TechStore API em Python (Flask) — profile `python` |
+| `http://traefik.localhost` | painel do Traefik |
 
-### diagrams/ — ambiente e scripts do Kiwi TCMS
+| Arquivo / pasta | Descrição |
+|---|---|
+| `GQS24-Tutorial-KiwiTCMS-TechStore.md` | Tutorial completo: **Etapa 0** (instalar Docker, JDK, Maven, Node, Python em Linux/Windows/macOS e clonar o repositório) → **Parte I, Java** (Etapas 1–9: subir o ambiente, caso manual, defeito, JUnit + Bruno publicados no Kiwi, correção e reteste) → **Parte II, Python** (Etapa 10) → armadilhas, perguntas e entregáveis |
+| `README.md` | Início rápido do laboratório |
+| `docker-compose.yml` | Traefik 3.6 + Kiwi TCMS + MariaDB 11 + API Java (`app`); API Python (`app-python`) no profile `python` |
+| `.env.example` | Senhas do banco, `APP_VERSION` / `APP_VERSION_PYTHON` e portas alternativas do Traefik |
+| `tcms.conf.example` | Modelo do `~/.tcms.conf`, usado pelas ferramentas Java e Python |
+| `java/app/` | API Spring Boot 3.5 (`CalculadoraCarrinho` com os **dois defeitos de valor limite**, RN03 e RN04), testes JUnit 5 CT01–CT08, Dockerfile multi-stage |
+| `java/kiwi/` | `kiwi-tools.jar` — cliente JSON-RPC do Kiwi em Java: `preparar` (produto, plano, casos CT01–CT16, severidades) e `publicar` (relatórios do Surefire/Bruno → execuções no Kiwi, pelo prefixo `CTxx`) |
+| `python/app/` | Mesma API em Flask, mesmos defeitos, testes pytest CT01–CT08 |
+| `python/kiwi/` | `preparar_kiwi.py` e `publicar_resultados.py` com a biblioteca oficial `tcms-api` |
+| `bruno/TechStore-Carrinho/` | Testes de API CT10–CT16 — a mesma coleção testa as duas APIs (ambientes `Traefik`, `TraefikPython`, `Local`, `LocalPython`) |
+| `scripts/executar-testes.sh` | Java: `mvn test` + Bruno + publicação das rodadas `[junit]` e `[bruno]`; sai com erro se alguma suíte falhar |
+| `scripts/executar-testes-python.sh` | Python: pytest + Bruno + publicação das rodadas `[pytest]` e `[bruno]` |
+
+**Como iniciar o laboratório (Parte I, Java):**
+```bash
+git clone https://github.com/giovanebarcelos/gqs-sandbox.git
+cd gqs-sandbox/class24/lab-kiwi
+cp .env.example .env                       # e troque as senhas
+docker compose up -d --build               # + "--profile python" para subir também a API Python
+docker exec -it gqs24_kiwi_web /Kiwi/manage.py initial_setup   # interativo; domínio: kiwi.localhost
+
+mvn -q -f java/kiwi/pom.xml package                             # gera o kiwi-tools.jar
+java -jar java/kiwi/target/kiwi-tools.jar preparar              # plano + casos CT01..CT16
+TCMS_PLAN_ID=1 TCMS_BUILD=1.0.0 ./scripts/executar-testes.sh    # JUnit + Bruno -> Kiwi
+```
+
+**Encerrar:**
+```bash
+docker compose --profile python down -v    # -v apaga o banco do Kiwi
+```
+
+Se as portas 80/443 estiverem ocupadas, defina `HTTP_PORT` / `HTTPS_PORT` no `.env` (Etapa 1.2 do tutorial).
+
+### diagrams/ — laboratório anterior: Kiwi TCMS + scripts Python
 
 | Arquivo | Descrição |
 |---|---|
@@ -432,6 +464,18 @@ Tutorial passo a passo em `lab-kiwi/GQS24-Tutorial-KiwiTCMS-TechStore.md` — Pa
 | `GQS24-Lab-KiwiTCMS-Solucao.md` | Gabarito com os números medidos (uso do professor) |
 | `GQS24-D02-FluxoKiwiTCMS.mmd` | Fluxo requisito → caso → execução → defeito → novo build |
 | `GQS24-D03-HierarquiaKiwiTCMS.mmd` | Hierarquia de objetos do Kiwi TCMS |
+
+**Como iniciar (laboratório anterior):**
+```bash
+cd class24/diagrams
+cp GQS24-kiwi-.env.example .env          # e troque as senhas dentro do .env
+docker compose -f GQS24-kiwi-docker-compose.yml up -d
+docker exec -it kiwi_web /Kiwi/manage.py initial_setup    # interativo: o -it e obrigatorio
+# Acesse: https://localhost:8443  (certificado autoassinado — aceite o aviso)
+docker compose -f GQS24-kiwi-docker-compose.yml down -v   # encerrar
+```
+
+> Os dois laboratórios usam containers e volumes com nomes diferentes (`gqs24_kiwi_*` × `kiwi_*`) e portas diferentes por padrão (80/443 × 8080/8443). Só entram em conflito se você definir `HTTPS_PORT=8443` no `.env` do `lab-kiwi` com o laboratório anterior no ar.
 
 ### diagrams/ — material histórico do TestLink
 
@@ -457,20 +501,6 @@ Mantido como referência: o TestLink continua em uso em muitas empresas e os con
 | Arquivo | Descrição |
 |---|---|
 | `GQS2401-RelatorioDefeitos.java` | Versão Java do relatório de defeitos |
-
-**Como iniciar o Kiwi TCMS:**
-```bash
-cd class24/diagrams
-cp GQS24-kiwi-.env.example .env          # e troque as senhas dentro do .env
-docker compose -f GQS24-kiwi-docker-compose.yml up -d
-docker exec -it kiwi_web /Kiwi/manage.py initial_setup    # interativo: o -it e obrigatorio
-# Acesse: https://localhost:8443  (certificado autoassinado — aceite o aviso)
-```
-
-**Encerrar:**
-```bash
-docker compose -f GQS24-kiwi-docker-compose.yml down -v
-```
 
 ---
 
@@ -606,11 +636,11 @@ docker compose -f GQS24-kiwi-docker-compose.yml down -v
 | class21 | 21 — SikuliX | 4 | TXT enunciados/soluções + MD comandos + links download |  
 | class21B | 21B — Mobile (Maestro/Appium) | 8 | TXT enunciados/soluções + MD comandos + Mermaid + YAML flow + links download + Java/Python |  
 | class23B | 23B — SonarQube | 16 | Projeto Maven (src + tests + pom) + Python (módulo + testes + properties) + 2 Mermaid + Compose + .env + script de gate + workflow + Jenkinsfile + roteiro/gabarito |  
-| class24 | 24 — Kiwi TCMS | 17 | Compose Kiwi + .env + 3 scripts de API + roteiro/gabarito + suíte pytest + 3 Mermaid + material histórico do TestLink |  
+| class24 | 24 — Kiwi TCMS | 69 | `lab-kiwi/`: Compose (Traefik + Kiwi + MariaDB + APIs) + TechStore API Java (Spring Boot + JUnit 5) e Python (Flask + pytest) + `kiwi-tools.jar` (Java) e scripts `tcms-api` (Python) + coleção Bruno + scripts de execução + tutorial; `diagrams/`: laboratório anterior (Compose + 3 scripts + roteiro/gabarito) + 3 Mermaid + material histórico do TestLink |  
 | class25 | 25 — CI/CD | 4 | YAML configs + TXT pipeline |  
 | class26 | 26 — DevOps | 5 | YAML + Docker + Shell script + zip |  
 | class27 | 27 — Estimativa/Pontos de Função | 3 | Python + Java (calculadora PF/COCOMO) + Mermaid |  
 | class28 | 28 — Gestão de Configuração/Versionamento | 4 | Python + Java (simulador versionamento) + 2 Mermaid |  
 | class29 | 29 — Projeto Integrador Final | 6 | Python + Java (checklist qualidade) + Mermaid (renumerado de class27) + AGENTS.md, opencode.json e modelo de Uso de IA |  
 | class30 | 30 — Ética e Encerramento | 3 | Python + Java (checklist code review) + Mermaid (renumerado de class28) |  
-| **Total** | | **257** | |  
+| **Total** | | **309** | |  

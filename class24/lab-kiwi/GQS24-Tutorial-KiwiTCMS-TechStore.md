@@ -416,7 +416,10 @@ O Kiwi numera os casos sozinho: `TC-1`, `TC-2`... Esse número depende da ordem 
 
 ### 4.3 Escrever o caso CT14  
 
-Use `TESTING > New Test Case`:  
+Use `TESTING > New Test Case`.  
+
+> ⚠️ **O formulário abre com `Status` = `PROPOSED`.** Troque para **`CONFIRMED`** antes de salvar: caso `PROPOSED` não aparece na rodada de execução da Etapa 5.  
+
 
 | Campo | Valor |  
 |---|---|  
@@ -464,6 +467,8 @@ Depois, na página do plano, adicione o caso à lista `Test cases`.
 | Casos | `CT14` |  
 
 O Kiwi cria uma **TestExecution** (`TE-n`) para o caso, em `IDLE`.  
+
+> **O CT14 não apareceu em *Test Executions*?** Ele quase certamente ficou com o status `PROPOSED` (o padrão do formulário). Abra o caso (`https://kiwi.localhost/case/<id>/edit/`), troque `Status` para `CONFIRMED`, salve e crie a rodada de novo. Confira também se o caso está na lista `Test cases` do plano (Etapa 4.3).  
 
 ### 5.2 Executar o roteiro  
 

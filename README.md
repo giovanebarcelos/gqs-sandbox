@@ -403,6 +403,21 @@ docker run --rm --network=host -e SONAR_TOKEN=$SONAR_TOKEN -v "$PWD:/usr/src" so
 
 ## class24 — Kiwi TCMS e Bug Tracking
 
+### lab-kiwi/ — laboratório completo: Kiwi TCMS + TechStore API + Traefik
+
+Tutorial passo a passo em `lab-kiwi/GQS24-Tutorial-KiwiTCMS-TechStore.md`. Acesso por `https://kiwi.localhost` e `http://app.localhost`.
+
+| Arquivo | Descrição |
+|---|---|
+| `GQS24-Tutorial-KiwiTCMS-TechStore.md` | Tutorial em 10 etapas: caso manual → defeito → execução automatizada (pytest e Bruno) → correção → reteste no build 1.0.1 |
+| `docker-compose.yml` | Traefik 3.6 + Kiwi TCMS + MariaDB 11 + TechStore API; portas e senhas pelo `.env` |
+| `.env.example` | Senhas do banco, `APP_VERSION` e portas alternativas do Traefik |
+| `app/` | API Flask de carrinho com **dois defeitos plantados** (valor limite em RN03 e RN04), Dockerfile e testes unitários `pytest` (CT01–CT08) |
+| `bruno/TechStore-Carrinho/` | Coleção Bruno com os testes de API CT10–CT16 (ambientes `Traefik` e `Local`) |
+| `kiwi/preparar_kiwi.py` | Cria produto, versão, build, plano, severidades e os casos CT01–CT16 (*get or create*) |
+| `kiwi/publicar_resultados.py` | Publica `junit.xml` (pytest ou Bruno) no Kiwi, localizando o caso pelo prefixo `CTxx` do Summary |
+| `scripts/executar-testes.sh` | Roda pytest + Bruno e publica as duas rodadas; sai com erro se alguma suíte falhar |
+
 ### diagrams/ — ambiente e scripts do Kiwi TCMS
 
 | Arquivo | Descrição |

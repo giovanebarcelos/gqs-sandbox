@@ -1,0 +1,13 @@
+docs {
+  # TechStore - testes de API (Aula 24 - Kiwi TCMS)
+
+  Cada `test("CTxx - ...")` comeca com o identificador do caso de teste
+  cadastrado no Kiwi TCMS. O script `kiwi/publicar_resultados.py` usa esse
+  prefixo para gravar o resultado na execucao do caso certo.
+
+  Rodar pela linha de comando (dentro desta pasta):
+
+      bru run --env Traefik --reporter-junit ../../resultados-api.xml
+
+  Na versao 1.0.0 da API, CT14 e CT15 FALHAM (defeitos plantados).
+}

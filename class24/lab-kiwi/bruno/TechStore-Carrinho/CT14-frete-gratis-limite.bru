@@ -1,0 +1,35 @@
+meta {
+  name: CT14 - Frete gratis no limite de 200
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{baseUrl}}/api/carrinho/calcular
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "itens": [
+      { "produto_id": 1, "quantidade": 1 },
+      { "produto_id": 3, "quantidade": 1 }
+    ]
+  }
+}
+
+docs {
+  Mouse Gamer (120,00) + Headset (80,00) = exatamente 200,00.
+  RN03: a partir de 200,00 (inclusive) o frete e' gratis.
+}
+
+tests {
+  test("CT14 - Carrinho de exatamente 200,00 tem frete gratis", function () {
+    expect(res.getStatus()).to.equal(200);
+    const r = res.getBody();
+    expect(r.subtotal).to.equal(200);
+    expect(r.frete, "frete").to.equal(0);
+    expect(r.total, "total").to.equal(200);
+  });
+}

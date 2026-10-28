@@ -1,0 +1,29 @@
+meta {
+  name: CT13 - Carrinho com cupom GQS10
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/api/carrinho/calcular
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "itens": [{ "produto_id": 2, "quantidade": 1 }],
+    "cupom": "GQS10"
+  }
+}
+
+tests {
+  test("CT13 - Cupom GQS10 aplica 10% e total fica 225,00", function () {
+    expect(res.getStatus()).to.equal(200);
+    const r = res.getBody();
+    expect(r.subtotal).to.equal(250);
+    expect(r.desconto).to.equal(25);
+    expect(r.frete).to.equal(0);
+    expect(r.total).to.equal(225);
+  });
+}

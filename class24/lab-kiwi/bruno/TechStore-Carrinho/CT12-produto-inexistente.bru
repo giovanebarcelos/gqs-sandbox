@@ -1,0 +1,18 @@
+meta {
+  name: CT12 - Produto inexistente
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}/api/produtos/999
+  body: none
+  auth: none
+}
+
+tests {
+  test("CT12 - Produto inexistente retorna 404", function () {
+    expect(res.getStatus()).to.equal(404);
+    expect(res.getBody()).to.have.property("erro");
+  });
+}

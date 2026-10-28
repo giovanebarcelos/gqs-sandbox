@@ -2,7 +2,7 @@
 
 **Aula 24 — Garantia da Qualidade de Software** | Prof. Giovane Barcelos
 **Duração estimada:** 2h a 2h30 (Parte I, Java) + 30 min (Parte II, Python)
-**Pré-requisitos:** Docker + Docker Compose, **JDK 17+ e Maven 3.9+**, Node.js 18+ (para o Bruno CLI), Git — e, para a Parte II, Python 3.10+
+**Pré-requisitos:** Docker + Docker Compose, **JDK 17+ e Maven 3.9+**, Node.js 18+ (para o Bruno CLI), Git — e, para a Parte II, Python 3.10+. A **Etapa 0** mostra como instalar tudo.
 
 ---
 
@@ -91,6 +91,142 @@ Medidos numa execução real deste tutorial (Kiwi TCMS **16.6**, Traefik 3.6, Ma
 
 ---
 
+# ETAPA 0 — Preparar a máquina (20 a 40 min, só uma vez)
+
+Faça esta etapa **antes da aula**: os downloads (Docker Desktop, JDK, imagens do Kiwi) somam alguns gigabytes.
+
+### 0.1 O que instalar
+
+| Ferramenta | Versão mínima | Para quê | Parte |
+|---|---|---|---|
+| Git | qualquer recente | baixar o repositório | I e II |
+| Docker + Docker Compose v2 | Compose 2.20+ | subir Traefik, Kiwi, MariaDB e as APIs | I e II |
+| JDK (Java) | 17 (recomendado: 21) | compilar e testar a API e o `kiwi-tools.jar` | I |
+| Maven | 3.9 | `mvn test` e `mvn package` | I |
+| Node.js + npm | 18 (recomendado: LTS) | instalar e rodar o Bruno CLI | I e II |
+| Python | 3.10 | pytest e `tcms-api` | II |
+
+> O comando é `docker compose` (com espaço, Compose **v2**). O antigo `docker-compose` (com hífen, v1) foi descontinuado e não entende alguns recursos do arquivo, como `profiles`.
+
+### 0.2 Linux
+
+**Docker** — o script oficial funciona em Ubuntu, Debian, Fedora e derivados:
+
+```bash
+curl -fsSL https://get.docker.com | sudo sh
+sudo systemctl enable --now docker
+sudo usermod -aG docker $USER      # permite usar o docker sem sudo
+```
+
+**Saia da sessão e entre de novo** (ou reinicie) para o grupo `docker` valer. Teste com `docker run --rm hello-world`.
+
+**Demais ferramentas — Ubuntu / Debian / Mint:**
+
+```bash
+sudo apt update
+sudo apt install -y git openjdk-21-jdk maven nodejs npm python3 python3-venv python3-pip
+```
+
+**Demais ferramentas — Fedora:**
+
+```bash
+sudo dnf install -y git java-21-openjdk-devel maven nodejs npm python3 python3-pip
+```
+
+> Se o `node -v` do seu sistema for menor que 18 (comum em distribuições antigas), instale a versão LTS pelo [nvm](https://github.com/nvm-sh/nvm): `nvm install --lts`.
+
+### 0.3 Windows 10/11
+
+1. **WSL 2** — o Docker Desktop roda sobre ele. No PowerShell **como administrador**:
+
+   ```powershell
+   wsl --install
+   ```
+
+   Reinicie o computador quando pedir.
+
+2. **Ferramentas** — no PowerShell (normal), com o `winget`:
+
+   ```powershell
+   winget install -e --id Git.Git
+   winget install -e --id Docker.DockerDesktop
+   winget install -e --id EclipseAdoptium.Temurin.21.JDK
+   winget install -e --id OpenJS.NodeJS.LTS
+   winget install -e --id Python.Python.3.12
+   ```
+
+3. **Maven** — baixe o *Binary zip archive* em <https://maven.apache.org/download.cgi>, descompacte em `C:\Tools\` e acrescente `C:\Tools\apache-maven-3.9.x\bin` ao `Path` (*Configurações → Sistema → Sobre → Configurações avançadas do sistema → Variáveis de Ambiente*). Quem usa Chocolatey pode fazer `choco install maven`.
+
+4. **Abra o Docker Desktop** uma vez e espere aparecer *Engine running*. Ele precisa estar aberto sempre que você usar o laboratório.
+
+5. **Feche e abra o terminal** para o `Path` novo valer.
+
+> **Terminal recomendado no Windows:** o **Git Bash** (instalado junto com o Git). Os comandos do tutorial — inclusive os scripts `.sh` da pasta `scripts/` — rodam nele sem adaptação. No PowerShell, troque `export VAR=valor` por `$env:VAR="valor"` e rode os passos das Etapas 7.1 a 7.3 um a um.
+
+### 0.4 macOS
+
+Com o [Homebrew](https://brew.sh):
+
+```bash
+brew install --cask docker          # Docker Desktop — abra-o uma vez pelo Launchpad
+brew install git openjdk@21 maven node python@3.12
+sudo ln -sfn "$(brew --prefix)/opt/openjdk@21/libexec/openjdk.jdk" /Library/Java/JavaVirtualMachines/openjdk-21.jdk
+```
+
+> **Mac com Apple Silicon (M1/M2/M3/M4):** a imagem do Kiwi TCMS só existe para `x86_64`. O Docker Desktop a executa por emulação (Rosetta) — funciona, mas a primeira subida e o `initial_setup` ficam mais lentos. Se o Docker reclamar de `no matching manifest for linux/arm64`, acrescente `platform: linux/amd64` ao serviço `kiwi_web` do `docker-compose.yml`.
+
+### 0.5 Conferir as versões
+
+Em qualquer sistema, num terminal **novo**:
+
+```bash
+git --version
+docker --version
+docker compose version     # precisa ser v2.x
+java -version              # 17 ou mais novo
+mvn -v                     # 3.9 ou mais novo — e "Java version" deve ser 17+
+node -v                    # v18 ou mais novo
+npm -v
+python3 --version          # 3.10+ (só para a Parte II; no Windows: python --version)
+```
+
+| Problema | Solução |
+|---|---|
+| `docker: permission denied ... docker.sock` (Linux) | faltou sair e entrar de novo depois do `usermod -aG docker` |
+| `Cannot connect to the Docker daemon` | Docker Desktop fechado (Windows/macOS) ou serviço parado (`sudo systemctl start docker`) |
+| `mvn -v` mostra `Java version: 11` | o Maven está usando outro JDK — ajuste `JAVA_HOME` para o JDK 21 |
+| `docker-compose: command not found` | use `docker compose` (com espaço) |
+| `java`/`mvn`/`node` não encontrados no Windows | feche e abra o terminal; confira o `Path` |
+
+### 0.6 Baixar o repositório
+
+```bash
+git clone https://github.com/giovanebarcelos/gqs-sandbox.git
+cd gqs-sandbox/class24/lab-kiwi
+ls
+# docker-compose.yml  GQS24-Tutorial-KiwiTCMS-TechStore.md  java  python  bruno  scripts ...
+```
+
+Já tem o repositório de outras aulas? Só atualize: `cd gqs-sandbox && git pull`.
+
+**Todos os comandos deste tutorial são executados dentro de `gqs-sandbox/class24/lab-kiwi`**, a menos que digam o contrário.
+
+### 0.7 (Opcional) Adiantar os downloads
+
+Ainda com boa internet, baixe as imagens e as dependências do Maven antes da aula:
+
+```bash
+docker compose --profile python pull --ignore-buildable   # Traefik, MariaDB e Kiwi
+docker compose --profile python build                     # compila as duas APIs
+mvn -q -f java/app/pom.xml dependency:go-offline
+mvn -q -f java/kiwi/pom.xml package
+npm install -g @usebruno/cli
+```
+
+> No Linux, se o `npm install -g` reclamar de permissão (`EACCES`), use `sudo npm install -g @usebruno/cli` ou instale o Node pelo `nvm`.
+
+---
+
 # PARTE I — Versão Java
 
 ## Etapa 1 — Subir o ambiente (15 min)
@@ -98,8 +234,8 @@ Medidos numa execução real deste tutorial (Kiwi TCMS **16.6**, Traefik 3.6, Ma
 ### 1.1 Preparar o `.env`
 
 ```bash
-cd repository/class24/lab-kiwi
-cp .env.example .env
+cd gqs-sandbox/class24/lab-kiwi      # se ainda não estiver nela (Etapa 0.6)
+cp .env.example .env                # Windows (PowerShell): copy .env.example .env
 ```
 
 Abra o `.env` e **troque as duas senhas** do banco. O `.env` fica só na sua máquina: ele está no `.gitignore`, porque senha não vai para o repositório (a mesma regra que o SonarQube cobra na Aula 23B).

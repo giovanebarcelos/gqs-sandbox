@@ -1,0 +1,17 @@
+meta {
+  name: 07 - Relatorio sem token
+  type: http
+  seq: 7
+}
+
+get {
+  url: {{baseUrl}}/api/relatorio
+  body: none
+  auth: none
+}
+
+tests {
+  test("07 - Relatorio sem token retorna 401", function () {
+    expect(res.getStatus()).to.equal(401);
+  });
+}

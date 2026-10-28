@@ -1,0 +1,22 @@
+docs {
+  # Biblioteca API - testes funcionais (Aula 23B - SonarQube)
+
+  O SonarQube le o CODIGO; estes testes exercitam o COMPORTAMENTO. Os dois
+  se complementam: o defeito do emprestimo (== / is) quebra os testes 03 e
+  04 - e na versao Python o Sonar nem o aponta.
+
+  A mesma colecao testa as duas implementacoes - so muda o ambiente:
+
+      Traefik        http://biblioteca.localhost          API Java (principal)
+      TraefikPython  http://biblioteca-python.localhost   API Python
+      Local          http://localhost:8080                API Java fora do Docker
+      LocalPython    http://localhost:5000                API Python fora do Docker
+
+  Rodar (dentro desta pasta):
+
+      bru run --env Traefik
+
+  Na versao 1.0.0, os testes 03, 04 e 06 FALHAM (defeitos plantados).
+  Rode a colecao inteira de uma vez: o 03 empresta e o 04 devolve o mesmo
+  livro, deixando o acervo como estava.
+}

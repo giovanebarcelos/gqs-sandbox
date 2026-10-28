@@ -1,0 +1,6 @@
+resultados-*.xml
+.pytest_cache/
+target/
+coverage.xml
+.coverage
+.scannerwork/

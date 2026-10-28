@@ -1,0 +1,26 @@
+meta {
+  name: 08 - Relatorio com token
+  type: http
+  seq: 8
+}
+
+get {
+  url: {{baseUrl}}/api/relatorio?formato=csv
+  body: none
+  auth: none
+}
+
+params:query {
+  formato: csv
+}
+
+headers {
+  X-Admin-Token: {{tokenAdmin}}
+}
+
+tests {
+  test("08 - Relatorio CSV com token valido retorna 200", function () {
+    expect(res.getStatus()).to.equal(200);
+    expect(res.getBody()).to.contain("indicador;valor");
+  });
+}

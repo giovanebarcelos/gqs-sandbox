@@ -3,6 +3,7 @@
 **Aula 24 — Garantia da Qualidade de Software** | Prof. Giovane Barcelos
 **Duração estimada:** 2h a 2h30 (Parte I, Java) + 30 min (Parte II, Python)
 **Pré-requisitos:** Docker + Docker Compose, **JDK 17+ e Maven 3.9+**, Node.js 18+ (para o Bruno CLI), Git — e, para a Parte II, Python 3.10+. A **Etapa 0** mostra como instalar tudo.
+**Arquivos do laboratório:** pasta `class24/lab-kiwi/` do repositório <https://github.com/giovanebarcelos/gqs-sandbox> (Etapa 0.6).
 
 ---
 

@@ -1,0 +1,5 @@
+# Caminhos relativos no coverage.xml: e' o que o SonarScanner (rodando num
+# container, com o projeto montado em /usr/src) consegue casar com os fontes.
+[run]
+relative_files = True
+source = biblioteca

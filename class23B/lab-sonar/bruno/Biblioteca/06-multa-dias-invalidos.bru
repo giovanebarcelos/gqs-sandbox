@@ -1,0 +1,27 @@
+meta {
+  name: 06 - Multa com dias invalidos
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{baseUrl}}/api/multa?dias=dez&tipo=aluno
+  body: none
+  auth: none
+}
+
+params:query {
+  dias: dez
+  tipo: aluno
+}
+
+docs {
+  Na versao 1.0.0 o catch vazio de lerDias/ler_dias engole o erro e trata
+  "dez" como 0 dias: a API responde 200 com multa 0 em vez de recusar.
+}
+
+tests {
+  test("06 - Dias nao numerico retorna 400", function () {
+    expect(res.getStatus()).to.equal(400);
+  });
+}

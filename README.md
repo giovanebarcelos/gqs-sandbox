@@ -22,7 +22,7 @@ repository/
 ├── class20B/ — JMeter no Simulado da A1: planos, script e modelo do README-JMeter.md  
 ├── class21/ — SikuliX: Testes de Interface  
 ├── class21B/ — Testes Mobile: Maestro e Appium  
-├── class23B/ — SonarQube: Análise Contínua e Quality Gate  
+├── class23B/ — SonarQube: Análise Contínua e Quality Gate (+ lab-sonar/: SonarQube + Biblioteca API Java/Python + Bruno + Traefik)  
 ├── class24/ — Kiwi TCMS e Bug Tracking (+ lab-kiwi/: Kiwi + TechStore API Java/Python + Bruno + Traefik)  
 ├── class25/ — CI/CD  
 ├── class26/ — DevOps e GitHub Actions  
@@ -349,9 +349,48 @@ repository/
 
 ---  
 
-## class23B — SonarQube: Análise Contínua e Quality Gate  
+## class23B — SonarQube: Análise Contínua e Quality Gate
 
-Laboratório completo da Aula 23B. Todo o material foi executado contra um **SonarQube Community Build 26.9** real antes de ser publicado: os números citados nos slides e no gabarito são medições.  
+**Laboratório principal:** `lab-sonar/` — SonarQube Community Build, Traefik e uma API REST de biblioteca com defeitos plantados, implementada em **Java** (principal) e em **Python** (secundária). O aluno roda os testes (JUnit/pytest e Bruno), analisa o código, descobre por que o Quality Gate padrão fica verde mesmo com nota E, troca o Quality Profile e cria o gate do curso, vê o build falhar com `sonar.qualitygate.wait`, corrige o código e os testes e reanalisa até o gate aprovar.
+
+O laboratório anterior (`diagrams/GQS23B-Lab-*`, com os projetos `java/` e `python/` de arquivo único) continua disponível como roteiro alternativo. Todo o material foi executado contra um SonarQube real antes de ser publicado (26.9 no laboratório anterior, **26.10** no `lab-sonar`).
+
+### lab-sonar/ — SonarQube + Biblioteca API (Java e Python) + Bruno + Traefik
+
+| URL | Serviço |
+|---|---|
+| `http://sonar.localhost` | SonarQube Community Build + PostgreSQL |
+| `http://biblioteca.localhost` | Biblioteca API em Java (Spring Boot) |
+| `http://biblioteca-python.localhost` | Biblioteca API em Python (Flask) — profile `python` |
+| `http://traefik.localhost` | painel do Traefik |
+
+| Arquivo / pasta | Descrição |
+|---|---|
+| `GQS23B-Tutorial-SonarQube-Biblioteca.md` | Tutorial completo: **Etapa 0** (instalar Docker, JDK, Maven, Node, Python e clonar) → **Parte I, Java** (Etapas 1–8: subir, token, testes, 1ª análise com gate verde enganoso, Quality Profile × Quality Gate, trava automática, correção e reanálise) → **Parte II, Python** (Etapas 9–10, incluindo a revisão de issue com *Accept*) → armadilhas, perguntas e entregáveis. Cópia também na pasta das aulas: `Aula_23B_Tutorial_SonarQube_Biblioteca.md` |
+| `README.md` | Início rápido do laboratório |
+| `docker-compose.yml` | Traefik 3.6 + SonarQube Community + PostgreSQL 16 + API Java; API Python no profile `python` |
+| `.env.example` | Senha do banco, `TOKEN_ADMIN`, versões das APIs e porta do Traefik |
+| `java/` | API Spring Boot com defeitos plantados (S4973, S2095, S6437, S2077, S2245, S3776, S1854, S1481, S108, duplicação), suíte JUnit incompleta, `pom.xml` com JaCoCo e `sonar-maven-plugin` |
+| `python/` | Mesma API em Flask, suíte pytest incompleta, `sonar-project.properties` e `.coveragerc` |
+| `bruno/Biblioteca/` | 8 testes funcionais; a mesma coleção testa as duas APIs |
+| `solucao/` | Gabarito: código corrigido e suítes completas (Java: 26 testes, 97% de cobertura; Python: 28 testes, 99%) |
+| `scripts/configurar-sonar.sh` | Perfil "Sonar way comprehensive" + Quality Gate "GQS - Codigo Legado" nos dois projetos, pela Web API |
+| `scripts/analisar-java.sh` / `analisar-python.sh` | Testes + análise com `sonar.qualitygate.wait` + Bruno; saem com erro se algo falhar |
+
+**Como iniciar o laboratório (Parte I, Java):**
+```bash
+git clone https://github.com/giovanebarcelos/gqs-sandbox.git
+cd gqs-sandbox/class23B/lab-sonar
+cp .env.example .env                        # troque POSTGRES_PASSWORD
+docker compose up -d --build                # + "--profile python" para a API Python
+# http://sonar.localhost: admin/admin -> trocar senha -> My Account > Security > Global Analysis Token
+export SONAR_TOKEN=sqa_...
+./scripts/analisar-java.sh                  # JUnit + JaCoCo + SonarQube (espera o gate) + Bruno
+```
+
+**Encerrar:** `docker compose --profile python down -v` (o `-v` apaga o banco do SonarQube). O lab usa a porta 80, como o `class24/lab-kiwi`: pare um antes de subir o outro, ou troque `HTTP_PORT` no `.env`.
+
+### Laboratório anterior
 
 ### diagrams/  
 
@@ -418,7 +457,7 @@ O laboratório anterior, só com Kiwi + MariaDB e scripts Python (`diagrams/GQS2
 
 | Arquivo / pasta | Descrição |
 |---|---|
-| `GQS24-Tutorial-KiwiTCMS-TechStore.md` | Tutorial completo: **Etapa 0** (instalar Docker, JDK, Maven, Node, Python em Linux/Windows/macOS e clonar o repositório) → **Parte I, Java** (Etapas 1–9: subir o ambiente, caso manual, defeito, JUnit + Bruno publicados no Kiwi, correção e reteste) → **Parte II, Python** (Etapa 10) → armadilhas, perguntas e entregáveis |
+| `GQS24-Tutorial-KiwiTCMS-TechStore.md` | Tutorial completo: **Etapa 0** (instalar Docker, JDK, Maven, Node, Python em Linux/Windows/macOS e clonar o repositório) → **Parte I, Java** (Etapas 1–9: subir o ambiente, caso manual, defeito, JUnit + Bruno publicados no Kiwi, correção e reteste) → **Parte II, Python** (Etapa 10) → armadilhas, perguntas e entregáveis. Cópia também na pasta das aulas: `Aula_24_Tutorial_KiwiTCMS_TechStore.md` |
 | `README.md` | Início rápido do laboratório |
 | `docker-compose.yml` | Traefik 3.6 + Kiwi TCMS + MariaDB 11 + API Java (`app`); API Python (`app-python`) no profile `python` |
 | `.env.example` | Senhas do banco, `APP_VERSION` / `APP_VERSION_PYTHON` e portas alternativas do Traefik |
@@ -635,7 +674,7 @@ Mantido como referência: o TestLink continua em uso em muitas empresas e os con
 | class20B | 20B — JMeter na A1 | 9 | 5 planos JMX do simulado + script de execução + modelo MD + Mermaid |  
 | class21 | 21 — SikuliX | 4 | TXT enunciados/soluções + MD comandos + links download |  
 | class21B | 21B — Mobile (Maestro/Appium) | 8 | TXT enunciados/soluções + MD comandos + Mermaid + YAML flow + links download + Java/Python |  
-| class23B | 23B — SonarQube | 16 | Projeto Maven (src + tests + pom) + Python (módulo + testes + properties) + 2 Mermaid + Compose + .env + script de gate + workflow + Jenkinsfile + roteiro/gabarito |  
+| class23B | 23B — SonarQube | 67 | `lab-sonar/`: Compose (Traefik + SonarQube + PostgreSQL + APIs) + Biblioteca API Java (Spring Boot + JUnit 5 + JaCoCo) e Python (Flask + pytest) + gabarito + coleção Bruno + scripts de configuração/análise + tutorial; laboratório anterior: projeto Maven + Python + 2 Mermaid + Compose + .env + script de gate + workflow + Jenkinsfile + roteiro/gabarito |
 | class24 | 24 — Kiwi TCMS | 69 | `lab-kiwi/`: Compose (Traefik + Kiwi + MariaDB + APIs) + TechStore API Java (Spring Boot + JUnit 5) e Python (Flask + pytest) + `kiwi-tools.jar` (Java) e scripts `tcms-api` (Python) + coleção Bruno + scripts de execução + tutorial; `diagrams/`: laboratório anterior (Compose + 3 scripts + roteiro/gabarito) + 3 Mermaid + material histórico do TestLink |  
 | class25 | 25 — CI/CD | 4 | YAML configs + TXT pipeline |  
 | class26 | 26 — DevOps | 5 | YAML + Docker + Shell script + zip |  
@@ -643,4 +682,4 @@ Mantido como referência: o TestLink continua em uso em muitas empresas e os con
 | class28 | 28 — Gestão de Configuração/Versionamento | 4 | Python + Java (simulador versionamento) + 2 Mermaid |  
 | class29 | 29 — Projeto Integrador Final | 6 | Python + Java (checklist qualidade) + Mermaid (renumerado de class27) + AGENTS.md, opencode.json e modelo de Uso de IA |  
 | class30 | 30 — Ética e Encerramento | 3 | Python + Java (checklist code review) + Mermaid (renumerado de class28) |  
-| **Total** | | **309** | |  
+| **Total** | | **360** | |

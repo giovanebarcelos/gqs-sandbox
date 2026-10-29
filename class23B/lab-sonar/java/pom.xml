@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                             http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.5.6</version>
+        <relativePath/>
+    </parent>
+
+    <groupId>br.edu.gqs</groupId>
+    <artifactId>biblioteca-api</artifactId>
+    <version>1.0.0</version>
+    <name>GQS23B - Biblioteca API (Lab SonarQube)</name>
+
+    <properties>
+        <java.version>17</java.version>
+        <jacoco.version>0.8.13</jacoco.version>
+        <sonar.maven.version>5.1.0.4751</sonar.maven.version>
+
+        <!-- ================================================================
+             Propriedades lidas pelo scanner (mvn sonar:sonar).
+             O host e o token vem da linha de comando ou de variaveis de
+             ambiente (SONAR_HOST_URL / SONAR_TOKEN); NUNCA fixe o token aqui.
+             ================================================================ -->
+        <sonar.projectKey>gqs23b-biblioteca-java</sonar.projectKey>
+        <sonar.projectName>GQS23B - Biblioteca API (Java)</sonar.projectName>
+        <sonar.host.url>http://sonar.localhost</sonar.host.url>
+        <!-- Cobertura: e' o jacoco.xml que faz o numero chegar ao dashboard -->
+        <sonar.coverage.jacoco.xmlReportPaths>
+            ${project.build.directory}/site/jacoco/jacoco.xml
+        </sonar.coverage.jacoco.xmlReportPaths>
+        <!-- A classe main do Spring so' sobe o servidor: fora da cobertura -->
+        <sonar.coverage.exclusions>**/BibliotecaApplication.java</sonar.coverage.exclusions>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <finalName>biblioteca-api</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+
+            <!-- JaCoCo: gera target/site/jacoco/jacoco.xml na fase verify -->
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${jacoco.version}</version>
+                <executions>
+                    <execution>
+                        <id>prepare-agent</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>report</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Scanner do SonarQube para Maven: mvn sonar:sonar -->
+            <plugin>
+                <groupId>org.sonarsource.scanner.maven</groupId>
+                <artifactId>sonar-maven-plugin</artifactId>
+                <version>${sonar.maven.version}</version>
+            </plugin>
+        </plugins>
+    </build>
+</project>

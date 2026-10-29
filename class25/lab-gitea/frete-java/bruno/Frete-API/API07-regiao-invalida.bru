@@ -1,0 +1,22 @@
+meta {
+  name: API07 - Regiao invalida
+  type: http
+  seq: 7
+}
+
+post {
+  url: {{baseUrl}}/api/frete
+  body: json
+  auth: none
+}
+
+body:json {
+  {"regiao": "LESTE", "pesoKg": 1, "valorPedido": 10}
+}
+
+tests {
+  test("API07 - Regiao desconhecida responde 400", function () {
+    expect(res.getStatus()).to.equal(400);
+    expect(res.getBody().erro).to.equal("Regiao invalida: LESTE");
+  });
+}

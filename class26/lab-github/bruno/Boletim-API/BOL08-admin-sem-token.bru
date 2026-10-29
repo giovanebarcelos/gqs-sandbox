@@ -1,0 +1,17 @@
+meta {
+  name: BOL08 - Admin sem token
+  type: http
+  seq: 8
+}
+
+get {
+  url: {{baseUrl}}/api/admin/estatisticas
+  body: none
+  auth: none
+}
+
+tests {
+  test("BOL08 - Estatisticas sem X-Admin-Token responde 401", function () {
+    expect(res.getStatus()).to.equal(401);
+  });
+}

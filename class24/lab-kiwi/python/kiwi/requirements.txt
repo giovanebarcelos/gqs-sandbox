@@ -1,0 +1,2 @@
+tcms-api==15.0
+kiwitcms-junit.xml-plugin==15.0

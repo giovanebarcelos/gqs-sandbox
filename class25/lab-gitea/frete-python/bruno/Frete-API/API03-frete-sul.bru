@@ -1,0 +1,24 @@
+meta {
+  name: API03 - Frete Sul 2 kg
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/api/frete
+  body: json
+  auth: none
+}
+
+body:json {
+  {"regiao": "SUL", "pesoKg": 2.0, "valorPedido": 100.00}
+}
+
+tests {
+  test("API03 - Sul, 2 kg, R$ 100: frete R$ 17,50 em 3 dias", function () {
+    expect(res.getStatus()).to.equal(200);
+    expect(res.getBody().frete).to.equal(17.5);
+    expect(res.getBody().gratis).to.equal(false);
+    expect(res.getBody().prazoDias).to.equal(3);
+  });
+}

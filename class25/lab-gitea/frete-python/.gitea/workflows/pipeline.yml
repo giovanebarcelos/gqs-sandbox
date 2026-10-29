@@ -1,0 +1,104 @@
+# =============================================================================
+# Pipeline de CI/CD da API de frete (Python) - Aula 25
+#
+#   1. testes      dependencias + pytest + gate de cobertura (pytest-cov >= 80%)
+#   2. imagem      empacota a versao em gqs25/frete-python:<commit>
+#   3. staging     publica em http://frete-python-staging.localhost
+#   4. testes-api  roda a colecao Bruno contra staging e marca a imagem como
+#                  "homologada" - so' ela pode ir para producao
+#
+# Producao NAO e' automatica: e' o workflow "promover-producao.yml", disparado
+# a mao (CD Delivery). Cada job so' roda se o anterior passou (needs).
+# =============================================================================
+name: Pipeline Frete Python
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+env:
+  IMAGEM: gqs25/frete-python
+
+jobs:
+  testes:
+    name: 1. Testes unitarios e cobertura
+    runs-on: gqs-runner
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Instalar dependencias
+        run: |
+          python3 -m venv .venv
+          .venv/bin/pip install -q -r requirements-dev.txt
+
+      - name: pytest + cobertura (falha abaixo de 80%)
+        run: >
+          .venv/bin/pytest -v --cov --cov-report=term-missing
+          --cov-report=html:relatorio-cobertura --cov-fail-under=80
+          --junitxml=resultados-unitarios.xml
+
+      - name: Guardar relatorios de teste e cobertura
+        if: always()
+        # Gitea Actions so' aceita a v3 desta action (a v4+ usa uma API de
+        # artefatos que so' existe no GitHub.com). No GitHub, use a versao atual.
+        uses: actions/upload-artifact@v3
+        with:
+          name: relatorios-python
+          path: |
+            resultados-unitarios.xml
+            relatorio-cobertura/
+
+  imagem:
+    name: 2. Imagem Docker
+    needs: testes
+    if: github.event_name == 'push'
+    runs-on: gqs-runner
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: docker build
+        run: |
+          VERSAO=${GITHUB_SHA::7}
+          docker build -t "$IMAGEM:$VERSAO" .
+          echo "Imagem gerada: $IMAGEM:$VERSAO"
+
+  staging:
+    name: 3. Deploy em staging
+    needs: imagem
+    runs-on: gqs-runner
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Publicar em http://frete-python-staging.localhost
+        run: bash scripts/deploy.sh staging "${GITHUB_SHA::7}"
+
+  testes-api:
+    name: 4. Testes de API em staging
+    needs: staging
+    runs-on: gqs-runner
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Bruno contra staging
+        working-directory: bruno/Frete-API
+        run: bru run --env Staging --reporter-junit ../../resultados-api.xml
+
+      - name: Marcar a imagem como homologada
+        run: |
+          VERSAO=${GITHUB_SHA::7}
+          docker tag "$IMAGEM:$VERSAO" "$IMAGEM:$VERSAO-homologada"
+          echo "Versao $VERSAO homologada. Para publicar em producao, rode o"
+          echo "workflow 'Promover para producao' informando: $VERSAO"
+
+      - name: Guardar o resultado dos testes de API
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: resultados-api-python
+          path: resultados-api.xml

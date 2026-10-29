@@ -1,0 +1,67 @@
+# =============================================================================
+# Workflow REUTILIZAVEL: testes de API com Bruno - Aula 26 (Slide 10)
+#
+# Chamado pelo ci-java.yml e pelo ci-python.yml com "uses:". Constroi a
+# imagem do projeto, sobe a API no proprio runner e roda a colecao Bruno.
+# O mesmo pipeline de teste serve as duas linguagens: so' mudam os inputs.
+# =============================================================================
+name: Testes de API (reutilizavel)
+
+on:
+  workflow_call:
+    inputs:
+      projeto:
+        description: "Pasta do projeto: java ou python"
+        required: true
+        type: string
+      porta:
+        description: "Porta em que a API escuta"
+        required: true
+        type: number
+      ambiente-bruno:
+        description: "Ambiente da colecao Bruno (Java ou Python)"
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  api:
+    name: Bruno contra a API (${{ inputs.projeto }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      PROJETO: ${{ inputs.projeto }}
+      PORTA: ${{ inputs.porta }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Construir a imagem
+        run: docker build -t "boletim-$PROJETO:ci" "$PROJETO"
+
+      - name: Subir a API e esperar o health
+        run: |
+          docker run -d --name api -p "$PORTA:$PORTA" -e APP_VERSION="${GITHUB_SHA::7}" "boletim-$PROJETO:ci"
+          for _ in $(seq 1 30); do
+            curl -fs "http://localhost:$PORTA/api/health" && exit 0
+            sleep 2
+          done
+          docker logs api
+          exit 1
+
+      # Composite action do proprio repositorio (.github/actions/bruno)
+      - name: Rodar a colecao Bruno
+        uses: ./.github/actions/bruno
+        with:
+          colecao: bruno/Boletim-API
+          ambiente: ${{ inputs.ambiente-bruno }}
+          relatorio: resultados-api-${{ inputs.projeto }}.xml
+
+      - name: Guardar o resultado dos testes de API
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: resultados-api-${{ inputs.projeto }}
+          path: resultados-api-${{ inputs.projeto }}.xml
+          if-no-files-found: ignore

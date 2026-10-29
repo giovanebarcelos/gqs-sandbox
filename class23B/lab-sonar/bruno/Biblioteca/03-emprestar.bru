@@ -1,0 +1,25 @@
+meta {
+  name: 03 - Emprestar livro
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/api/emprestimos
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "titulo": "Clean Code",
+    "matricula": "2026001"
+  }
+}
+
+tests {
+  test("03 - Emprestar livro disponivel retorna 201 e codigo EMP-xxxxxx", function () {
+    expect(res.getStatus()).to.equal(201);
+    expect(res.getBody().codigo).to.match(/^EMP-\d{6}$/);
+  });
+}

@@ -1,0 +1,23 @@
+meta {
+  name: BOL03 - Exame
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/api/boletim
+  body: json
+  auth: none
+}
+
+body:json {
+  {"aluno": "Bia", "notas": [5, 6], "frequencia": 80}
+}
+
+tests {
+  test("BOL03 - Media 5,5: EXAME", function () {
+    expect(res.getStatus()).to.equal(200);
+    expect(res.getBody().media).to.equal(5.5);
+    expect(res.getBody().situacao).to.equal("EXAME");
+  });
+}

@@ -1,0 +1,22 @@
+meta {
+  name: BOL06 - Reprovado por falta
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{baseUrl}}/api/boletim
+  body: json
+  auth: none
+}
+
+body:json {
+  {"aluno": "Eva", "notas": [9, 10], "frequencia": 74}
+}
+
+tests {
+  test("BOL06 - 74% de frequencia: REPROVADO_POR_FALTA, mesmo com media 9,5", function () {
+    expect(res.getStatus()).to.equal(200);
+    expect(res.getBody().situacao).to.equal("REPROVADO_POR_FALTA");
+  });
+}

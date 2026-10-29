@@ -1,0 +1,3 @@
+resultados-*.xml
+.pytest_cache/
+target/

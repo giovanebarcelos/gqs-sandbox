@@ -1,0 +1,22 @@
+meta {
+  name: BOL07 - Nota invalida
+  type: http
+  seq: 7
+}
+
+post {
+  url: {{baseUrl}}/api/boletim
+  body: json
+  auth: none
+}
+
+body:json {
+  {"aluno": "Fabi", "notas": [11], "frequencia": 80}
+}
+
+tests {
+  test("BOL07 - Nota 11 responde 400", function () {
+    expect(res.getStatus()).to.equal(400);
+    expect(res.getBody().erro).to.contain("0 a 10");
+  });
+}

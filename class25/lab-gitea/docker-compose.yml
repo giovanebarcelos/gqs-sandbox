@@ -1,0 +1,137 @@
+# =============================================================================
+# GQS25 - Laboratorio de CI/CD com Gitea + Gitea Actions + Traefik
+# =============================================================================
+# Aula 25 (Garantia da Qualidade de Software). Tutorial completo em
+# GQS25-Tutorial-CICD-Gitea.md (mesma pasta).
+#
+# Este compose sobe a INFRAESTRUTURA de CI/CD. As aplicacoes (frete-java e
+# frete-python) nao estao aqui: quem as publica e' o pipeline, a cada push.
+#
+#   http://gitea.localhost                  Gitea (Git + Actions)
+#   http://frete-staging.localhost          API Java em staging   (criada pelo pipeline)
+#   http://frete.localhost                  API Java em producao  (criada pela promocao)
+#   http://frete-python-staging.localhost   API Python em staging
+#   http://frete-python.localhost           API Python em producao
+#   http://traefik.localhost                painel do Traefik
+#
+# USO
+#   cp .env.example .env                      # e troque RUNNER_TOKEN
+#   docker compose up -d --build
+#   docker exec -u git gqs25_gitea gitea admin user create --admin \
+#       --username aluno --email aluno@gqs.local --password '...' --must-change-password=false
+#
+#   docker compose down                       # para, mantendo repositorios e runner
+#   docker compose down -v                    # para e APAGA o Gitea (repos, usuarios)
+#   ./scripts/limpar-ambientes.sh             # remove staging/producao e as imagens gqs25/*
+# =============================================================================
+name: gqs25
+
+services:
+
+  traefik:
+    container_name: gqs25_traefik
+    # v3.6+ e' obrigatorio no Docker Engine 29+.
+    image: traefik:v3.6
+    command:
+      - --providers.docker=true
+      - --providers.docker.exposedbydefault=false
+      - --providers.docker.network=gqs25_rede
+      - --entrypoints.web.address=:80
+      - --api.dashboard=true
+    ports:
+      - "${HTTP_PORT:-80}:80"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.painel.rule=Host(`traefik.localhost`)
+      - traefik.http.routers.painel.entrypoints=web
+      - traefik.http.routers.painel.service=api@internal
+    networks:
+      - rede
+    restart: unless-stopped
+
+  # ---------------------------------------------------------------------------
+  # Gitea: servidor Git com Actions (sintaxe compativel com GitHub Actions)
+  # ---------------------------------------------------------------------------
+  gitea:
+    container_name: gqs25_gitea
+    image: gitea/gitea:28
+    environment:
+      USER_UID: 1000
+      USER_GID: 1000
+      GITEA__database__DB_TYPE: sqlite3
+      # Endereco que o navegador, o git e o runner usam. Com HTTP_PORT=80 a
+      # porta some da URL; com outra porta ela precisa estar aqui.
+      GITEA__server__DOMAIN: gitea.localhost
+      GITEA__server__ROOT_URL: http://gitea.localhost:${HTTP_PORT:-80}/
+      GITEA__server__DISABLE_SSH: "true"
+      # Pula a tela de instalacao; o administrador e' criado pela linha de comando.
+      GITEA__security__INSTALL_LOCK: "true"
+      GITEA__service__DISABLE_REGISTRATION: "true"
+      GITEA__actions__ENABLED: "true"
+      # "git push" para um repositorio que nao existe ja' o cria.
+      GITEA__repository__ENABLE_PUSH_CREATE_USER: "true"
+      GITEA__repository__DEFAULT_PUSH_CREATE_PRIVATE: "false"
+      # Token compartilhado com o runner: ele se registra sozinho ao subir.
+      GITEA_RUNNER_REGISTRATION_TOKEN: ${RUNNER_TOKEN:?defina RUNNER_TOKEN no .env}
+    volumes:
+      - gitea_data:/data
+    healthcheck:
+      test: ["CMD", "curl", "-fs", "http://localhost:3000/api/healthz"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.gitea.rule=Host(`gitea.localhost`)
+      - traefik.http.routers.gitea.entrypoints=web
+      - traefik.http.services.gitea.loadbalancer.server.port=3000
+    networks:
+      - rede
+    restart: unless-stopped
+
+  # ---------------------------------------------------------------------------
+  # Runner: executa os jobs dos workflows (.gitea/workflows/*.yml)
+  # ---------------------------------------------------------------------------
+  runner:
+    container_name: gqs25_runner
+    build: ./runner
+    depends_on:
+      gitea:
+        condition: service_healthy
+    environment:
+      GITEA_INSTANCE_URL: http://gitea:3000
+      GITEA_RUNNER_REGISTRATION_TOKEN: ${RUNNER_TOKEN:?defina RUNNER_TOKEN no .env}
+      GITEA_RUNNER_NAME: gqs25-runner
+      # "runs-on: gqs-runner" nos workflows; ":host" = o job roda dentro
+      # deste container, com as ferramentas da imagem (runner/Dockerfile).
+      GITEA_RUNNER_LABELS: gqs-runner:host
+      HTTP_PORT: ${HTTP_PORT:-80}
+    # Dentro do runner, estes nomes apontam para 127.0.0.1, onde o
+    # runner/entrypoint.sh repassa tudo para o Traefik. Na sua maquina o
+    # sistema faz isso sozinho com qualquer *.localhost; no container, nao.
+    extra_hosts:
+      - gitea.localhost:127.0.0.1
+      - frete-staging.localhost:127.0.0.1
+      - frete.localhost:127.0.0.1
+      - frete-python-staging.localhost:127.0.0.1
+      - frete-python.localhost:127.0.0.1
+    volumes:
+      # Acesso ao Docker da maquina: o pipeline gera imagens e sobe ambientes.
+      # Num servidor de verdade isso exige um runner dedicado (veja o tutorial).
+      - /var/run/docker.sock:/var/run/docker.sock
+      - runner_data:/data
+      - runner_cache:/root
+    networks:
+      - rede
+    restart: unless-stopped
+
+networks:
+  rede:
+    name: gqs25_rede
+
+volumes:
+  gitea_data:
+  runner_data:
+  runner_cache:

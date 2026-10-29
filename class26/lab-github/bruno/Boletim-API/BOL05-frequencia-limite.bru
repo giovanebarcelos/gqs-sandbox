@@ -1,0 +1,22 @@
+meta {
+  name: BOL05 - Frequencia de exatamente 75%
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{baseUrl}}/api/boletim
+  body: json
+  auth: none
+}
+
+body:json {
+  {"aluno": "Davi", "notas": [9, 10], "frequencia": 75}
+}
+
+tests {
+  test("BOL05 - 75% de frequencia (o minimo) nao reprova por falta", function () {
+    expect(res.getStatus()).to.equal(200);
+    expect(res.getBody().situacao).to.equal("APROVADO");
+  });
+}

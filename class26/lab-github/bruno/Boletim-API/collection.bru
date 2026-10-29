@@ -1,0 +1,18 @@
+docs {
+  # Boletim API - testes de API (Aula 26 - GitHub Actions)
+
+  A mesma colecao testa as duas implementacoes. No GitHub Actions, o workflow
+  reutilizavel testes-api.yml sobe a imagem da API no runner e roda esta
+  colecao com o ambiente Java ou Python.
+
+      Java           http://localhost:8080             API Java (container ou mvn)
+      Python         http://localhost:5000             API Python
+      Traefik        http://boletim.localhost          API Java no docker compose
+      TraefikPython  http://boletim-python.localhost   API Python no docker compose
+
+  Rodar pela linha de comando (dentro desta pasta):
+
+      bru run --env Java --reporter-junit ../../resultados-api.xml
+
+  Defeito plantado: BOL05 falha enquanto 75% de frequencia reprovar por falta.
+}

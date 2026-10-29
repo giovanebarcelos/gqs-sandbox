@@ -1,0 +1,112 @@
+# =============================================================================
+# Release e deploy em producao - Aula 26
+#
+# Dispara com uma tag de versao:   git tag v1.0.0 && git push origin v1.0.0
+#
+#   imagens  publica boletim-java e boletim-python no GitHub Packages (GHCR)
+#   deploy   Environment "production": ESPERA a aprovacao de um revisor e
+#            entao roda no runner SELF-HOSTED (o container "runner" do
+#            docker-compose.yml, na sua maquina), que atualiza
+#            http://boletim.localhost com "docker compose pull" + "up"
+# =============================================================================
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: read
+
+jobs:
+  imagens:
+    name: Imagem ${{ matrix.projeto }} no GHCR
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    # So' este job pode escrever no registry.
+    permissions:
+      contents: read
+      packages: write
+    strategy:
+      matrix:
+        projeto: [java, python]
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Nome da imagem (o GHCR exige minusculas)
+        id: nome
+        run: echo "imagem=ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/boletim-${{ matrix.projeto }}" >> "$GITHUB_OUTPUT"
+
+      - uses: docker/setup-buildx-action@v4
+
+      - name: Login no GHCR com o GITHUB_TOKEN
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Construir e publicar
+        uses: docker/build-push-action@v7
+        with:
+          context: ${{ matrix.projeto }}
+          push: true
+          tags: |
+            ${{ steps.nome.outputs.imagem }}:${{ github.ref_name }}
+            ${{ steps.nome.outputs.imagem }}:latest
+          # Liga o pacote ao repositorio: o GITHUB_TOKEN do deploy consegue ler.
+          labels: org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
+
+  deploy:
+    name: Deploy em producao
+    needs: imagens
+    runs-on: [self-hosted, gqs26]
+    timeout-minutes: 15
+    environment:
+      name: production
+      url: http://boletim.localhost
+    permissions:
+      contents: read
+      packages: read
+    # Dois deploys nunca rodam ao mesmo tempo; o segundo espera o primeiro.
+    concurrency:
+      group: deploy-production
+      cancel-in-progress: false
+    env:
+      APP_VERSION: ${{ github.ref_name }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Login no GHCR
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # INSTITUICAO e' uma variavel e TOKEN_ADMIN um secret do Environment
+      # "production": so' existem para jobs que declaram esse environment.
+      - name: docker compose pull + up
+        env:
+          INSTITUICAO: ${{ vars.INSTITUICAO }}
+          TOKEN_ADMIN: ${{ secrets.TOKEN_ADMIN }}
+        run: |
+          DONO=${GITHUB_REPOSITORY_OWNER,,}
+          export IMAGEM_JAVA="ghcr.io/$DONO/boletim-java:$APP_VERSION"
+          export IMAGEM_PYTHON="ghcr.io/$DONO/boletim-python:$APP_VERSION"
+          docker compose pull boletim-java boletim-python
+          docker compose up -d --no-build --no-deps boletim-java boletim-python
+
+      - name: Smoke test (versao nova no ar e secret aplicado)
+        env:
+          TOKEN_ADMIN: ${{ secrets.TOKEN_ADMIN }}
+        run: |
+          for app in gqs26-boletim-java:8080 gqs26-boletim-python:5000; do
+            for _ in $(seq 1 45); do
+              curl -fs "http://$app/api/health" | grep -q "\"$APP_VERSION\"" && break
+              sleep 2
+            done
+            curl -fs "http://$app/api/health"; echo
+            curl -fs -o /dev/null -H "X-Admin-Token: $TOKEN_ADMIN" "http://$app/api/admin/estatisticas"
+            echo "$app: versao $APP_VERSION no ar, endpoint administrativo protegido pelo secret"
+          done

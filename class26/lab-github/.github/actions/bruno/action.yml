@@ -1,0 +1,49 @@
+# =============================================================================
+# COMPOSITE ACTION: instala o Bruno CLI e roda uma colecao - Aula 26 (Slide 10)
+#
+# Reaproveita um conjunto de STEPS (o workflow reutilizavel reaproveita JOBS).
+# Uso:
+#   - uses: ./.github/actions/bruno
+#     with:
+#       colecao: bruno/Boletim-API
+#       ambiente: Java
+# =============================================================================
+name: Rodar colecao Bruno
+description: Instala o Bruno CLI e roda uma colecao, gravando o resultado em JUnit XML
+
+inputs:
+  colecao:
+    description: "Pasta da colecao (relativa a raiz do repositorio)"
+    required: true
+  ambiente:
+    description: "Nome do ambiente da colecao (arquivo em environments/)"
+    required: true
+  relatorio:
+    description: "Arquivo JUnit XML gerado (relativo a raiz do repositorio)"
+    required: false
+    default: resultados-api.xml
+  versao-bruno:
+    description: "Versao do @usebruno/cli"
+    required: false
+    default: "4.3.0"
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-node@v7
+      with:
+        node-version: 22
+
+    - name: Instalar o Bruno CLI
+      shell: bash
+      env:
+        VERSAO_BRUNO: ${{ inputs.versao-bruno }}
+      run: npm install -g "@usebruno/cli@$VERSAO_BRUNO"
+
+    - name: bru run
+      shell: bash
+      working-directory: ${{ inputs.colecao }}
+      env:
+        AMBIENTE: ${{ inputs.ambiente }}
+        RELATORIO: ${{ inputs.relatorio }}
+      run: bru run --env "$AMBIENTE" --reporter-junit "$GITHUB_WORKSPACE/$RELATORIO"

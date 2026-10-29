@@ -1,0 +1,5 @@
+target/
+bruno/
+scripts/
+.gitea/
+.git/

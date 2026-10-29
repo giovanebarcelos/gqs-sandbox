@@ -1,0 +1,94 @@
+# =============================================================================
+# CI da Boletim API em Java - Aula 26
+#
+#   testes      matriz Java 17 e 21: mvn verify (JUnit + JaCoCo >= 80%)
+#   testes-api  workflow reutilizavel testes-api.yml: imagem + Bruno
+#
+# So' dispara quando muda algo que afeta o Java (paths).
+# =============================================================================
+name: CI Java
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "java/**"
+      - "bruno/**"
+      - ".github/workflows/ci-java.yml"
+      - ".github/workflows/testes-api.yml"
+      - ".github/actions/**"
+  pull_request:
+    branches: [main]
+    paths:
+      - "java/**"
+      - "bruno/**"
+      - ".github/workflows/ci-java.yml"
+      - ".github/workflows/testes-api.yml"
+      - ".github/actions/**"
+  workflow_dispatch:
+
+# Menor privilegio: o GITHUB_TOKEN deste workflow so' le o repositorio.
+permissions:
+  contents: read
+
+# Um push novo na mesma branch cancela a execucao antiga, que ja' nao importa.
+concurrency:
+  group: ci-java-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  testes:
+    name: Testes (Java ${{ matrix.java }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      # false: se o Java 17 falhar, o 21 continua - e voce ve os dois resultados.
+      fail-fast: false
+      matrix:
+        java: ["17", "21"]
+    defaults:
+      run:
+        working-directory: java
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Instalar o JDK ${{ matrix.java }}
+        uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: ${{ matrix.java }}
+          cache: maven
+          cache-dependency-path: java/pom.xml
+
+      - name: mvn verify (JUnit + JaCoCo >= 80%)
+        run: mvn -B verify
+
+      - name: Resumo da cobertura
+        if: success()
+        run: |
+          awk -F, 'NR > 1 { perdidas += $8; cobertas += $9 }
+                   END { printf "### Java %s: cobertura de linhas %.1f%% (%d de %d)\n",
+                         ENVIRON["JAVA_VERSAO"], 100 * cobertas / (cobertas + perdidas),
+                         cobertas, cobertas + perdidas }' \
+              target/site/jacoco/jacoco.csv >> "$GITHUB_STEP_SUMMARY"
+        env:
+          JAVA_VERSAO: ${{ matrix.java }}
+
+      - name: Guardar relatorios de teste e cobertura
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: relatorios-java-${{ matrix.java }}
+          path: |
+            java/target/surefire-reports/
+            java/target/site/jacoco/
+          if-no-files-found: ignore
+
+  testes-api:
+    name: Testes de API
+    needs: testes
+    uses: ./.github/workflows/testes-api.yml
+    with:
+      projeto: java
+      porta: 8080
+      ambiente-bruno: Java

@@ -1,0 +1,20 @@
+meta {
+  name: CT11 - Listar produtos
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/api/produtos
+  body: none
+  auth: none
+}
+
+tests {
+  test("CT11 - Listar produtos devolve o catalogo com 4 itens", function () {
+    expect(res.getStatus()).to.equal(200);
+    const produtos = res.getBody();
+    expect(produtos).to.be.an("array").with.lengthOf(4);
+    expect(produtos[0]).to.have.all.keys("id", "nome", "preco");
+  });
+}

@@ -1,0 +1,19 @@
+meta {
+  name: 02 - Listar livros
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/api/livros
+  body: none
+  auth: none
+}
+
+tests {
+  test("02 - Acervo inicial tem 4 livros disponiveis", function () {
+    expect(res.getStatus()).to.equal(200);
+    expect(res.getBody().disponiveis).to.have.lengthOf(4);
+    expect(res.getBody().disponiveis).to.include("Clean Code");
+  });
+}

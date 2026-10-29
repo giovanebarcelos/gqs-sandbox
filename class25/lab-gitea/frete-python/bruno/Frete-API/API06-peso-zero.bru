@@ -1,0 +1,21 @@
+meta {
+  name: API06 - Peso zero
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{baseUrl}}/api/frete
+  body: json
+  auth: none
+}
+
+body:json {
+  {"regiao": "SUL", "pesoKg": 0, "valorPedido": 100.00}
+}
+
+tests {
+  test("API06 - Peso zero responde 400", function () {
+    expect(res.getStatus()).to.equal(400);
+  });
+}

@@ -1,0 +1,24 @@
+meta {
+  name: CT15 - Quantidade zero
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{baseUrl}}/api/carrinho/calcular
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "itens": [{ "produto_id": 1, "quantidade": 0 }]
+  }
+}
+
+tests {
+  test("CT15 - Quantidade zero retorna 400", function () {
+    expect(res.getStatus()).to.equal(400);
+    expect(res.getBody()).to.have.property("erro");
+  });
+}

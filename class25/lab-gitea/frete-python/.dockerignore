@@ -1,0 +1,11 @@
+.venv/
+__pycache__/
+.pytest_cache/
+.coverage
+coverage.xml
+resultados-*.xml
+bruno/
+scripts/
+tests/
+.gitea/
+.git/

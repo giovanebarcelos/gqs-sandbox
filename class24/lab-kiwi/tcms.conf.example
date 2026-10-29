@@ -1,0 +1,8 @@
+# Copie para ~/.tcms.conf (Windows: C:\Users\<voce>\.tcms.conf) e rode:
+#   chmod 600 ~/.tcms.conf
+# O MESMO arquivo serve para as ferramentas Java (java/kiwi) e Python (python/kiwi).
+# Se usou HTTPS_PORT no .env, acrescente a porta: https://kiwi.localhost:8443/xml-rpc/
+[tcms]
+url = https://kiwi.localhost/xml-rpc/
+username = admin
+password = troque-pela-sua-senha

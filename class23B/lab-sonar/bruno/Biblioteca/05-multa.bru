@@ -1,0 +1,24 @@
+meta {
+  name: 05 - Calcular multa
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{baseUrl}}/api/multa?dias=20&tipo=aluno&raro=true
+  body: none
+  auth: none
+}
+
+params:query {
+  dias: 20
+  tipo: aluno
+  raro: true
+}
+
+tests {
+  test("05 - Aluno, 20 dias, livro raro: 20 x 1,50 x 3 = 90,00", function () {
+    expect(res.getStatus()).to.equal(200);
+    expect(res.getBody().multa).to.equal(90);
+  });
+}

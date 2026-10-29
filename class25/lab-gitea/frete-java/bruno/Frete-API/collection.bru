@@ -1,0 +1,19 @@
+docs {
+  # LojaOnline - testes de API do frete (Aula 25 - CI/CD)
+
+  O pipeline roda esta colecao contra o ambiente de STAGING, depois do deploy
+  (job "4. Testes de API em staging"). So' a imagem que passa aqui recebe a
+  marca "homologada" e pode ser promovida para producao.
+
+      Staging    http://frete-staging.localhost   ambiente de homologacao
+      Producao   http://frete.localhost           ambiente de producao
+      Local      http://localhost:8080            API rodando fora do Docker
+
+  Rodar pela linha de comando (dentro desta pasta):
+
+      bru run --env Staging --reporter-junit ../../resultados-api.xml
+
+  Defeitos plantados: API04 falha enquanto o frete gratis usar ">" no lugar
+  de ">="; API05 e API06 falham enquanto peso invalido responder 500
+  (FreteInvalidoException precisa herdar de IllegalArgumentException).
+}

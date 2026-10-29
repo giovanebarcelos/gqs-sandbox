@@ -1,0 +1,117 @@
+# =============================================================================
+# GQS26 - Laboratorio GitHub Actions: Boletim API + Traefik + runner self-hosted
+# =============================================================================
+# Aula 26 (Garantia da Qualidade de Software). Tutorial completo em
+# GQS26-Tutorial-GitHubActions.md (mesma pasta).
+#
+# O CI roda no GitHub (runners ubuntu-latest). Este compose e' o seu
+# "servidor de producao" local:
+#
+#   http://boletim.localhost          Boletim API em Java
+#   http://boletim-python.localhost   Boletim API em Python
+#   http://traefik.localhost          painel do Traefik
+#
+# e, com --profile runner, o RUNNER SELF-HOSTED que executa o job de deploy
+# do release.yml aqui na sua maquina.
+#
+# USO
+#   cp .env.example .env
+#   docker compose up -d --build                    # APIs com imagem local
+#   docker compose --profile runner up -d --build   # + runner (Etapa 8)
+#
+#   O deploy do release.yml troca as imagens locais pelas do GHCR:
+#   IMAGEM_JAVA / IMAGEM_PYTHON / APP_VERSION vem do workflow.
+#
+#   docker compose --profile runner down            # para tudo
+# =============================================================================
+name: gqs26
+
+services:
+
+  traefik:
+    container_name: gqs26_traefik
+    # v3.6+ e' obrigatorio no Docker Engine 29+.
+    image: traefik:v3.6
+    command:
+      - --providers.docker=true
+      - --providers.docker.exposedbydefault=false
+      - --providers.docker.network=gqs26_rede
+      - --entrypoints.web.address=:80
+      - --api.dashboard=true
+    ports:
+      - "${HTTP_PORT:-80}:80"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.painel.rule=Host(`traefik.localhost`)
+      - traefik.http.routers.painel.entrypoints=web
+      - traefik.http.routers.painel.service=api@internal
+    networks:
+      - rede
+    restart: unless-stopped
+
+  # ---------------------------------------------------------------------------
+  # Boletim API - JAVA (principal)
+  # ---------------------------------------------------------------------------
+  boletim-java:
+    container_name: gqs26-boletim-java
+    image: ${IMAGEM_JAVA:-gqs26/boletim-java:local}
+    build: ./java
+    environment:
+      APP_VERSION: ${APP_VERSION:-local}
+      INSTITUICAO: ${INSTITUICAO:-ambiente local}
+      TOKEN_ADMIN: ${TOKEN_ADMIN:-}
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.boletim-java.rule=Host(`boletim.localhost`)
+      - traefik.http.routers.boletim-java.entrypoints=web
+      - traefik.http.services.boletim-java.loadbalancer.server.port=8080
+    networks:
+      - rede
+    restart: unless-stopped
+
+  # ---------------------------------------------------------------------------
+  # Boletim API - PYTHON (secundaria; mesma API, mesmos defeitos)
+  # ---------------------------------------------------------------------------
+  boletim-python:
+    container_name: gqs26-boletim-python
+    image: ${IMAGEM_PYTHON:-gqs26/boletim-python:local}
+    build: ./python
+    environment:
+      APP_VERSION: ${APP_VERSION:-local}
+      INSTITUICAO: ${INSTITUICAO:-ambiente local}
+      TOKEN_ADMIN: ${TOKEN_ADMIN:-}
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.boletim-python.rule=Host(`boletim-python.localhost`)
+      - traefik.http.routers.boletim-python.entrypoints=web
+      - traefik.http.services.boletim-python.loadbalancer.server.port=5000
+    networks:
+      - rede
+    restart: unless-stopped
+
+  # ---------------------------------------------------------------------------
+  # Runner SELF-HOSTED do GitHub Actions (so' com --profile runner)
+  # Registra-se no SEU repositorio com REPO_URL e RUNNER_TOKEN do .env e
+  # executa os jobs com "runs-on: [self-hosted, gqs26]".
+  # ---------------------------------------------------------------------------
+  runner:
+    container_name: gqs26_runner
+    build: ./runner
+    profiles: ["runner"]
+    environment:
+      REPO_URL: ${REPO_URL:-}
+      RUNNER_TOKEN: ${RUNNER_TOKEN:-}
+      RUNNER_NAME: gqs26-runner
+      RUNNER_LABELS: gqs26
+    volumes:
+      # O job de deploy usa o Docker da maquina para trocar os containers.
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - rede
+    restart: unless-stopped
+
+networks:
+  rede:
+    name: gqs26_rede

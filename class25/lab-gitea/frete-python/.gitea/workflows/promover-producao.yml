@@ -1,0 +1,47 @@
+# =============================================================================
+# Promocao para producao (CD Delivery) - Aula 25
+#
+# Disparado a mao em Actions -> "Promover para producao" -> Run workflow,
+# informando a versao (7 caracteres do commit) que passou em staging.
+# Tambem serve de ROLLBACK: basta informar uma versao homologada anterior.
+# =============================================================================
+name: Promover para producao
+
+on:
+  workflow_dispatch:
+    inputs:
+      versao:
+        description: "Versao homologada (7 primeiros caracteres do commit)"
+        required: true
+
+env:
+  IMAGEM: gqs25/frete-python
+
+jobs:
+  producao:
+    name: Deploy em producao
+    runs-on: gqs-runner
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+
+      # O valor digitado entra por variavel de ambiente, nunca colado direto
+      # no script com ${{ }} - assim ninguem injeta comandos pelo formulario.
+      - name: Conferir se a versao passou em staging
+        env:
+          VERSAO: ${{ github.event.inputs.versao }}
+        run: |
+          if ! [[ "$VERSAO" =~ ^[0-9a-f]{7}$ ]]; then
+            echo "Versao invalida: '$VERSAO'. Use os 7 primeiros caracteres do commit." >&2
+            exit 1
+          fi
+          if ! docker image inspect "$IMAGEM:$VERSAO-homologada" >/dev/null 2>&1; then
+            echo "A versao $VERSAO NAO foi homologada em staging - promocao recusada." >&2
+            exit 1
+          fi
+          echo "Versao $VERSAO homologada: pode seguir."
+
+      - name: Publicar em http://frete-python.localhost
+        env:
+          VERSAO: ${{ github.event.inputs.versao }}
+        run: bash scripts/deploy.sh producao "$VERSAO"

@@ -1,0 +1,19 @@
+meta {
+  name: API01 - Health check
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/api/health
+  body: none
+  auth: none
+}
+
+tests {
+  test("API01 - Health responde 200 com status ok e a versao publicada", function () {
+    expect(res.getStatus()).to.equal(200);
+    expect(res.getBody().status).to.equal("ok");
+    expect(res.getBody().versao).to.be.a("string").and.not.empty;
+  });
+}

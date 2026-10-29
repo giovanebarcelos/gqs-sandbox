@@ -1,0 +1,22 @@
+meta {
+  name: API05 - Peso acima de 30 kg
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{baseUrl}}/api/frete
+  body: json
+  auth: none
+}
+
+body:json {
+  {"regiao": "SUL", "pesoKg": 31, "valorPedido": 100.00}
+}
+
+tests {
+  test("API05 - Peso acima de 30 kg responde 400 com a mensagem do erro", function () {
+    expect(res.getStatus()).to.equal(400);
+    expect(res.getBody().erro).to.contain("30 kg");
+  });
+}

@@ -1,0 +1,18 @@
+meta {
+  name: API02 - Regioes atendidas
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/api/regioes
+  body: none
+  auth: none
+}
+
+tests {
+  test("API02 - Lista as 5 regioes atendidas", function () {
+    expect(res.getStatus()).to.equal(200);
+    expect(res.getBody()).to.have.lengthOf(5);
+  });
+}

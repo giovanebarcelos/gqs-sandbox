@@ -1,0 +1,22 @@
+meta {
+  name: BOL04 - Reprovado
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/api/boletim
+  body: json
+  auth: none
+}
+
+body:json {
+  {"aluno": "Caio", "notas": [2, 3], "frequencia": 80}
+}
+
+tests {
+  test("BOL04 - Media 2,5: REPROVADO", function () {
+    expect(res.getStatus()).to.equal(200);
+    expect(res.getBody().situacao).to.equal("REPROVADO");
+  });
+}

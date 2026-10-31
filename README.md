@@ -572,8 +572,8 @@ Mantido como referência: o TestLink continua em uso em muitas empresas e os con
 
 | Pasta | Descrição |  
 |---|---|  
-| `lab-github/` | **GitHub Actions** — Boletim API (Java e Python) com testes unitários, mocks, integração, API (Bruno) e cobertura (gate 80%), matriz de versões, workflow reutilizável, composite action, release no GHCR com aprovação manual, runner self-hosted, CodeQL e Dependabot. Tutorial: `GQS26-Tutorial-GitHubActions.md` |  
-| `lab-gitea/` | **Gitea Actions** — a mesma aplicação numa esteira 100% local (Gitea + runner + Traefik): testes em matriz JDK 17/21, imagem, staging, Bruno, promoção manual e rollback. Tutorial: `GQS26-Tutorial-GiteaActions.md` |  
+| `lab-github/` | **GitHub Actions** — Boletim API (Java e Python) com testes unitários, mocks, integração, API (Bruno) e cobertura (gate 80%), matriz de versões, workflow reutilizável, composite action, release no GHCR com aprovação manual, runner self-hosted, CodeQL e Dependabot. Tutorial: `GQS26-Tutorial-GitHubActions.md` (versão só Java: `GQS26-Tutorial-GitHubActions-Java.md`) |  
+| `lab-gitea/` | **Gitea Actions** — a mesma aplicação numa esteira 100% local (Gitea + runner + Traefik): testes em matriz JDK 17/21, imagem, staging, Bruno, promoção manual e rollback. Tutorial: `GQS26-Tutorial-GiteaActions.md` (versão só Java: `GQS26-Tutorial-GiteaActions-Java.md`) |  
 
 ---  
 

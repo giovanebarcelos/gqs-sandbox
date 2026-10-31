@@ -3,6 +3,7 @@
 Esteira de CI/CD **100% local**: **Gitea** (servidor Git + Actions), um **runner** próprio e o **Traefik**, com a API de boletim em **Java** (principal) e **Python** (secundária), cada uma com defeitos plantados. O pipeline executa testes **unitários**, com **mock**, de **integração**, de **API (Bruno)** e **relatório de cobertura** com gate de 80%, com **matriz** de JDK 17/21.
 
 **Tutorial completo:** [`GQS26-Tutorial-GiteaActions.md`](GQS26-Tutorial-GiteaActions.md)
+**Versão só Java:** [`GQS26-Tutorial-GiteaActions-Java.md`](GQS26-Tutorial-GiteaActions-Java.md) (rode `bash scripts/somente-java.sh` em `~/boletim` antes do primeiro commit)
 **Tutorial irmão (GitHub Actions):** [`../lab-github/GQS26-Tutorial-GitHubActions.md`](../lab-github/GQS26-Tutorial-GitHubActions.md)
 
 | URL | Serviço |

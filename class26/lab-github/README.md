@@ -3,6 +3,7 @@
 Esteira de CI/CD no **GitHub Actions** para uma API REST de boletim escolar **com defeitos plantados**, em **Java** (principal) e **Python** (secundária): testes **unitários**, com **mock**, de **integração**, de **API (Bruno)** e **relatório de cobertura** com gate de 80%, em **matriz** de versões (Java 17/21; Python 3.11/3.12/3.13), workflow **reutilizável**, **composite action**, release no **GHCR**, deploy com **aprovação manual** em runner **self-hosted**, **CodeQL** e **Dependabot**.
 
 **Tutorial completo:** [`GQS26-Tutorial-GitHubActions.md`](GQS26-Tutorial-GitHubActions.md)
+**Versão só Java:** [`GQS26-Tutorial-GitHubActions-Java.md`](GQS26-Tutorial-GitHubActions-Java.md) (rode `bash somente-java.sh` na cópia do laboratório antes do primeiro commit)
 **Tutorial irmão (Gitea Actions, 100% local):** [`../lab-gitea/GQS26-Tutorial-GiteaActions.md`](../lab-gitea/GQS26-Tutorial-GiteaActions.md)
 
 | URL | Serviço |

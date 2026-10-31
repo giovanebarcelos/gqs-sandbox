@@ -1,0 +1,62 @@
+# =============================================================================
+# Promocao para producao (CD Delivery) - Aula 26 (Gitea Actions)
+#
+# Disparado a mao em Actions -> "Promover para producao" -> Run workflow,
+# informando a linguagem e a versao (7 caracteres do commit) que passou em
+# staging. Tambem serve de ROLLBACK: basta informar uma versao homologada
+# anterior.
+#
+# O Gitea nao tem "Environments" com aprovacao como o GitHub: a trava humana
+# aqui e' o proprio botao Run workflow + a checagem da etiqueta "homologada".
+# =============================================================================
+name: Promover para producao
+
+on:
+  workflow_dispatch:
+    inputs:
+      linguagem:
+        description: "Aplicacao: java ou python"
+        required: true
+        default: java
+        type: choice
+        options: [java, python]
+      versao:
+        description: "Versao homologada (7 primeiros caracteres do commit)"
+        required: true
+
+jobs:
+  producao:
+    name: Deploy em producao
+    runs-on: gqs-runner
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+
+      # Os valores digitados entram por variavel de ambiente, nunca colados
+      # direto no script com ${{ }} - assim ninguem injeta comandos pelo formulario.
+      - name: Conferir se a versao passou em staging
+        env:
+          LINGUAGEM: ${{ github.event.inputs.linguagem }}
+          VERSAO: ${{ github.event.inputs.versao }}
+        run: |
+          if ! [[ "$VERSAO" =~ ^[0-9a-f]{7}$ ]]; then
+            echo "Versao invalida: '$VERSAO'. Use os 7 primeiros caracteres do commit." >&2
+            exit 1
+          fi
+          if ! [[ "$LINGUAGEM" =~ ^(java|python)$ ]]; then
+            echo "Linguagem invalida: '$LINGUAGEM'. Use java ou python." >&2
+            exit 1
+          fi
+          if ! docker image inspect "gqs26g/boletim-$LINGUAGEM:$VERSAO-homologada" >/dev/null 2>&1; then
+            echo "A versao $VERSAO ($LINGUAGEM) NAO foi homologada em staging - promocao recusada." >&2
+            exit 1
+          fi
+          echo "Versao $VERSAO ($LINGUAGEM) homologada: pode seguir."
+
+      - name: Publicar em producao
+        env:
+          LINGUAGEM: ${{ github.event.inputs.linguagem }}
+          VERSAO: ${{ github.event.inputs.versao }}
+          INSTITUICAO: ${{ vars.INSTITUICAO }}
+          TOKEN_ADMIN: ${{ secrets.TOKEN_ADMIN }}
+        run: bash scripts/deploy.sh "$LINGUAGEM" producao "$VERSAO"

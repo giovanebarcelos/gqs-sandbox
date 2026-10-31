@@ -1,0 +1,163 @@
+# =============================================================================
+# GQS26 - Laboratorio Gitea Actions: Gitea + runner + Traefik (Boletim API)
+# =============================================================================
+# Aula 26 (Garantia da Qualidade de Software). Tutorial completo em
+# GQS26-Tutorial-GiteaActions.md (mesma pasta).
+#
+# Este compose sobe a INFRAESTRUTURA de CI/CD. As aplicacoes (Boletim Java e
+# Python) nao estao aqui: quem as publica e' o pipeline, a cada push.
+#
+#   http://gitea.localhost                       Gitea (Git + Actions)
+#   http://boletim-staging.localhost             Java em staging    (pipeline)
+#   http://boletim.localhost                     Java em producao   (promocao)
+#   http://boletim-python-staging.localhost      Python em staging  (pipeline)
+#   http://boletim-python.localhost              Python em producao (promocao)
+#   http://traefik.localhost                     painel do Traefik
+#   http://cobertura.localhost                   relatorios de cobertura (--profile cobertura)
+#
+# USO
+#   cp .env.example .env                      # e troque RUNNER_TOKEN
+#   docker compose up -d --build
+#   docker exec -u git gqs26g_gitea gitea admin user create --admin \
+#       --username aluno --email aluno@gqs.local --password '...' --must-change-password=false
+#
+#   docker compose --profile cobertura up -d  # + relatorios de cobertura
+#   docker compose down                       # para, mantendo repositorios e runner
+#   docker compose down -v                    # para e APAGA o Gitea (repos, usuarios)
+#   ./scripts/limpar-ambientes.sh             # remove staging/producao e as imagens gqs26g/*
+# =============================================================================
+name: gqs26-gitea
+
+services:
+
+  traefik:
+    container_name: gqs26g_traefik
+    # v3.6+ e' obrigatorio no Docker Engine 29+.
+    image: traefik:v3.6
+    command:
+      - --providers.docker=true
+      - --providers.docker.exposedbydefault=false
+      - --providers.docker.network=gqs26g_rede
+      - --entrypoints.web.address=:80
+      - --api.dashboard=true
+    ports:
+      - "${HTTP_PORT:-80}:80"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.painel.rule=Host(`traefik.localhost`)
+      - traefik.http.routers.painel.entrypoints=web
+      - traefik.http.routers.painel.service=api@internal
+    networks:
+      - rede
+    restart: unless-stopped
+
+  # ---------------------------------------------------------------------------
+  # Gitea: servidor Git com Actions (sintaxe compativel com GitHub Actions)
+  # ---------------------------------------------------------------------------
+  gitea:
+    container_name: gqs26g_gitea
+    image: gitea/gitea:28
+    environment:
+      USER_UID: 1000
+      USER_GID: 1000
+      GITEA__database__DB_TYPE: sqlite3
+      # Endereco que o navegador, o git e o runner usam. Com HTTP_PORT=80 a
+      # porta some da URL; com outra porta ela precisa estar aqui.
+      GITEA__server__DOMAIN: gitea.localhost
+      GITEA__server__ROOT_URL: http://gitea.localhost:${HTTP_PORT:-80}/
+      GITEA__server__DISABLE_SSH: "true"
+      # Pula a tela de instalacao; o administrador e' criado pela linha de comando.
+      GITEA__security__INSTALL_LOCK: "true"
+      GITEA__service__DISABLE_REGISTRATION: "true"
+      GITEA__actions__ENABLED: "true"
+      # "git push" para um repositorio que nao existe ja' o cria.
+      GITEA__repository__ENABLE_PUSH_CREATE_USER: "true"
+      GITEA__repository__DEFAULT_PUSH_CREATE_PRIVATE: "false"
+      # Token compartilhado com o runner: ele se registra sozinho ao subir.
+      GITEA_RUNNER_REGISTRATION_TOKEN: ${RUNNER_TOKEN:?defina RUNNER_TOKEN no .env}
+    volumes:
+      - gitea_data:/data
+    healthcheck:
+      test: ["CMD", "curl", "-fs", "http://localhost:3000/api/healthz"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.gitea.rule=Host(`gitea.localhost`)
+      - traefik.http.routers.gitea.entrypoints=web
+      - traefik.http.services.gitea.loadbalancer.server.port=3000
+    networks:
+      - rede
+    restart: unless-stopped
+
+  # ---------------------------------------------------------------------------
+  # Runner: executa os jobs dos workflows (.gitea/workflows/*.yml)
+  # ---------------------------------------------------------------------------
+  runner:
+    container_name: gqs26g_runner
+    build: ./runner
+    depends_on:
+      gitea:
+        condition: service_healthy
+    environment:
+      GITEA_INSTANCE_URL: http://gitea:3000
+      GITEA_RUNNER_REGISTRATION_TOKEN: ${RUNNER_TOKEN:?defina RUNNER_TOKEN no .env}
+      GITEA_RUNNER_NAME: gqs26g-runner
+      # "runs-on: gqs-runner" nos workflows; ":host" = o job roda dentro
+      # deste container, com as ferramentas da imagem (runner/Dockerfile).
+      GITEA_RUNNER_LABELS: gqs-runner:host
+      HTTP_PORT: ${HTTP_PORT:-80}
+    # Dentro do runner, estes nomes apontam para 127.0.0.1, onde o
+    # runner/entrypoint.sh repassa tudo para o Traefik. Na sua maquina o
+    # sistema faz isso sozinho com qualquer *.localhost; no container, nao.
+    extra_hosts:
+      - gitea.localhost:127.0.0.1
+      - boletim-staging.localhost:127.0.0.1
+      - boletim.localhost:127.0.0.1
+      - boletim-python-staging.localhost:127.0.0.1
+      - boletim-python.localhost:127.0.0.1
+    volumes:
+      # Acesso ao Docker da maquina: o pipeline gera imagens e sobe ambientes.
+      # Num servidor de verdade isso exige um runner dedicado (veja o tutorial).
+      - /var/run/docker.sock:/var/run/docker.sock
+      - runner_data:/data
+      - runner_cache:/root
+    networks:
+      - rede
+    restart: unless-stopped
+
+  # ---------------------------------------------------------------------------
+  # Relatorios de cobertura (so' com --profile cobertura): serve o HTML do JaCoCo
+  # e do coverage.py gerados NA SUA MAQUINA, dentro de ~/boletim (a copia do
+  # projeto da Etapa 3). Ajuste BOLETIM_DIR no .env se a copia estiver em outro lugar.
+  # Rode os testes antes: pasta inexistente vira pasta de root e atrapalha o Maven.
+  # ---------------------------------------------------------------------------
+  cobertura:
+    container_name: gqs26g_cobertura
+    image: nginx:1.29-alpine
+    profiles: ["cobertura"]
+    volumes:
+      - ./cobertura/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./cobertura/index.htm:/usr/share/nginx/html/index.htm:ro
+      - ${BOLETIM_DIR:-./boletim}/java/target/site/jacoco:/usr/share/nginx/html/java:ro
+      - ${BOLETIM_DIR:-./boletim}/python/relatorio-cobertura:/usr/share/nginx/html/python:ro
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.cobertura.rule=Host(`cobertura.localhost`)
+      - traefik.http.routers.cobertura.entrypoints=web
+      - traefik.http.services.cobertura.loadbalancer.server.port=80
+    networks:
+      - rede
+    restart: unless-stopped
+
+networks:
+  rede:
+    name: gqs26g_rede
+
+volumes:
+  gitea_data:
+  runner_data:
+  runner_cache:

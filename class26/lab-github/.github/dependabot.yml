@@ -1,0 +1,20 @@
+# Dependabot (Aula 26, Slide 11): abre Pull Requests semanais atualizando
+# dependencias e actions com versoes novas ou vulnerabilidades conhecidas (SCA).
+version: 2
+updates:
+  - package-ecosystem: maven
+    directory: /java
+    schedule:
+      interval: weekly
+  - package-ecosystem: pip
+    directory: /python
+    schedule:
+      interval: weekly
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+  - package-ecosystem: docker
+    directories: [/java, /python, /runner]
+    schedule:
+      interval: weekly

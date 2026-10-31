@@ -1,0 +1,43 @@
+# =============================================================================
+# CodeQL: analise estatica de seguranca (SAST) - Aula 26, Slides 11 e 17
+#
+# Gratuito em repositorio PUBLICO. Os alertas aparecem em Security > Code
+# scanning. Java e Python usam build-mode "none": o CodeQL le o codigo-fonte
+# sem precisar compilar.
+# =============================================================================
+name: CodeQL
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: "0 6 * * 1"   # segundas, 06:00 UTC
+
+permissions:
+  contents: read
+
+jobs:
+  analisar:
+    name: CodeQL (${{ matrix.linguagem }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      security-events: write
+    strategy:
+      fail-fast: false
+      matrix:
+        linguagem: [java-kotlin, python]
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: github/codeql-action/init@v4
+        with:
+          languages: ${{ matrix.linguagem }}
+          build-mode: none
+
+      - uses: github/codeql-action/analyze@v4
+        with:
+          category: /language:${{ matrix.linguagem }}

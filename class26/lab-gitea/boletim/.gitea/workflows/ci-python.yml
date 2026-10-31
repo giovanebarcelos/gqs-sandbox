@@ -1,0 +1,139 @@
+# =============================================================================
+# CI/CD da Boletim API em Python - Aula 26 (Gitea Actions)
+#
+#   1. testes      pytest: unitarios + mocks, depois integracao, e gate de
+#                  cobertura (coverage.py >= 80%)
+#   2. imagem      empacota a versao em gqs26g/boletim-python:<commit>
+#   3. staging     publica em http://boletim-python-staging.localhost
+#   4. testes-api  roda a colecao Bruno contra staging e marca a imagem como
+#                  "homologada" - so' ela pode ir para producao
+#
+# O runner tem um unico Python (o do Alpine); a matriz de versoes do GitHub
+# exigiria um job por container (veja "Gitea x GitHub" no tutorial).
+# =============================================================================
+name: CI Python
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "python/**"
+      - "bruno/**"
+      - "scripts/**"
+      - ".gitea/workflows/ci-python.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "python/**"
+      - "bruno/**"
+      - "scripts/**"
+      - ".gitea/workflows/ci-python.yml"
+  workflow_dispatch:
+
+env:
+  IMAGEM: gqs26g/boletim-python
+
+jobs:
+  testes:
+    name: 1. Testes (unitarios, mocks, integracao, cobertura)
+    runs-on: gqs-runner
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: python
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Instalar dependencias
+        run: |
+          python3 --version
+          python3 -m venv .venv
+          .venv/bin/pip install -q -r requirements-dev.txt
+
+      # 1) Unitarios + mocks: rapidos, sem rede, sem a aplicacao no ar.
+      - name: Testes unitarios e com mock
+        run: >
+          .venv/bin/pytest -v -m "not integracao" --cov
+          --junitxml=resultados-unitarios.xml
+
+      # 2) Integracao: sobe a aplicacao inteira e testa por HTTP (--cov-append
+      #    soma a cobertura deste passo a do anterior).
+      - name: Testes de integracao
+        run: >
+          .venv/bin/pytest -v -m integracao --cov --cov-append
+          --junitxml=resultados-integracao.xml
+
+      # 3) Relatorios de cobertura (HTML e XML) e o gate: abaixo de 80%, falha.
+      - name: Relatorio de cobertura e gate de 80%
+        run: |
+          .venv/bin/coverage report --show-missing --fail-under=80
+          .venv/bin/coverage html -d relatorio-cobertura
+          .venv/bin/coverage xml -o cobertura.xml
+
+      - name: Guardar relatorios de teste e cobertura
+        if: always()
+        # Gitea Actions so' aceita a v3 desta action (a v4+ usa uma API de
+        # artefatos que so' existe no GitHub.com). No GitHub, use a versao atual.
+        uses: actions/upload-artifact@v3
+        with:
+          name: relatorios-python
+          path: |
+            python/resultados-unitarios.xml
+            python/resultados-integracao.xml
+            python/relatorio-cobertura/
+            python/cobertura.xml
+
+  imagem:
+    name: 2. Imagem Docker
+    needs: testes
+    if: github.event_name != 'pull_request'
+    runs-on: gqs-runner
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: docker build
+        run: |
+          VERSAO=${GITHUB_SHA::7}
+          docker build -t "$IMAGEM:$VERSAO" python
+          echo "Imagem gerada: $IMAGEM:$VERSAO"
+
+  staging:
+    name: 3. Deploy em staging
+    needs: imagem
+    runs-on: gqs-runner
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Publicar em http://boletim-python-staging.localhost
+        env:
+          INSTITUICAO: ${{ vars.INSTITUICAO }}
+          TOKEN_ADMIN: ${{ secrets.TOKEN_ADMIN }}
+        run: bash scripts/deploy.sh python staging "${GITHUB_SHA::7}"
+
+  testes-api:
+    name: 4. Testes de API em staging
+    needs: staging
+    runs-on: gqs-runner
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Bruno contra staging
+        working-directory: bruno/Boletim-API
+        run: bru run --env StagingPython --reporter-junit ../../resultados-api.xml
+
+      - name: Marcar a imagem como homologada
+        run: |
+          VERSAO=${GITHUB_SHA::7}
+          docker tag "$IMAGEM:$VERSAO" "$IMAGEM:$VERSAO-homologada"
+          echo "Versao $VERSAO homologada. Para publicar em producao, rode o"
+          echo "workflow 'Promover para producao' (python) informando: $VERSAO"
+
+      - name: Guardar o resultado dos testes de API
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: resultados-api-python
+          path: resultados-api.xml

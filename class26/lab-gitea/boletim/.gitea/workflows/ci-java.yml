@@ -1,0 +1,140 @@
+# =============================================================================
+# CI/CD da Boletim API em Java - Aula 26 (Gitea Actions)
+#
+#   1. testes      matriz JDK 17 e 21: mvn verify = testes unitarios + mocks,
+#                  testes de integracao e gate de cobertura (JaCoCo >= 80%)
+#   2. imagem      empacota a versao em gqs26g/boletim-java:<commit>
+#   3. staging     publica em http://boletim-staging.localhost
+#   4. testes-api  roda a colecao Bruno contra staging e marca a imagem como
+#                  "homologada" - so' ela pode ir para producao
+#
+# Producao NAO e' automatica: e' o workflow "promover-producao.yml", disparado
+# a mao (CD Delivery). Cada job so' roda se o anterior passou (needs).
+# So' dispara quando muda algo que afeta o Java (paths).
+# =============================================================================
+name: CI Java
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "java/**"
+      - "bruno/**"
+      - "scripts/**"
+      - ".gitea/workflows/ci-java.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "java/**"
+      - "bruno/**"
+      - "scripts/**"
+      - ".gitea/workflows/ci-java.yml"
+  workflow_dispatch:
+
+env:
+  IMAGEM: gqs26g/boletim-java
+
+jobs:
+  testes:
+    name: 1. Testes (JDK ${{ matrix.java }})
+    runs-on: gqs-runner
+    timeout-minutes: 15
+    strategy:
+      # false: se o JDK 17 falhar, o 21 continua - e voce ve os dois resultados.
+      fail-fast: false
+      matrix:
+        java: ["17", "21"]
+    defaults:
+      run:
+        working-directory: java
+    steps:
+      - uses: actions/checkout@v7
+
+      # O runner tem os dois JDKs instalados; a matriz escolhe qual usar.
+      # (No GitHub isto seria actions/setup-java; aqui o JDK ja' esta na imagem.)
+      - name: mvn verify (unitarios, mocks, integracao e cobertura >= 80%)
+        env:
+          JAVA_HOME: /usr/lib/jvm/java-${{ matrix.java }}-openjdk
+        run: |
+          "$JAVA_HOME/bin/java" -version
+          mvn -B verify
+
+      - name: Resumo da cobertura
+        if: success()
+        run: |
+          awk -F, 'NR > 1 { perdidas += $8; cobertas += $9 }
+                   END { printf "JDK %s: cobertura de linhas %.1f%% (%d de %d)\n",
+                         ENVIRON["JAVA_VERSAO"], 100 * cobertas / (cobertas + perdidas),
+                         cobertas, cobertas + perdidas }' \
+              target/site/jacoco/jacoco.csv
+        env:
+          JAVA_VERSAO: ${{ matrix.java }}
+
+      - name: Guardar relatorios de teste e cobertura
+        if: always()
+        # Gitea Actions so' aceita a v3 desta action (a v4+ usa uma API de
+        # artefatos que so' existe no GitHub.com). No GitHub, use a versao atual.
+        uses: actions/upload-artifact@v3
+        with:
+          name: relatorios-java-${{ matrix.java }}
+          path: |
+            java/target/surefire-reports/
+            java/target/failsafe-reports/
+            java/target/site/jacoco/
+
+  imagem:
+    name: 2. Imagem Docker
+    needs: testes
+    if: github.event_name != 'pull_request'
+    runs-on: gqs-runner
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: docker build
+        run: |
+          VERSAO=${GITHUB_SHA::7}
+          docker build -t "$IMAGEM:$VERSAO" java
+          echo "Imagem gerada: $IMAGEM:$VERSAO"
+
+  staging:
+    name: 3. Deploy em staging
+    needs: imagem
+    runs-on: gqs-runner
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+
+      # INSTITUICAO (variavel) e TOKEN_ADMIN (secret) vem de Settings > Actions
+      # do repositorio no Gitea. O valor do secret e' mascarado nos logs.
+      - name: Publicar em http://boletim-staging.localhost
+        env:
+          INSTITUICAO: ${{ vars.INSTITUICAO }}
+          TOKEN_ADMIN: ${{ secrets.TOKEN_ADMIN }}
+        run: bash scripts/deploy.sh java staging "${GITHUB_SHA::7}"
+
+  testes-api:
+    name: 4. Testes de API em staging
+    needs: staging
+    runs-on: gqs-runner
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Bruno contra staging
+        working-directory: bruno/Boletim-API
+        run: bru run --env Staging --reporter-junit ../../resultados-api.xml
+
+      - name: Marcar a imagem como homologada
+        run: |
+          VERSAO=${GITHUB_SHA::7}
+          docker tag "$IMAGEM:$VERSAO" "$IMAGEM:$VERSAO-homologada"
+          echo "Versao $VERSAO homologada. Para publicar em producao, rode o"
+          echo "workflow 'Promover para producao' (java) informando: $VERSAO"
+
+      - name: Guardar o resultado dos testes de API
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: resultados-api-java
+          path: resultados-api.xml

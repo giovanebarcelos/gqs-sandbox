@@ -1,0 +1,25 @@
+meta {
+  name: BOL02 - Aprovado
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/api/boletim
+  body: json
+  auth: none
+}
+
+body:json {
+  {"aluno": "Ana", "notas": [7, 9, 8], "frequencia": 90}
+}
+
+tests {
+  test("BOL02 - Media 8,0 e 90% de frequencia: APROVADO, maior 9 e menor 7", function () {
+    expect(res.getStatus()).to.equal(200);
+    expect(res.getBody().media).to.equal(8);
+    expect(res.getBody().situacao).to.equal("APROVADO");
+    expect(res.getBody().maiorNota).to.equal(9);
+    expect(res.getBody().menorNota).to.equal(7);
+  });
+}

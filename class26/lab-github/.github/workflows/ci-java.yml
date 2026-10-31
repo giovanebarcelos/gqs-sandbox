@@ -1,7 +1,8 @@
 # =============================================================================
 # CI da Boletim API em Java - Aula 26
 #
-#   testes      matriz Java 17 e 21: mvn verify (JUnit + JaCoCo >= 80%)
+#   testes      matriz Java 17 e 21: mvn verify (unitarios + mocks, integracao,
+#               JaCoCo com gate de 80%)
 #   testes-api  workflow reutilizavel testes-api.yml: imagem + Bruno
 #
 # So' dispara quando muda algo que afeta o Java (paths).
@@ -60,7 +61,10 @@ jobs:
           cache: maven
           cache-dependency-path: java/pom.xml
 
-      - name: mvn verify (JUnit + JaCoCo >= 80%)
+      # mvn verify encadeia: compilar -> testes unitarios e com mock (surefire,
+      # *Test.java) -> testes de integracao (failsafe, *IT.java) -> relatorio
+      # JaCoCo -> gate de 80% de linhas.
+      - name: mvn verify (unitarios, mocks, integracao e cobertura >= 80%)
         run: mvn -B verify
 
       - name: Resumo da cobertura
@@ -81,6 +85,7 @@ jobs:
           name: relatorios-java-${{ matrix.java }}
           path: |
             java/target/surefire-reports/
+            java/target/failsafe-reports/
             java/target/site/jacoco/
           if-no-files-found: ignore
 

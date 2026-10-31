@@ -1,0 +1,20 @@
+docs {
+  # Boletim API - testes de API (Aula 26 - Gitea Actions)
+
+  A mesma colecao testa as duas implementacoes. No pipeline, o job
+  "testes-api" roda esta colecao contra o ambiente de STAGING que o proprio
+  pipeline acabou de publicar.
+
+      Java           http://localhost:8080                     API Java (container ou mvn)
+      Python         http://localhost:5000                     API Python
+      Staging        http://boletim-staging.localhost          Java em staging (pipeline)
+      StagingPython  http://boletim-python-staging.localhost   Python em staging (pipeline)
+      Producao       http://boletim.localhost                  Java em producao (promocao)
+      ProducaoPython http://boletim-python.localhost           Python em producao (promocao)
+
+  Rodar pela linha de comando (dentro desta pasta):
+
+      bru run --env Staging --reporter-junit ../../resultados-api.xml
+
+  Defeito plantado: BOL05 falha enquanto 75% de frequencia reprovar por falta.
+}

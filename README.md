@@ -568,6 +568,13 @@ Mantido como referência: o TestLink continua em uso em muitas empresas e os con
 | `GQS26-ssh-deploy.sh` | Script de deploy via SSH |  
 | `GQS26-sample-web-app.zip` | Aplicação web de exemplo para o pipeline |  
 
+### lab-github/ e lab-gitea/ (tutoriais completos com docker-compose + Traefik)  
+
+| Pasta | Descrição |  
+|---|---|  
+| `lab-github/` | **GitHub Actions** — Boletim API (Java e Python) com testes unitários, mocks, integração, API (Bruno) e cobertura (gate 80%), matriz de versões, workflow reutilizável, composite action, release no GHCR com aprovação manual, runner self-hosted, CodeQL e Dependabot. Tutorial: `GQS26-Tutorial-GitHubActions.md` |  
+| `lab-gitea/` | **Gitea Actions** — a mesma aplicação numa esteira 100% local (Gitea + runner + Traefik): testes em matriz JDK 17/21, imagem, staging, Bruno, promoção manual e rollback. Tutorial: `GQS26-Tutorial-GiteaActions.md` |  
+
 ---  
 
 ## class27 — Estimativa de Software e Métricas de Processo/Projeto  

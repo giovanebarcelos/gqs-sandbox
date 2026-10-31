@@ -1,7 +1,8 @@
 # =============================================================================
 # CI da Boletim API em Python - Aula 26
 #
-#   testes      matriz Python 3.11, 3.12 e 3.13: pytest + cobertura >= 80%
+#   testes      matriz Python 3.11, 3.12 e 3.13: unitarios + mocks, integracao
+#               e relatorio de cobertura (gate de 80%)
 #   testes-api  workflow reutilizavel testes-api.yml: imagem + Bruno
 # =============================================================================
 name: CI Python
@@ -57,11 +58,25 @@ jobs:
       - name: Instalar dependencias
         run: pip install -r requirements-dev.txt
 
-      - name: pytest + cobertura (falha abaixo de 80%)
+      # 1) Unitarios + mocks: rapidos, sem rede, sem a aplicacao no ar.
+      - name: Testes unitarios e com mock
         run: >
-          pytest -v --cov --cov-report=term-missing
-          --cov-report=html:relatorio-cobertura --cov-fail-under=80
+          pytest -v -m "not integracao" --cov
           --junitxml=resultados-unitarios.xml
+
+      # 2) Integracao: sobe a aplicacao inteira e testa por HTTP (--cov-append
+      #    soma a cobertura deste passo a do anterior).
+      - name: Testes de integracao
+        run: >
+          pytest -v -m integracao --cov --cov-append
+          --junitxml=resultados-integracao.xml
+
+      # 3) Relatorios de cobertura (HTML e XML) e o gate: abaixo de 80%, falha.
+      - name: Relatorio de cobertura e gate de 80%
+        run: |
+          coverage report --show-missing --fail-under=80
+          coverage html -d relatorio-cobertura
+          coverage xml -o cobertura.xml
 
       - name: Resumo da cobertura
         if: success()
@@ -76,7 +91,9 @@ jobs:
           name: relatorios-python-${{ matrix.python }}
           path: |
             python/resultados-unitarios.xml
+            python/resultados-integracao.xml
             python/relatorio-cobertura/
+            python/cobertura.xml
           if-no-files-found: ignore
 
   testes-api:

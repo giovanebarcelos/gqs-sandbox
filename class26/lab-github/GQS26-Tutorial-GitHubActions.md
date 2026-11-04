@@ -129,7 +129,9 @@ winget install -e --id Docker.DockerDesktop
 # opcionais: GitHub.cli, EclipseAdoptium.Temurin.21.JDK, Python.Python.3.12, OpenJS.NodeJS.LTS
 ```
 
-Use o **Git Bash** como terminal: todos os comandos do tutorial rodam nele sem adaptação.
+Abra o Docker Desktop e espere *Engine running*.
+
+> **Linux × Windows 11:** daqui em diante, cada bloco de comandos aparece em duas versões — **Linux/macOS (bash)** e **Windows 11 (PowerShell)** — ou num bloco único, quando os comandos são idênticos nos dois. No Windows, abra o **Terminal → PowerShell** (não precisa ser administrador). Quem preferir o **Git Bash** pode usar os comandos do Linux.
 
 **macOS** (com [Homebrew](https://brew.sh)):
 
@@ -140,6 +142,8 @@ brew install git gh                  # opcionais: openjdk@21 maven python@3.12 n
 
 ### 0.2 Conferir
 
+**Linux, macOS e Windows 11** (mesmos comandos):
+
 ```bash
 git --version
 docker --version
@@ -148,6 +152,8 @@ gh --version                         # opcional
 ```
 
 ### 0.3 Identidade do Git e login no GitHub
+
+**Linux, macOS e Windows 11** (mesmos comandos):
 
 ```bash
 git config --global user.name  "Seu Nome"
@@ -159,12 +165,23 @@ Sem o `gh`, o `git push` pede usuário e um **Personal Access Token** (GitHub �
 
 ### 0.4 Baixar o repositório do laboratório
 
+**Linux/macOS (bash):**
+
 ```bash
+cd ~
 git clone https://github.com/giovanebarcelos/gqs-sandbox.git
 cd gqs-sandbox/class26/lab-github
 ```
 
-Já tem o repositório? `cd gqs-sandbox && git pull`.
+**Windows 11 (PowerShell):**
+
+```powershell
+cd $HOME
+git clone https://github.com/giovanebarcelos/gqs-sandbox.git
+cd gqs-sandbox\class26\lab-github
+```
+
+Já tem o repositório? `cd gqs-sandbox` e `git pull`.
 
 ---
 
@@ -232,6 +249,8 @@ E o `.github/actions/bruno/action.yml` é uma **composite action**: reaproveita 
 
 Boa prática — *nunca commitar código com testes quebrados*. Dentro de `gqs-sandbox/class26/lab-github`:
 
+**Linux/macOS (bash):**
+
 ```bash
 cd java && mvn -q verify && cd ..
 # [ERROR] Tests run: 14, Failures: 2 ... situacaoPelaMediaEFrequencia: expected: <APROVADO> but was: <REPROVADO_POR_FALTA>
@@ -239,6 +258,15 @@ cd java && mvn -q verify && cd ..
 cd python && python3 -m venv .venv && .venv/bin/pip install -q -r requirements-dev.txt
 .venv/bin/pytest -q -m "not integracao"
 # 2 failed, 24 passed, 5 deselected
+```
+
+**Windows 11 (PowerShell)** — no Windows o Python se chama `python` (ou `py`) e o venv fica em `.venv\Scripts`:
+
+```powershell
+cd java; mvn -q verify; cd ..
+cd python; python -m venv .venv; .venv\Scripts\pip install -q -r requirements-dev.txt
+.venv\Scripts\pytest -q -m "not integracao"
+cd ..
 ```
 
 Falhou? Ótimo: é o defeito 1. Faça o push assim mesmo — a Etapa 2 mostra o pipeline fazendo o papel de quem esqueceu de rodar os testes. (`python/.venv` e `java/target` estão no `.gitignore`: não vão para o commit.)
@@ -251,6 +279,8 @@ Falhou? Ótimo: é o defeito 1. Faça o push assim mesmo — a Etapa 2 mostra o 
 
 O projeto vira um repositório **próprio**, separado do `gqs-sandbox`. Copie a pasta para fora do clone — um repositório Git dentro de outro confunde os dois:
 
+**Linux/macOS (bash):**
+
 ```bash
 cp -r . ~/gqs26-boletim-ci           # estando em gqs-sandbox/class26/lab-github
 cd ~/gqs26-boletim-ci
@@ -259,20 +289,30 @@ git add .
 git commit -m "Boletim API: versao inicial"
 ```
 
-Crie o repositório **público** no GitHub (necessário para as *required reviewers* e o CodeQL gratuitos — Etapas 8 e 9) e envie. Com o `gh`:
+**Windows 11 (PowerShell):**
+
+```powershell
+Copy-Item -Recurse -Force (Get-Location).Path $HOME\gqs26-boletim-ci   # estando em gqs-sandbox\class26\lab-github
+cd $HOME\gqs26-boletim-ci
+git init -b main
+git add .
+git commit -m "Boletim API: versao inicial"
+```
+
+Crie o repositório **público** no GitHub (necessário para as *required reviewers* e o CodeQL gratuitos — Etapas 8 e 9) e envie. Com o `gh` (**Linux, macOS e Windows 11**, mesmo comando):
 
 ```bash
 gh repo create gqs26-boletim-ci --public --source=. --remote=origin --push
 ```
 
-Sem o `gh`: no site, **New repository** → nome `gqs26-boletim-ci` → **Public** → *não* marque README/.gitignore/licença → **Create repository**; depois:
+Sem o `gh`: no site, **New repository** → nome `gqs26-boletim-ci` → **Public** → *não* marque README/.gitignore/licença → **Create repository**; depois (mesmos comandos nos dois sistemas):
 
 ```bash
 git remote add origin https://github.com/SEU-USUARIO/gqs26-boletim-ci.git
 git push -u origin main
 ```
 
-> **De agora em diante, os comandos rodam em `~/gqs26-boletim-ci`**, a menos que digam o contrário.
+> **De agora em diante, os comandos rodam em `~/gqs26-boletim-ci`** (no Windows, `$HOME\gqs26-boletim-ci`), a menos que digam o contrário.
 
 ### 2.2 Acompanhar a execução
 
@@ -353,6 +393,8 @@ A regra R2 diz "frequência **abaixo de** 75% reprova": exatamente 75% **não** 
 +    if frequencia < FREQUENCIA_MINIMA:
 ```
 
+**Linux, macOS e Windows 11** (mesmos comandos):
+
 ```bash
 git commit -am "Corrige limite de frequencia: 75% aprova"
 git push
@@ -401,6 +443,8 @@ Este é o ponto da aula: se o pipeline testasse **só a versão mais nova**, est
 +    boletim["resumo"] = f"{boletim['aluno']}: {boletim['situacao']} com media {boletim['media']}"
 ```
 
+**Linux, macOS e Windows 11** (mesmos comandos):
+
 ```bash
 git commit -am "Compatibiliza com Java 17 e Python 3.11"
 git push
@@ -434,6 +478,8 @@ Este job fez `docker build` da imagem, subiu o container **no runner** e disparo
 
 Se instalou JDK/Maven/Python, gere os relatórios e sirva-os com o Traefik:
 
+**Linux/macOS (bash):**
+
 ```bash
 cd java   && mvn -q verify && cd ..                   # relatório em java/target/site/jacoco/
 cd python && python3 -m venv .venv && .venv/bin/pip install -q -r requirements-dev.txt
@@ -442,6 +488,19 @@ cd python && python3 -m venv .venv && .venv/bin/pip install -q -r requirements-d
 .venv/bin/coverage html -d relatorio-cobertura && cd ..
 
 cp .env.example .env
+docker compose --profile cobertura up -d traefik cobertura
+```
+
+**Windows 11 (PowerShell):**
+
+```powershell
+cd java; mvn -q verify; cd ..                         # relatório em java\target\site\jacoco\
+cd python; python -m venv .venv; .venv\Scripts\pip install -q -r requirements-dev.txt
+.venv\Scripts\pytest -q -m "not integracao" --cov
+.venv\Scripts\pytest -q -m integracao --cov --cov-append
+.venv\Scripts\coverage html -d relatorio-cobertura; cd ..
+
+Copy-Item .env.example .env
 docker compose --profile cobertura up -d traefik cobertura
 ```
 
@@ -455,10 +514,20 @@ Abra `http://cobertura.localhost`. Em cada relatório, as linhas **verdes** fora
 
 Os testes passam, mas e se alguém adicionar código **sem testes**? Simule: `exercicios/historico.py` (e `Historico.java`) têm ~20 linhas de lógica que nenhum teste executa.
 
+**Linux/macOS (bash):**
+
 ```bash
 cp exercicios/historico.py   python/boletim/
 cp exercicios/Historico.java java/src/main/java/br/edu/gqs/boletim/
 git add . && git commit -m "Adiciona historico do aluno (sem testes)" && git push
+```
+
+**Windows 11 (PowerShell):**
+
+```powershell
+Copy-Item exercicios\historico.py   python\boletim\
+Copy-Item exercicios\Historico.java java\src\main\java\br\edu\gqs\boletim\
+git add .; git commit -m "Adiciona historico do aluno (sem testes)"; git push
 ```
 
 Os dois pipelines **falham** — com todos os testes verdes:
@@ -478,8 +547,16 @@ Coverage failure: total of 73 is less than fail-under=80
 
 Nenhum teste quebrou — **a esteira recusou código não testado**. E os jobs de API **nem rodaram** (`needs`). Para liberar, escreva testes para `Historico`/`historico_do_aluno` ou desfaça:
 
+**Linux/macOS (bash):**
+
 ```bash
 git revert HEAD --no-edit && git push
+```
+
+**Windows 11 (PowerShell):**
+
+```powershell
+git revert HEAD --no-edit; git push
 ```
 
 ---
@@ -501,6 +578,8 @@ No repositório: **Settings** → **Rules** → **Rulesets** → **New ruleset**
 > Em conta gratuita, regras valem para repositório público. O administrador pode ter *bypass*; desative-o para ver a trava de verdade.
 
 ### 6.2 Abrir um PR
+
+**Linux, macOS e Windows 11** (mesmos comandos):
 
 ```bash
 git checkout -b feature/mensagem-clara
@@ -542,14 +621,25 @@ O job `deploy` do `release.yml` roda com `runs-on: [self-hosted, gqs26]`: num **
 
 ### 8.1 Subir o Traefik e as APIs locais
 
-Em `~/gqs26-boletim-ci`:
+Em `~/gqs26-boletim-ci` (no Windows, `$HOME\gqs26-boletim-ci`):
+
+**Linux/macOS (bash):**
 
 ```bash
 cp .env.example .env                 # se ainda não fez na Etapa 4.3
 docker compose up -d --build
 ```
 
+**Windows 11 (PowerShell):**
+
+```powershell
+Copy-Item .env.example .env          # se ainda não fez na Etapa 4.3
+docker compose up -d --build
+```
+
 O Docker constrói as imagens **a partir do seu código** (as duas funcionam agora que você corrigiu os defeitos — com o defeito 2 o build do Java falharia: o `Dockerfile` usa Java 17).
+
+**Linux/macOS (bash):**
 
 ```bash
 curl -s http://boletim.localhost/api/health
@@ -558,20 +648,29 @@ curl -s http://boletim-python.localhost/api/health
 # {"status":"ok","versao":"local","instituicao":"ambiente local"}
 ```
 
+**Windows 11 (PowerShell)** — use sempre `curl.exe` (no PowerShell, `curl` sozinho pode ser apelido de `Invoke-WebRequest`):
+
+```powershell
+curl.exe -s http://boletim.localhost/api/health
+curl.exe -s http://boletim-python.localhost/api/health
+```
+
 Abra `http://traefik.localhost`: em *HTTP Routers* estão `boletim-java` e `boletim-python`, criadas pelas *labels* do `docker-compose.yml` — nenhum arquivo de configuração do Traefik foi escrito.
 
 ### 8.2 Registrar o runner
 
-1. No GitHub: **Settings** → **Actions** → **Runners** → **New self-hosted runner** → *Linux* → *x64*.
+1. No GitHub: **Settings** → **Actions** → **Runners** → **New self-hosted runner** → *Linux* → *x64* (escolha *Linux* **também no Windows**: o runner roda num container Linux do Docker).
 2. Não instale nada ali. Copie só o **token** (o valor depois de `--token` no comando `./config.sh`) — vale 1 hora e só é usado no primeiro start.
-3. No `.env`, preencha:
+3. No `.env` (Linux: `nano .env`; Windows: `notepad .env`), preencha:
 
-```bash
+```ini
 REPO_URL=https://github.com/SEU-USUARIO/gqs26-boletim-ci
 RUNNER_TOKEN=cole-o-token-aqui
 ```
 
 4. Suba o runner (um container, definido no `docker-compose.yml` com `profiles: ["runner"]`):
+
+**Linux/macOS (bash):**
 
 ```bash
 docker compose --profile runner up -d --build
@@ -579,6 +678,13 @@ docker logs gqs26_runner | tail -3
 # √ Connected to GitHub
 # Current runner version: ...
 # Listening for Jobs
+```
+
+**Windows 11 (PowerShell):**
+
+```powershell
+docker compose --profile runner up -d --build
+docker logs --tail 3 gqs26_runner
 ```
 
 Em **Settings → Actions → Runners** o `gqs26-runner` aparece **Idle**, com o rótulo `gqs26`. É esse rótulo que o `runs-on: [self-hosted, gqs26]` procura.
@@ -589,8 +695,18 @@ Em **Settings → Actions → Runners** o `gqs26-runner` aparece **Idle**, com o
 
 ### 9.1 Criar a tag
 
+**Linux/macOS (bash):**
+
 ```bash
 git checkout main && git pull
+git tag v1.0.0
+git push origin v1.0.0
+```
+
+**Windows 11 (PowerShell):**
+
+```powershell
+git checkout main; git pull
 git tag v1.0.0
 git push origin v1.0.0
 ```
@@ -612,6 +728,8 @@ O job de deploy está parado pelo Environment. Clique em **Review deployments**,
 2. troca as imagens: `docker compose pull` + `docker compose up -d --no-build --no-deps boletim-java boletim-python`, com `IMAGEM_JAVA=ghcr.io/.../boletim-java:v1.0.0`;
 3. roda o **smoke test**: espera `/api/health` responder a versão `v1.0.0` e chama `/api/admin/estatisticas` com o secret.
 
+**Linux/macOS (bash):**
+
 ```bash
 curl -s http://boletim.localhost/api/health
 # {"status":"ok","versao":"v1.0.0","instituicao":"Faculdade GQS"}      <- versão da tag, variável do Environment
@@ -622,15 +740,32 @@ curl -s -H 'X-Admin-Token: segredo-do-github-123' http://boletim.localhost/api/a
 # {"boletinsCalculados":0,"versao":"v1.0.0"}                            <- com o secret do Environment
 ```
 
+**Windows 11 (PowerShell)** — `NUL` faz o papel do `/dev/null`:
+
+```powershell
+curl.exe -s http://boletim.localhost/api/health
+curl.exe -s -o NUL -w '%{http_code}\n' http://boletim.localhost/api/admin/estatisticas
+curl.exe -s -H 'X-Admin-Token: segredo-do-github-123' http://boletim.localhost/api/admin/estatisticas
+```
+
 Procure `segredo-do-github-123` nos logs do job: não aparece (`***`). Em **Packages** (na página do repositório), as duas imagens estão publicadas.
 
 > **Se a imagem não puder ser baixada** (`denied` ao `pull`): o pacote foi criado privado e sem vínculo com o repositório. Confirme que o `build-push-action` do `release.yml` tem o `label org.opencontainers.image.source` — é ele que liga o pacote ao repositório e dá ao `GITHUB_TOKEN` o direito de leitura.
 
 ### 9.3 Segunda versão e rollback
 
+**Linux/macOS (bash):**
+
 ```bash
 # qualquer mudança em java/ ou python/ via PR, depois:
 git tag v1.0.1 && git push origin v1.0.1
+```
+
+**Windows 11 (PowerShell):**
+
+```powershell
+# qualquer mudança em java/ ou python/ via PR, depois:
+git tag v1.0.1; git push origin v1.0.1
 ```
 
 Aprove de novo; `versao` passa a `v1.0.1`. Para **voltar** à v1.0.0: **Actions** → a execução do **Release** de `v1.0.0` → **Re-run all jobs** → aprove. O pipeline reenvia a imagem *daquela* tag e o deploy troca de volta. A aprovação manual vale para os dois sentidos.
@@ -655,8 +790,17 @@ Experimente: no Dependabot, abra um PR *"Bump actions/..."*. Ele dispara o **mes
 
 ## Etapa 11 — Encerrar o ambiente
 
+**Linux/macOS (bash):**
+
 ```bash
 cd ~/gqs26-boletim-ci
+docker compose --profile runner --profile cobertura down       # derruba tudo, inclusive o runner
+```
+
+**Windows 11 (PowerShell):**
+
+```powershell
+cd $HOME\gqs26-boletim-ci
 docker compose --profile runner --profile cobertura down       # derruba tudo, inclusive o runner
 ```
 
@@ -679,6 +823,10 @@ E, **no GitHub**, remova o runner que ficou registrado: **Settings → Actions �
 | Dois labs ao mesmo tempo | todos usam a porta 80: pare um (`docker compose down`) ou troque `HTTP_PORT` no `.env` |
 | `*.localhost` não abre | use Chrome, Edge ou Firefox; em outros, acrescente `127.0.0.1 boletim.localhost boletim-python.localhost traefik.localhost cobertura.localhost` ao `hosts` |
 | Segurança do `docker.sock` no runner | quem controla o runner controla o Docker da máquina (equivale a ser root). Aceitável num laboratório; em produção use runner dedicado e isolado |
+| Windows: runner reiniciando com `exec /entrypoint.sh: no such file or directory` ou `$'\r': command not found` | os `.sh` foram baixados com fim de linha CRLF: `git pull` no `gqs-sandbox` (o `.gitattributes` força LF), copie de novo e rode `docker compose --profile runner up -d --build` |
+| Windows: `curl` responde com um objeto do PowerShell ou erro de parâmetro | use `curl.exe` (no PowerShell 5, `curl` é apelido de `Invoke-WebRequest`) |
+| Windows: `&&` dá erro *"não é um separador de instrução válido"* | o PowerShell 5 não aceita `&&`: use os blocos **Windows 11 (PowerShell)**, que separam com `;` |
+| Windows: `.env` ignorado ou com caracteres estranhos | o arquivo foi salvo em UTF-16: salve-o como UTF-8 no Bloco de Notas (*Salvar como → Codificação*) |
 
 ---
 

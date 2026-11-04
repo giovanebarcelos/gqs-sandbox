@@ -140,7 +140,9 @@ winget install -e --id Docker.DockerDesktop
 # opcionais: EclipseAdoptium.Temurin.21.JDK, Python.Python.3.12, OpenJS.NodeJS.LTS
 ```
 
-Abra o Docker Desktop e espere *Engine running*. Use o **Git Bash** como terminal: todos os comandos do tutorial rodam nele sem adaptação.
+Abra o Docker Desktop e espere *Engine running*.
+
+> **Linux × Windows 11:** daqui em diante, cada bloco de comandos aparece em duas versões — **Linux/macOS (bash)** e **Windows 11 (PowerShell)** — ou num bloco único, quando os comandos são idênticos nos dois. No Windows, abra o **Terminal → PowerShell** (não precisa ser administrador). Quem preferir o **Git Bash** pode usar os comandos do Linux.
 
 **macOS** (com [Homebrew](https://brew.sh)):
 
@@ -151,6 +153,8 @@ brew install git                     # opcionais: openjdk@21 maven python@3.12 n
 
 ### 0.2 Conferir
 
+**Linux, macOS e Windows 11** (mesmos comandos):
+
 ```bash
 git --version
 docker --version
@@ -160,7 +164,7 @@ docker run --rm hello-world
 
 ### 0.3 Identidade do Git
 
-O Gitea mostra o autor de cada commit; configure uma vez:
+O Gitea mostra o autor de cada commit; configure uma vez (**Linux, macOS e Windows 11**, mesmos comandos):
 
 ```bash
 git config --global user.name  "Seu Nome"
@@ -169,12 +173,25 @@ git config --global user.email "seu.email@exemplo.com"
 
 ### 0.4 Baixar o repositório
 
+O tutorial supõe o clone na sua pasta pessoal (`~/gqs-sandbox`; no Windows, `$HOME\gqs-sandbox`).
+
+**Linux/macOS (bash):**
+
 ```bash
+cd ~
 git clone https://github.com/giovanebarcelos/gqs-sandbox.git
 cd gqs-sandbox/class26/lab-gitea
 ```
 
-Já tem o repositório? `cd gqs-sandbox && git pull`.
+**Windows 11 (PowerShell):**
+
+```powershell
+cd $HOME
+git clone https://github.com/giovanebarcelos/gqs-sandbox.git
+cd gqs-sandbox\class26\lab-gitea
+```
+
+Já tem o repositório? `cd gqs-sandbox` e `git pull`.
 
 **As Etapas 1 e 2 são executadas dentro de `gqs-sandbox/class26/lab-gitea`.** A partir da Etapa 3 você trabalha numa **cópia** do projeto, fora do `gqs-sandbox` (a Etapa 3.1 explica por quê).
 
@@ -184,31 +201,55 @@ Já tem o repositório? `cd gqs-sandbox && git pull`.
 
 ### 1.1 Preparar o `.env`
 
+**Linux/macOS (bash):**
+
 ```bash
 cp .env.example .env
 openssl rand -hex 20                 # gera 40 caracteres hexadecimais
 ```
 
+**Windows 11 (PowerShell):**
+
+```powershell
+Copy-Item .env.example .env
+$b = New-Object byte[] 20; [Security.Cryptography.RandomNumberGenerator]::Create().GetBytes($b); -join ($b | ForEach-Object { $_.ToString('x2') })   # 40 caracteres hexadecimais
+notepad .env
+```
+
 Abra o `.env` e cole o valor gerado em `RUNNER_TOKEN`. É o segredo que o **runner** usa para se registrar no Gitea: o Gitea lê o mesmo valor ao subir, e o runner se apresenta com ele.
 
-> Sem `openssl` (Windows fora do Git Bash)? Qualquer sequência de 40 caracteres `0-9a-f` serve. **O `.env` não vai para o Git** — já está no `.gitignore`. Token em arquivo versionado é o anti-padrão da Aula 25.
+> Qualquer sequência de 40 caracteres `0-9a-f` serve. **O `.env` não vai para o Git** — já está no `.gitignore`. Token em arquivo versionado é o anti-padrão da Aula 25.
 
 ### 1.2 Verificar a porta 80
 
 O Traefik usa a porta 80 da sua máquina. Se ela estiver ocupada (outro servidor web, o lab da Aula 25, o lab GitHub desta aula ou o das Aulas 23B/24 ainda rodando), descomente `HTTP_PORT=8886` no `.env` e **acrescente `:8886` em todas as URLs** deste tutorial (`http://gitea.localhost:8886`, ...).
 
+**Linux/macOS (bash):**
+
 ```bash
-# Linux/macOS: algo já escuta na 80?
+# algo já escuta na 80?
 sudo lsof -i :80 || echo "porta 80 livre"
 ```
 
+**Windows 11 (PowerShell):**
+
+```powershell
+# algo já escuta na 80? (mostra o processo dono da porta)
+$c = Get-NetTCPConnection -LocalPort 80 -State Listen -ErrorAction SilentlyContinue
+if ($c) { $c | ForEach-Object { Get-Process -Id $_.OwningProcess } } else { "porta 80 livre" }
+```
+
 ### 1.3 Subir
+
+**Linux, macOS e Windows 11** (mesmo comando):
 
 ```bash
 docker compose up -d --build
 ```
 
 A primeira vez demora alguns minutos: o Docker monta a imagem do runner (`runner/Dockerfile`), que instala os dois JDKs, Maven, Python, Node, o Bruno CLI e o cliente Docker sobre o `act_runner` oficial.
+
+**Linux/macOS (bash):**
 
 ```bash
 docker compose ps
@@ -221,15 +262,32 @@ docker logs gqs26g_runner | tail -3
 # ... runner: gqs26g-runner, with version: v0.6.1, with labels: [gqs-runner], declare successfully
 ```
 
+**Windows 11 (PowerShell):**
+
+```powershell
+docker compose ps
+docker logs --tail 3 gqs26g_runner
+```
+
 ### 1.4 Criar o seu usuário
 
 A tela de instalação do Gitea foi pulada (`INSTALL_LOCK`) e o cadastro público está desligado. Crie o administrador pela linha de comando — **troque a senha**:
+
+**Linux/macOS (bash)** — a `\` continua o comando na linha seguinte:
 
 ```bash
 docker exec -u git gqs26g_gitea gitea admin user create --admin \
   --username aluno --email aluno@gqs.local \
   --password 'Troque-esta-senha!' --must-change-password=false
 # New user 'aluno' has been successfully created!
+```
+
+**Windows 11 (PowerShell)** — no PowerShell, quem continua a linha é a crase `` ` ``:
+
+```powershell
+docker exec -u git gqs26g_gitea gitea admin user create --admin `
+  --username aluno --email aluno@gqs.local `
+  --password 'Troque-esta-senha!' --must-change-password=false
 ```
 
 > Pode usar outro nome de usuário: troque `aluno` também nas URLs dos `git remote` das próximas etapas.
@@ -338,6 +396,8 @@ A sintaxe é a mesma e as actions vêm do próprio GitHub (`actions/checkout@v7`
 
 O projeto `boletim` vira um repositório **próprio**, separado do `gqs-sandbox`. Copie a pasta para fora do clone — um repositório Git dentro de outro confunde os dois:
 
+**Linux/macOS (bash):**
+
 ```bash
 cp -r boletim ~/boletim
 cd ~/boletim
@@ -348,9 +408,21 @@ git remote add origin http://gitea.localhost/aluno/boletim.git
 git push -u origin main
 ```
 
-O Git pede usuário e senha: `aluno` e a senha da Etapa 1.4. O repositório **não precisava existir**: o Gitea está configurado para criá-lo no primeiro push (`ENABLE_PUSH_CREATE_USER`).
+**Windows 11 (PowerShell):**
 
-> **De agora em diante, os comandos rodam em `~/boletim`**, a menos que digam o contrário.
+```powershell
+Copy-Item -Recurse -Force boletim $HOME\boletim
+cd $HOME\boletim
+git init -b main
+git add .
+git commit -m "Boletim API: versao inicial"
+git remote add origin http://gitea.localhost/aluno/boletim.git
+git push -u origin main
+```
+
+O Git pede usuário e senha (no Windows, numa janela do *Git Credential Manager*): `aluno` e a senha da Etapa 1.4. O repositório **não precisava existir**: o Gitea está configurado para criá-lo no primeiro push (`ENABLE_PUSH_CREATE_USER`).
+
+> **De agora em diante, os comandos rodam em `~/boletim`** (no Windows, `$HOME\boletim`), a menos que digam o contrário.
 
 ### 3.2 Acompanhar a execução
 
@@ -395,11 +467,20 @@ Na página da execução, em **Artifacts**, baixe `relatorios-java-21`: tem os r
 
 ### 3.3 O que **não** aconteceu
 
+**Linux/macOS (bash):**
+
 ```bash
 curl -s http://boletim-staging.localhost/api/health
 # 404 page not found        <- nenhum ambiente foi criado
 docker images 'gqs26g/*'
 # (vazio)                   <- nenhuma imagem foi gerada
+```
+
+**Windows 11 (PowerShell)** — use sempre `curl.exe` (no PowerShell, `curl` sozinho pode ser apelido de `Invoke-WebRequest`):
+
+```powershell
+curl.exe -s http://boletim-staging.localhost/api/health
+docker images 'gqs26g/*'
 ```
 
 Isso é o **fail fast**: o defeito foi detectado em segundos, isolado ao commit que o causou, **antes** de existir qualquer artefato.
@@ -426,6 +507,8 @@ A regra R2 diz "frequência **abaixo de** 75% reprova": exatamente 75% **não** 
 +    if frequencia < FREQUENCIA_MINIMA:
 ```
 
+**Linux, macOS e Windows 11** (mesmos comandos):
+
 ```bash
 git commit -am "Corrige limite de frequencia: 75% aprova"
 git push
@@ -447,10 +530,19 @@ Este é o ponto da aula: se o pipeline testasse **só o JDK 21**, estaria verde 
 
 Confira o Python publicado em staging:
 
+**Linux/macOS (bash):**
+
 ```bash
 git rev-parse --short=7 HEAD                               # a versão = 7 primeiros caracteres do commit
 curl -s http://boletim-python-staging.localhost/api/health
 # {"status":"ok","versao":"ea9bd8e","instituicao":"ambiente staging"}
+```
+
+**Windows 11 (PowerShell):**
+
+```powershell
+git rev-parse --short=7 HEAD
+curl.exe -s http://boletim-python-staging.localhost/api/health
 ```
 
 Abra também `http://traefik.localhost`: em *HTTP Routers* apareceu `gqs26g-boletim-python-staging@docker`. **Foi o pipeline que criou essa rota**, por meio das *labels* do container (veja `scripts/deploy.sh`).
@@ -479,6 +571,8 @@ O `pom.xml` exige Java 21 (`<java.version>21</java.version>`) e o código usa `L
 +        double maior = ordenadas.get(ordenadas.size() - 1);
 ```
 
+**Linux, macOS e Windows 11** (mesmos comandos):
+
 ```bash
 git commit -am "Compatibiliza com Java 17 (a producao roda 17)"
 git push
@@ -502,6 +596,8 @@ Desta vez a execução do **CI Java** tem os dois jobs da matriz ✅ e os jobs 2
 
 O **CI Python não rodou** neste push: o commit só tocou `java/` e o filtro `paths:` do `ci-python.yml` não casou — a Etapa 2.3 explica.
 
+**Linux, macOS e Windows 11** (mesmo comando):
+
 ```bash
 docker images 'gqs26g/*' --format '{{.Repository}}:{{.Tag}}'
 # gqs26g/boletim-java:eee02b2-homologada     <- a "etiqueta" que libera a promoção
@@ -519,6 +615,8 @@ docker images 'gqs26g/*' --format '{{.Repository}}:{{.Tag}}'
 
 **Na sua máquina** (se instalou JDK/Maven/Python), gere e sirva os relatórios:
 
+**Linux/macOS (bash):**
+
 ```bash
 cd ~/boletim/java   && mvn -q verify          # relatório em target/site/jacoco/
 cd ~/boletim/python && python3 -m venv .venv && .venv/bin/pip install -q -r requirements-dev.txt
@@ -528,6 +626,20 @@ cd ~/boletim/python && python3 -m venv .venv && .venv/bin/pip install -q -r requ
 
 cd ~/gqs-sandbox/class26/lab-gitea            # a pasta do docker-compose.yml
 echo "BOLETIM_DIR=$HOME/boletim" >> .env
+docker compose --profile cobertura up -d
+```
+
+**Windows 11 (PowerShell)** — no Windows o Python se chama `python` (ou `py`) e o venv fica em `.venv\Scripts`. O `.env` é gravado em UTF-8 e com `/` no caminho (o `>>` do PowerShell 5 gravaria em UTF-16, que o Compose não lê):
+
+```powershell
+cd $HOME\boletim\java; mvn -q verify          # relatório em target\site\jacoco\
+cd $HOME\boletim\python; python -m venv .venv; .venv\Scripts\pip install -q -r requirements-dev.txt
+.venv\Scripts\pytest -q -m "not integracao" --cov
+.venv\Scripts\pytest -q -m integracao --cov --cov-append
+.venv\Scripts\coverage html -d relatorio-cobertura
+
+cd $HOME\gqs-sandbox\class26\lab-gitea        # a pasta do docker-compose.yml
+[IO.File]::AppendAllText("$PWD\.env", "`nBOLETIM_DIR=$($HOME -replace '\\','/')/boletim`n")
 docker compose --profile cobertura up -d
 ```
 
@@ -555,12 +667,24 @@ No repositório `aluno/boletim`: **Settings** → **Actions**:
 >      -d '{"value":"Faculdade GQS"}' \
 >      http://gitea.localhost/api/v1/repos/aluno/boletim/actions/variables/INSTITUICAO
 > ```
+>
+> No **Windows 11 (PowerShell)**, o JSON vai pela entrada padrão (`--data-binary '@-'`), o que evita o problema das aspas duplas em argumentos de programas externos:
+> ```powershell
+> '{"data":"segredo-do-gitea-123"}' | curl.exe -u 'aluno:Troque-esta-senha!' -X PUT `
+>      -H 'Content-Type: application/json' --data-binary '@-' `
+>      http://gitea.localhost/api/v1/repos/aluno/boletim/actions/secrets/TOKEN_ADMIN
+> '{"value":"Faculdade GQS"}' | curl.exe -u 'aluno:Troque-esta-senha!' -X POST `
+>      -H 'Content-Type: application/json' --data-binary '@-' `
+>      http://gitea.localhost/api/v1/repos/aluno/boletim/actions/variables/INSTITUICAO
+> ```
 
 Depois de salvo, o Gitea **nunca mais mostra** o valor do secret — só permite trocá-lo.
 
 ### 6.2 Reimplantar sem mexer no código
 
 Staging foi publicado antes do cadastro. Para republicar a mesma versão: **Actions** → **CI Java** (na lista da esquerda) → **Run workflow** → **Run workflow**. Repita para o **CI Python**. (O `workflow_dispatch` dos dois YAMLs existe para isso.)
+
+**Linux/macOS (bash):**
 
 ```bash
 curl -s http://boletim-staging.localhost/api/health
@@ -570,6 +694,14 @@ curl -s -o /dev/null -w '%{http_code}\n' http://boletim-staging.localhost/api/ad
 # 401                                                                   <- sem token, recusado
 curl -s -H 'X-Admin-Token: segredo-do-gitea-123' http://boletim-staging.localhost/api/admin/estatisticas
 # {"boletinsCalculados":5,"versao":"eee02b2"}                           <- com token, aceito
+```
+
+**Windows 11 (PowerShell)** — `NUL` faz o papel do `/dev/null`:
+
+```powershell
+curl.exe -s http://boletim-staging.localhost/api/health
+curl.exe -s -o NUL -w '%{http_code}\n' http://boletim-staging.localhost/api/admin/estatisticas
+curl.exe -s -H 'X-Admin-Token: segredo-do-gitea-123' http://boletim-staging.localhost/api/admin/estatisticas
 ```
 
 Procure `segredo-do-gitea-123` nos logs do job **3. Deploy em staging**: não aparece. O Gitea mascara o valor (`***`), e o `deploy.sh` repassa o secret ao container com `-e TOKEN_ADMIN` — sem o valor na linha de comando.
@@ -584,9 +716,17 @@ Procure `segredo-do-gitea-123` nos logs do job **3. Deploy em staging**: não ap
 
 Pegue o hash do **primeiro** commit (o do 1º push, que nunca passou):
 
+**Linux/macOS (bash):**
+
 ```bash
 git log --oneline --reverse | head -1
 # a1b2c3d Boletim API: versao inicial
+```
+
+**Windows 11 (PowerShell):**
+
+```powershell
+git log --oneline --reverse | Select-Object -First 1
 ```
 
 1. Aba **Actions** → **Promover para producao** na lista da esquerda → **Run workflow**.
@@ -605,9 +745,17 @@ A versao a1b2c3d (java) NAO foi homologada em staging - promocao recusada.
 
 Repita com a versão do último commit (`git rev-parse --short=7 HEAD`) e `java`. O job termina em poucos segundos:
 
+**Linux/macOS (bash):**
+
 ```bash
 curl -s http://boletim.localhost/api/health
 # {"status":"ok","versao":"eee02b2","instituicao":"Faculdade GQS"}
+```
+
+**Windows 11 (PowerShell):**
+
+```powershell
+curl.exe -s http://boletim.localhost/api/health
 ```
 
 Agora a **Boletim em produção** responde em `http://boletim.localhost`, com a mesma imagem que passou nos testes de staging — **o artefato é construído uma vez e promovido**, nunca reconstruído. Faça o mesmo com `python` e a versão do último commit (que o CI Python também homologou) para ter `http://boletim-python.localhost`.
@@ -622,11 +770,22 @@ Para voltar a uma versão anterior, rode **o mesmo workflow** informando uma ver
 
 Os testes passam, mas e se alguém adicionar código **sem testes**? Simule: o arquivo `exercicios/historico.py` (e `Historico.java`) tem ~20 linhas de lógica que nenhum teste executa.
 
+**Linux/macOS (bash):**
+
 ```bash
 cp ~/gqs-sandbox/class26/lab-gitea/exercicios/historico.py   ~/boletim/python/boletim/
 cp ~/gqs-sandbox/class26/lab-gitea/exercicios/Historico.java ~/boletim/java/src/main/java/br/edu/gqs/boletim/
 cd ~/boletim
 git add . && git commit -m "Adiciona historico do aluno (sem testes)" && git push
+```
+
+**Windows 11 (PowerShell):**
+
+```powershell
+Copy-Item $HOME\gqs-sandbox\class26\lab-gitea\exercicios\historico.py   $HOME\boletim\python\boletim\
+Copy-Item $HOME\gqs-sandbox\class26\lab-gitea\exercicios\Historico.java $HOME\boletim\java\src\main\java\br\edu\gqs\boletim\
+cd $HOME\boletim
+git add .; git commit -m "Adiciona historico do aluno (sem testes)"; git push
 ```
 
 Os dois pipelines **falham** — com todos os testes verdes:
@@ -646,13 +805,23 @@ Coverage failure: total of 73 is less than fail-under=80
 
 Nenhum teste quebrou — **a esteira recusou código não testado**. Para liberar, escreva testes para `Historico`/`historico_do_aluno` (um unitário já resolve) ou apague os arquivos:
 
+**Linux/macOS (bash):**
+
 ```bash
 git revert HEAD --no-edit && git push
+```
+
+**Windows 11 (PowerShell):**
+
+```powershell
+git revert HEAD --no-edit; git push
 ```
 
 ---
 
 ## Etapa 9 — Pull request: validar sem publicar (10 min)
+
+**Linux, macOS e Windows 11** (mesmos comandos):
 
 ```bash
 git checkout -b feature/mensagem-clara
@@ -676,9 +845,20 @@ O PR é **validado**, mas nada é publicado: staging e produção continuam como
 
 ## Etapa 10 — Encerrar o ambiente
 
+**Linux/macOS (bash):**
+
 ```bash
 cd ~/gqs-sandbox/class26/lab-gitea
 ./scripts/limpar-ambientes.sh        # containers de staging/produção e imagens gqs26g/*
+docker compose --profile cobertura down
+docker compose down -v               # -v apaga também o Gitea e o cache do runner
+```
+
+**Windows 11 (PowerShell)** — o script `.sh` roda no bash que vem com o Git for Windows:
+
+```powershell
+cd $HOME\gqs-sandbox\class26\lab-gitea
+& "$env:ProgramFiles\Git\bin\bash.exe" scripts/limpar-ambientes.sh   # containers de staging/produção e imagens gqs26g/*
 docker compose --profile cobertura down
 docker compose down -v               # -v apaga também o Gitea e o cache do runner
 ```
@@ -700,6 +880,11 @@ docker compose down -v               # -v apaga também o Gitea e o cache do run
 | `docker: Cannot connect to the Docker daemon` no job | o `docker.sock` não está montado no runner — não remova o volume do `docker-compose.yml` |
 | Dois labs ao mesmo tempo | todos usam a porta 80: pare um (`docker compose down`) ou troque `HTTP_PORT` no `.env` |
 | Segurança do `docker.sock` | quem controla o runner controla o Docker da máquina (equivale a ser root). Aceitável num laboratório; em produção use runner dedicado e isolado |
+| Windows: runner reiniciando com `exec ... entrypoint.sh: no such file or directory` ou `$'\r': command not found` | os `.sh` foram baixados com fim de linha CRLF: `git pull` no `gqs-sandbox` (o `.gitattributes` força LF) e `docker compose up -d --build` |
+| Windows: `curl` responde com um objeto do PowerShell ou erro de parâmetro | use `curl.exe` (no PowerShell 5, `curl` é apelido de `Invoke-WebRequest`) |
+| Windows: `&&` dá erro *"não é um separador de instrução válido"* | o PowerShell 5 não aceita `&&`: use os blocos **Windows 11 (PowerShell)**, que separam com `;` |
+| Windows: `bash.exe` não encontrado | o Git for Windows foi instalado em outra pasta: rode o script pelo **Git Bash** (`bash scripts/...`) |
+| Windows: `.env` ignorado ou com caracteres estranhos | o arquivo foi salvo em UTF-16: salve-o como UTF-8 no Bloco de Notas (*Salvar como → Codificação*) |
 
 ---
 

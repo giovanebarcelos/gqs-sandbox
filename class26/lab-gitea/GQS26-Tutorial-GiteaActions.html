@@ -2176,26 +2176,43 @@ reinicie):</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>winget install <span class="op">-</span>e <span class="op">--</span>id Git<span class="op">.</span><span class="fu">Git</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>winget install <span class="op">-</span>e <span class="op">--</span>id Docker<span class="op">.</span><span class="fu">DockerDesktop</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co"># opcionais: EclipseAdoptium.Temurin.21.JDK, Python.Python.3.12, OpenJS.NodeJS.LTS</span></span></code></pre></div>
-<p>Abra o Docker Desktop e espere <em>Engine running</em>. Use o
-<strong>Git Bash</strong> como terminal: todos os comandos do tutorial
-rodam nele sem adaptação.</p>
+<p>Abra o Docker Desktop e espere <em>Engine running</em>.</p>
+<blockquote>
+<p><strong>Linux × Windows 11:</strong> daqui em diante, cada bloco de
+comandos aparece em duas versões — <strong>Linux/macOS (bash)</strong> e
+<strong>Windows 11 (PowerShell)</strong> — ou num bloco único, quando os
+comandos são idênticos nos dois. No Windows, abra o <strong>Terminal →
+PowerShell</strong> (não precisa ser administrador). Quem preferir o
+<strong>Git Bash</strong> pode usar os comandos do Linux.</p>
+</blockquote>
 <p><strong>macOS</strong> (com <a href="https://brew.sh">Homebrew</a>):</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">brew</span> install <span class="at">--cask</span> docker           <span class="co"># abra o Docker Desktop uma vez</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="ex">brew</span> install git                     <span class="co"># opcionais: openjdk@21 maven python@3.12 node</span></span></code></pre></div>
 <h3 id="conferir">0.2 Conferir</h3>
+<p><strong>Linux, macOS e Windows 11</strong> (mesmos comandos):</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> <span class="at">--version</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> <span class="at">--version</span></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> compose version               <span class="co"># precisa ser v2.x</span></span>
 <span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> run <span class="at">--rm</span> hello-world</span></code></pre></div>
 <h3 id="identidade-do-git">0.3 Identidade do Git</h3>
-<p>O Gitea mostra o autor de cada commit; configure uma vez:</p>
+<p>O Gitea mostra o autor de cada commit; configure uma vez
+(<strong>Linux, macOS e Windows 11</strong>, mesmos comandos):</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> config <span class="at">--global</span> user.name  <span class="st">&quot;Seu Nome&quot;</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> config <span class="at">--global</span> user.email <span class="st">&quot;seu.email@exemplo.com&quot;</span></span></code></pre></div>
 <h3 id="baixar-o-repositório">0.4 Baixar o repositório</h3>
-<div class="sourceCode" id="cb7"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone https://github.com/giovanebarcelos/gqs-sandbox.git</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> gqs-sandbox/class26/lab-gitea</span></code></pre></div>
-<p>Já tem o repositório?
-<code>cd gqs-sandbox &amp;&amp; git pull</code>.</p>
+<p>O tutorial supõe o clone na sua pasta pessoal
+(<code>~/gqs-sandbox</code>; no Windows,
+<code>$HOME\gqs-sandbox</code>).</p>
+<p><strong>Linux/macOS (bash):</strong></p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone https://github.com/giovanebarcelos/gqs-sandbox.git</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> gqs-sandbox/class26/lab-gitea</span></code></pre></div>
+<p><strong>Windows 11 (PowerShell):</strong></p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cd</span> <span class="va">$HOME</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>git clone https<span class="op">://</span>github<span class="op">.</span><span class="fu">com</span><span class="op">/</span>giovanebarcelos<span class="op">/</span>gqs-sandbox<span class="op">.</span><span class="fu">git</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cd</span> gqs-sandbox\class26\lab-gitea</span></code></pre></div>
+<p>Já tem o repositório? <code>cd gqs-sandbox</code> e
+<code>git pull</code>.</p>
 <p><strong>As Etapas 1 e 2 são executadas dentro de
 <code>gqs-sandbox/class26/lab-gitea</code>.</strong> A partir da Etapa 3
 você trabalha numa <strong>cópia</strong> do projeto, fora do
@@ -2204,16 +2221,20 @@ você trabalha numa <strong>cópia</strong> do projeto, fora do
 <h2 id="etapa-1-subir-a-infraestrutura-de-cicd-15-min">Etapa 1 — Subir a
 infraestrutura de CI/CD (15 min)</h2>
 <h3 id="preparar-o-.env">1.1 Preparar o <code>.env</code></h3>
-<div class="sourceCode" id="cb8"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cp</span> .env.example .env</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="ex">openssl</span> rand <span class="at">-hex</span> 20                 <span class="co"># gera 40 caracteres hexadecimais</span></span></code></pre></div>
+<p><strong>Linux/macOS (bash):</strong></p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cp</span> .env.example .env</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="ex">openssl</span> rand <span class="at">-hex</span> 20                 <span class="co"># gera 40 caracteres hexadecimais</span></span></code></pre></div>
+<p><strong>Windows 11 (PowerShell):</strong></p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">Copy-Item</span> <span class="op">.</span><span class="fu">env</span><span class="op">.</span><span class="fu">example</span> <span class="op">.</span><span class="fu">env</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="va">$b</span> <span class="op">=</span> <span class="fu">New-Object</span> byte<span class="op">[]</span> <span class="dv">20</span><span class="op">;</span> <span class="op">[</span>Security<span class="op">.</span><span class="fu">Cryptography</span><span class="op">.</span><span class="fu">RandomNumberGenerator</span><span class="op">]::</span>Create<span class="op">().</span><span class="fu">GetBytes</span><span class="op">(</span><span class="va">$b</span><span class="op">);</span> <span class="op">-join</span> <span class="op">(</span><span class="va">$b</span> <span class="op">|</span> <span class="fu">ForEach-Object</span> <span class="op">{</span> <span class="va">$_</span><span class="op">.</span><span class="fu">ToString</span><span class="op">(</span><span class="st">&#39;x2&#39;</span><span class="op">)</span> <span class="op">})</span>   <span class="co"># 40 caracteres hexadecimais</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>notepad <span class="op">.</span><span class="fu">env</span></span></code></pre></div>
 <p>Abra o <code>.env</code> e cole o valor gerado em
 <code>RUNNER_TOKEN</code>. É o segredo que o <strong>runner</strong> usa
 para se registrar no Gitea: o Gitea lê o mesmo valor ao subir, e o
 runner se apresenta com ele.</p>
 <blockquote>
-<p>Sem <code>openssl</code> (Windows fora do Git Bash)? Qualquer
-sequência de 40 caracteres <code>0-9a-f</code> serve. <strong>O
-<code>.env</code> não vai para o Git</strong> — já está no
+<p>Qualquer sequência de 40 caracteres <code>0-9a-f</code> serve.
+<strong>O <code>.env</code> não vai para o Git</strong> — já está no
 <code>.gitignore</code>. Token em arquivo versionado é o anti-padrão da
 Aula 25.</p>
 </blockquote>
@@ -2224,30 +2245,47 @@ Aulas 23B/24 ainda rodando), descomente <code>HTTP_PORT=8886</code> no
 <code>.env</code> e <strong>acrescente <code>:8886</code> em todas as
 URLs</strong> deste tutorial (<code>http://gitea.localhost:8886</code>,
 …).</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Linux/macOS: algo já escuta na 80?</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> lsof <span class="at">-i</span> :80 <span class="kw">||</span> <span class="bu">echo</span> <span class="st">&quot;porta 80 livre&quot;</span></span></code></pre></div>
+<p><strong>Linux/macOS (bash):</strong></p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># algo já escuta na 80?</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> lsof <span class="at">-i</span> :80 <span class="kw">||</span> <span class="bu">echo</span> <span class="st">&quot;porta 80 livre&quot;</span></span></code></pre></div>
+<p><strong>Windows 11 (PowerShell):</strong></p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># algo já escuta na 80? (mostra o processo dono da porta)</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="va">$c</span> <span class="op">=</span> Get-NetTCPConnection <span class="op">-</span>LocalPort <span class="dv">80</span> <span class="op">-</span>State Listen <span class="op">-</span>ErrorAction SilentlyContinue</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span><span class="va">$c</span><span class="op">)</span> <span class="op">{</span> <span class="va">$c</span> <span class="op">|</span> <span class="fu">ForEach-Object</span> <span class="op">{</span> <span class="fu">Get-Process</span> <span class="op">-</span>Id <span class="va">$_</span><span class="op">.</span><span class="fu">OwningProcess</span> <span class="op">}</span> <span class="op">}</span> <span class="cf">else</span> <span class="op">{</span> <span class="st">&quot;porta 80 livre&quot;</span> <span class="op">}</span></span></code></pre></div>
 <h3 id="subir">1.3 Subir</h3>
-<div class="sourceCode" id="cb10"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> compose up <span class="at">-d</span> <span class="at">--build</span></span></code></pre></div>
+<p><strong>Linux, macOS e Windows 11</strong> (mesmo comando):</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> compose up <span class="at">-d</span> <span class="at">--build</span></span></code></pre></div>
 <p>A primeira vez demora alguns minutos: o Docker monta a imagem do
 runner (<code>runner/Dockerfile</code>), que instala os dois JDKs,
 Maven, Python, Node, o Bruno CLI e o cliente Docker sobre o
 <code>act_runner</code> oficial.</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> compose ps</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="co"># gqs26g_gitea     ... Up (healthy)</span></span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="co"># gqs26g_runner    ... Up</span></span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="co"># gqs26g_traefik   ... Up</span></span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> logs gqs26g_runner <span class="kw">|</span> <span class="fu">tail</span> <span class="at">-3</span></span>
-<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="co"># level=info msg=&quot;Runner registered successfully.&quot;</span></span>
-<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="co"># ... runner: gqs26g-runner, with version: v0.6.1, with labels: [gqs-runner], declare successfully</span></span></code></pre></div>
+<p><strong>Linux/macOS (bash):</strong></p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> compose ps</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="co"># gqs26g_gitea     ... Up (healthy)</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="co"># gqs26g_runner    ... Up</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="co"># gqs26g_traefik   ... Up</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> logs gqs26g_runner <span class="kw">|</span> <span class="fu">tail</span> <span class="at">-3</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="co"># level=info msg=&quot;Runner registered successfully.&quot;</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a><span class="co"># ... runner: gqs26g-runner, with version: v0.6.1, with labels: [gqs-runner], declare successfully</span></span></code></pre></div>
+<p><strong>Windows 11 (PowerShell):</strong></p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>docker compose <span class="fu">ps</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>docker logs <span class="op">--</span>tail <span class="dv">3</span> gqs26g_runner</span></code></pre></div>
 <h3 id="criar-o-seu-usuário">1.4 Criar o seu usuário</h3>
 <p>A tela de instalação do Gitea foi pulada (<code>INSTALL_LOCK</code>)
 e o cadastro público está desligado. Crie o administrador pela linha de
 comando — <strong>troque a senha</strong>:</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> exec <span class="at">-u</span> git gqs26g_gitea gitea admin user create <span class="at">--admin</span> <span class="dt">\</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">--username</span> aluno <span class="at">--email</span> aluno@gqs.local <span class="dt">\</span></span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--password</span> <span class="st">&#39;Troque-esta-senha!&#39;</span> <span class="at">--must-change-password</span><span class="op">=</span>false</span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="co"># New user &#39;aluno&#39; has been successfully created!</span></span></code></pre></div>
+<p><strong>Linux/macOS (bash)</strong> — a <code>\</code> continua o
+comando na linha seguinte:</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> exec <span class="at">-u</span> git gqs26g_gitea gitea admin user create <span class="at">--admin</span> <span class="dt">\</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">--username</span> aluno <span class="at">--email</span> aluno@gqs.local <span class="dt">\</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--password</span> <span class="st">&#39;Troque-esta-senha!&#39;</span> <span class="at">--must-change-password</span><span class="op">=</span>false</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="co"># New user &#39;aluno&#39; has been successfully created!</span></span></code></pre></div>
+<p><strong>Windows 11 (PowerShell)</strong> — no PowerShell, quem
+continua a linha é a crase <code>`</code>:</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>docker exec <span class="op">-</span>u git gqs26g_gitea gitea admin user create <span class="op">--</span>admin `</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="op">--</span>username aluno <span class="op">--</span>email aluno@gqs<span class="op">.</span><span class="fu">local</span> `</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="op">--</span>password <span class="st">&#39;Troque-esta-senha!&#39;</span> <span class="op">--</span>must-change-password<span class="op">=</span>false</span></code></pre></div>
 <blockquote>
 <p>Pode usar outro nome de usuário: troque <code>aluno</code> também nas
 URLs dos <code>git remote</code> das próximas etapas.</p>
@@ -2353,13 +2391,13 @@ regra, sem Spring, sem HTTP. Repare no teste parametrizado
 <p><strong>Mock</strong> — <code>BoletimControllerMockTest.java</code>
 (Java) e <code>tests/test_app_mock.py</code> (Python). Aqui a
 <strong>calculadora é substituída por um dublê</strong>:</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="at">@MockitoBean</span></span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="kw">private</span> CalculadoraBoletim calculadora<span class="op">;</span>                       <span class="co">// dublê injetado no lugar do real</span></span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="fu">when</span><span class="op">(</span>calculadora<span class="op">.</span><span class="fu">calcular</span><span class="op">(</span><span class="st">&quot;Ana&quot;</span><span class="op">,</span> <span class="bu">List</span><span class="op">.</span><span class="fu">of</span><span class="op">(</span><span class="fl">7.0</span><span class="op">,</span> <span class="fl">9.0</span><span class="op">),</span> <span class="fl">90.0</span><span class="op">))</span>    <span class="co">// STUB: &quot;quando te chamarem assim, responda isto&quot;</span></span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>        <span class="op">.</span><span class="fu">thenReturn</span><span class="op">(</span><span class="kw">new</span> <span class="fu">Boletim</span><span class="op">(</span><span class="st">&quot;Ana&quot;</span><span class="op">,</span> <span class="kw">new</span> <span class="bu">BigDecimal</span><span class="op">(</span><span class="st">&quot;1.0&quot;</span><span class="op">),</span> Situacao<span class="op">.</span><span class="fu">REPROVADO</span><span class="op">,</span> <span class="fl">9.0</span><span class="op">,</span> <span class="fl">7.0</span><span class="op">,</span> <span class="st">&quot;resposta do mock&quot;</span><span class="op">));</span></span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="kw">...</span></span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="fu">verify</span><span class="op">(</span>calculadora<span class="op">).</span><span class="fu">calcular</span><span class="op">(</span><span class="st">&quot;Ana&quot;</span><span class="op">,</span> <span class="bu">List</span><span class="op">.</span><span class="fu">of</span><span class="op">(</span><span class="fl">7.0</span><span class="op">,</span> <span class="fl">9.0</span><span class="op">),</span> <span class="fl">90.0</span><span class="op">);</span> <span class="co">// VERIFY: o controller chamou, com estes argumentos</span></span></code></pre></div>
+<div class="sourceCode" id="cb18"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="at">@MockitoBean</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="kw">private</span> CalculadoraBoletim calculadora<span class="op">;</span>                       <span class="co">// dublê injetado no lugar do real</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="fu">when</span><span class="op">(</span>calculadora<span class="op">.</span><span class="fu">calcular</span><span class="op">(</span><span class="st">&quot;Ana&quot;</span><span class="op">,</span> <span class="bu">List</span><span class="op">.</span><span class="fu">of</span><span class="op">(</span><span class="fl">7.0</span><span class="op">,</span> <span class="fl">9.0</span><span class="op">),</span> <span class="fl">90.0</span><span class="op">))</span>    <span class="co">// STUB: &quot;quando te chamarem assim, responda isto&quot;</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>        <span class="op">.</span><span class="fu">thenReturn</span><span class="op">(</span><span class="kw">new</span> <span class="fu">Boletim</span><span class="op">(</span><span class="st">&quot;Ana&quot;</span><span class="op">,</span> <span class="kw">new</span> <span class="bu">BigDecimal</span><span class="op">(</span><span class="st">&quot;1.0&quot;</span><span class="op">),</span> Situacao<span class="op">.</span><span class="fu">REPROVADO</span><span class="op">,</span> <span class="fl">9.0</span><span class="op">,</span> <span class="fl">7.0</span><span class="op">,</span> <span class="st">&quot;resposta do mock&quot;</span><span class="op">));</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a><span class="kw">...</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a><span class="fu">verify</span><span class="op">(</span>calculadora<span class="op">).</span><span class="fu">calcular</span><span class="op">(</span><span class="st">&quot;Ana&quot;</span><span class="op">,</span> <span class="bu">List</span><span class="op">.</span><span class="fu">of</span><span class="op">(</span><span class="fl">7.0</span><span class="op">,</span> <span class="fl">9.0</span><span class="op">),</span> <span class="fl">90.0</span><span class="op">);</span> <span class="co">// VERIFY: o controller chamou, com estes argumentos</span></span></code></pre></div>
 <p>Esse teste passa <strong>mesmo que a regra de negócio esteja
 errada</strong> — e é de propósito: ele só verifica se o controller
 entrega os dados certos e traduz o erro em HTTP 400. Quem verifica a
@@ -2556,20 +2594,31 @@ pipelines</td>
 <strong>próprio</strong>, separado do <code>gqs-sandbox</code>. Copie a
 pasta para fora do clone — um repositório Git dentro de outro confunde
 os dois:</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cp</span> <span class="at">-r</span> boletim ~/boletim</span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~/boletim</span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> init <span class="at">-b</span> main</span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> add .</span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> commit <span class="at">-m</span> <span class="st">&quot;Boletim API: versao inicial&quot;</span></span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> remote add origin http://gitea.localhost/aluno/boletim.git</span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> push <span class="at">-u</span> origin main</span></code></pre></div>
-<p>O Git pede usuário e senha: <code>aluno</code> e a senha da Etapa
-1.4. O repositório <strong>não precisava existir</strong>: o Gitea está
+<p><strong>Linux/macOS (bash):</strong></p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cp</span> <span class="at">-r</span> boletim ~/boletim</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~/boletim</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> init <span class="at">-b</span> main</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> add .</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> commit <span class="at">-m</span> <span class="st">&quot;Boletim API: versao inicial&quot;</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> remote add origin http://gitea.localhost/aluno/boletim.git</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> push <span class="at">-u</span> origin main</span></code></pre></div>
+<p><strong>Windows 11 (PowerShell):</strong></p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">Copy-Item</span> <span class="op">-</span>Recurse <span class="op">-</span>Force boletim <span class="va">$HOME</span>\boletim</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cd</span> <span class="va">$HOME</span>\boletim</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>git init <span class="op">-</span>b main</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>git add <span class="op">.</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>git commit <span class="op">-</span>m <span class="st">&quot;Boletim API: versao inicial&quot;</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>git remote add origin http<span class="op">://</span>gitea<span class="op">.</span><span class="fu">localhost</span><span class="op">/</span>aluno<span class="op">/</span>boletim<span class="op">.</span><span class="fu">git</span></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>git push <span class="op">-</span>u origin main</span></code></pre></div>
+<p>O Git pede usuário e senha (no Windows, numa janela do <em>Git
+Credential Manager</em>): <code>aluno</code> e a senha da Etapa 1.4. O
+repositório <strong>não precisava existir</strong>: o Gitea está
 configurado para criá-lo no primeiro push
 (<code>ENABLE_PUSH_CREATE_USER</code>).</p>
 <blockquote>
 <p><strong>De agora em diante, os comandos rodam em
-<code>~/boletim</code></strong>, a menos que digam o contrário.</p>
+<code>~/boletim</code></strong> (no Windows,
+<code>$HOME\boletim</code>), a menos que digam o contrário.</p>
 </blockquote>
 <h3 id="acompanhar-a-execução">3.2 Acompanhar a execução</h3>
 <p>No Gitea, abra <code>aluno/boletim</code> → aba
@@ -2629,10 +2678,16 @@ relatórios são guardados <strong>justamente</strong> quando o build
 falha, que é quando mais se precisa deles.</p>
 <h3 id="o-que-não-aconteceu">3.3 O que <strong>não</strong>
 aconteceu</h3>
-<div class="sourceCode" id="cb18"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-s</span> http://boletim-staging.localhost/api/health</span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 404 page not found        &lt;- nenhum ambiente foi criado</span></span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> images <span class="st">&#39;gqs26g/*&#39;</span></span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="co"># (vazio)                   &lt;- nenhuma imagem foi gerada</span></span></code></pre></div>
+<p><strong>Linux/macOS (bash):</strong></p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-s</span> http://boletim-staging.localhost/api/health</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 404 page not found        &lt;- nenhum ambiente foi criado</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> images <span class="st">&#39;gqs26g/*&#39;</span></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a><span class="co"># (vazio)                   &lt;- nenhuma imagem foi gerada</span></span></code></pre></div>
+<p><strong>Windows 11 (PowerShell)</strong> — use sempre
+<code>curl.exe</code> (no PowerShell, <code>curl</code> sozinho pode ser
+apelido de <code>Invoke-WebRequest</code>):</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">curl</span><span class="op">.</span><span class="fu">exe</span> <span class="op">-</span>s http<span class="op">://</span>boletim-staging<span class="op">.</span><span class="fu">localhost</span><span class="op">/</span>api<span class="op">/</span>health</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>docker images <span class="st">&#39;gqs26g/*&#39;</span></span></code></pre></div>
 <p>Isso é o <strong>fail fast</strong>: o defeito foi detectado em
 segundos, isolado ao commit que o causou, <strong>antes</strong> de
 existir qualquer artefato.</p>
@@ -2644,13 +2699,14 @@ existir qualquer artefato.</p>
 exatamente 75% <strong>não</strong> reprova. O código usa
 <code>&lt;=</code>.</p>
 <p><code>java/src/main/java/br/edu/gqs/boletim/CalculadoraBoletim.java</code>:</p>
-<div class="sourceCode" id="cb19"><pre class="sourceCode diff"><code class="sourceCode diff"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="st">-        if (frequencia &lt;= FREQUENCIA_MINIMA) {</span></span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="va">+        if (frequencia &lt; FREQUENCIA_MINIMA) {</span></span></code></pre></div>
+<div class="sourceCode" id="cb26"><pre class="sourceCode diff"><code class="sourceCode diff"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="st">-        if (frequencia &lt;= FREQUENCIA_MINIMA) {</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="va">+        if (frequencia &lt; FREQUENCIA_MINIMA) {</span></span></code></pre></div>
 <p><code>python/boletim/calculadora.py</code>:</p>
-<div class="sourceCode" id="cb20"><pre class="sourceCode diff"><code class="sourceCode diff"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="st">-    if frequencia &lt;= FREQUENCIA_MINIMA:</span></span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="va">+    if frequencia &lt; FREQUENCIA_MINIMA:</span></span></code></pre></div>
-<div class="sourceCode" id="cb21"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> commit <span class="at">-am</span> <span class="st">&quot;Corrige limite de frequencia: 75% aprova&quot;</span></span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> push</span></code></pre></div>
+<div class="sourceCode" id="cb27"><pre class="sourceCode diff"><code class="sourceCode diff"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="st">-    if frequencia &lt;= FREQUENCIA_MINIMA:</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="va">+    if frequencia &lt; FREQUENCIA_MINIMA:</span></span></code></pre></div>
+<p><strong>Linux, macOS e Windows 11</strong> (mesmos comandos):</p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> commit <span class="at">-am</span> <span class="st">&quot;Corrige limite de frequencia: 75% aprova&quot;</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> push</span></code></pre></div>
 <h3 id="o-pipeline-avança-e-a-matriz-mostra-o-resto">4.2 O pipeline
 avança — e a matriz mostra o resto</h3>
 <p><strong>CI Python:</strong> os 4 jobs ficam ✅. Staging está no ar, o
@@ -2689,9 +2745,13 @@ jobs da matriz passem)</td>
 17</strong>, nem compilaria. A matriz acusou um defeito que nenhum teste
 unitário pegaria.</p>
 <p>Confira o Python publicado em staging:</p>
-<div class="sourceCode" id="cb22"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> rev-parse <span class="at">--short</span><span class="op">=</span>7 HEAD                               <span class="co"># a versão = 7 primeiros caracteres do commit</span></span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-s</span> http://boletim-python-staging.localhost/api/health</span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="co"># {&quot;status&quot;:&quot;ok&quot;,&quot;versao&quot;:&quot;ea9bd8e&quot;,&quot;instituicao&quot;:&quot;ambiente staging&quot;}</span></span></code></pre></div>
+<p><strong>Linux/macOS (bash):</strong></p>
+<div class="sourceCode" id="cb29"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> rev-parse <span class="at">--short</span><span class="op">=</span>7 HEAD                               <span class="co"># a versão = 7 primeiros caracteres do commit</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-s</span> http://boletim-python-staging.localhost/api/health</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a><span class="co"># {&quot;status&quot;:&quot;ok&quot;,&quot;versao&quot;:&quot;ea9bd8e&quot;,&quot;instituicao&quot;:&quot;ambiente staging&quot;}</span></span></code></pre></div>
+<p><strong>Windows 11 (PowerShell):</strong></p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>git rev-parse <span class="op">--</span>short<span class="op">=</span><span class="dv">7</span> HEAD</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="fu">curl</span><span class="op">.</span><span class="fu">exe</span> <span class="op">-</span>s http<span class="op">://</span>boletim-python-staging<span class="op">.</span><span class="fu">localhost</span><span class="op">/</span>api<span class="op">/</span>health</span></code></pre></div>
 <p>Abra também <code>http://traefik.localhost</code>: em <em>HTTP
 Routers</em> apareceu <code>gqs26g-boletim-python-staging@docker</code>.
 <strong>Foi o pipeline que criou essa rota</strong>, por meio das
@@ -2706,15 +2766,16 @@ usa <code>List.getFirst()</code> / <code>getLast()</code>, métodos que
 só existem desde o Java 21. Como a produção roda 17, o código é que se
 ajusta:</p>
 <p><code>java/pom.xml</code>:</p>
-<div class="sourceCode" id="cb23"><pre class="sourceCode diff"><code class="sourceCode diff"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="st">-        &lt;java.version&gt;21&lt;/java.version&gt;</span></span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="va">+        &lt;java.version&gt;17&lt;/java.version&gt;</span></span></code></pre></div>
+<div class="sourceCode" id="cb31"><pre class="sourceCode diff"><code class="sourceCode diff"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="st">-        &lt;java.version&gt;21&lt;/java.version&gt;</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="va">+        &lt;java.version&gt;17&lt;/java.version&gt;</span></span></code></pre></div>
 <p><code>java/src/main/java/br/edu/gqs/boletim/CalculadoraBoletim.java</code>:</p>
-<div class="sourceCode" id="cb24"><pre class="sourceCode diff"><code class="sourceCode diff"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="st">-        double menor = ordenadas.getFirst();</span></span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="st">-        double maior = ordenadas.getLast();</span></span>
-<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="va">+        double menor = ordenadas.get(0);</span></span>
-<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a><span class="va">+        double maior = ordenadas.get(ordenadas.size() - 1);</span></span></code></pre></div>
-<div class="sourceCode" id="cb25"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> commit <span class="at">-am</span> <span class="st">&quot;Compatibiliza com Java 17 (a producao roda 17)&quot;</span></span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> push</span></code></pre></div>
+<div class="sourceCode" id="cb32"><pre class="sourceCode diff"><code class="sourceCode diff"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="st">-        double menor = ordenadas.getFirst();</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="st">-        double maior = ordenadas.getLast();</span></span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a><span class="va">+        double menor = ordenadas.get(0);</span></span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a><span class="va">+        double maior = ordenadas.get(ordenadas.size() - 1);</span></span></code></pre></div>
+<p><strong>Linux, macOS e Windows 11</strong> (mesmos comandos):</p>
+<div class="sourceCode" id="cb33"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> commit <span class="at">-am</span> <span class="st">&quot;Compatibiliza com Java 17 (a producao roda 17)&quot;</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> push</span></code></pre></div>
 <h3 id="tudo-verde">5.2 Tudo verde</h3>
 <p>Desta vez a execução do <strong>CI Java</strong> tem os dois jobs da
 matriz ✅ e os jobs 2–4 rodam. No log do job <strong>4. Testes de API em
@@ -2731,12 +2792,13 @@ staging</strong>:</p>
 <p>O <strong>CI Python não rodou</strong> neste push: o commit só tocou
 <code>java/</code> e o filtro <code>paths:</code> do
 <code>ci-python.yml</code> não casou — a Etapa 2.3 explica.</p>
-<div class="sourceCode" id="cb27"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> images <span class="st">&#39;gqs26g/*&#39;</span> <span class="at">--format</span> <span class="st">&#39;{{.Repository}}:{{.Tag}}&#39;</span></span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="co"># gqs26g/boletim-java:eee02b2-homologada     &lt;- a &quot;etiqueta&quot; que libera a promoção</span></span>
-<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="co"># gqs26g/boletim-java:eee02b2</span></span>
-<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a><span class="co"># gqs26g/boletim-python:eee02b2-homologada</span></span>
-<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a><span class="co"># gqs26g/boletim-python:eee02b2</span></span>
-<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a><span class="co"># gqs26g/boletim-python:ea9bd8e              &lt;- versões antigas continuam, mas as sem etiqueta não vão a produção</span></span></code></pre></div>
+<p><strong>Linux, macOS e Windows 11</strong> (mesmo comando):</p>
+<div class="sourceCode" id="cb35"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> images <span class="st">&#39;gqs26g/*&#39;</span> <span class="at">--format</span> <span class="st">&#39;{{.Repository}}:{{.Tag}}&#39;</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="co"># gqs26g/boletim-java:eee02b2-homologada     &lt;- a &quot;etiqueta&quot; que libera a promoção</span></span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a><span class="co"># gqs26g/boletim-java:eee02b2</span></span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a><span class="co"># gqs26g/boletim-python:eee02b2-homologada</span></span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a><span class="co"># gqs26g/boletim-python:eee02b2</span></span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a><span class="co"># gqs26g/boletim-python:ea9bd8e              &lt;- versões antigas continuam, mas as sem etiqueta não vão a produção</span></span></code></pre></div>
 <p>(Os hashes do seu repositório serão diferentes.)</p>
 <h3 id="os-relatórios-de-cobertura">5.3 Os relatórios de cobertura</h3>
 <p><strong>Pelo Gitea:</strong> na página da execução do CI Java, em
@@ -2746,15 +2808,30 @@ extraia e abra <code>site/jacoco/index.html</code>. No CI Python,
 <code>relatorio-cobertura/index.html</code>.</p>
 <p><strong>Na sua máquina</strong> (se instalou JDK/Maven/Python), gere
 e sirva os relatórios:</p>
-<div class="sourceCode" id="cb28"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~/boletim/java   <span class="kw">&amp;&amp;</span> <span class="ex">mvn</span> <span class="at">-q</span> verify          <span class="co"># relatório em target/site/jacoco/</span></span>
-<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~/boletim/python <span class="kw">&amp;&amp;</span> <span class="ex">python3</span> <span class="at">-m</span> venv .venv <span class="kw">&amp;&amp;</span> <span class="ex">.venv/bin/pip</span> install <span class="at">-q</span> <span class="at">-r</span> requirements-dev.txt</span>
-<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="ex">.venv/bin/pytest</span> <span class="at">-q</span> <span class="at">-m</span> <span class="st">&quot;not integracao&quot;</span> <span class="at">--cov</span></span>
-<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a><span class="ex">.venv/bin/pytest</span> <span class="at">-q</span> <span class="at">-m</span> integracao <span class="at">--cov</span> <span class="at">--cov-append</span></span>
-<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a><span class="ex">.venv/bin/coverage</span> html <span class="at">-d</span> relatorio-cobertura</span>
-<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~/gqs-sandbox/class26/lab-gitea            <span class="co"># a pasta do docker-compose.yml</span></span>
-<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;BOLETIM_DIR=</span><span class="va">$HOME</span><span class="st">/boletim&quot;</span> <span class="op">&gt;&gt;</span> .env</span>
-<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> compose <span class="at">--profile</span> cobertura up <span class="at">-d</span></span></code></pre></div>
+<p><strong>Linux/macOS (bash):</strong></p>
+<div class="sourceCode" id="cb36"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~/boletim/java   <span class="kw">&amp;&amp;</span> <span class="ex">mvn</span> <span class="at">-q</span> verify          <span class="co"># relatório em target/site/jacoco/</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~/boletim/python <span class="kw">&amp;&amp;</span> <span class="ex">python3</span> <span class="at">-m</span> venv .venv <span class="kw">&amp;&amp;</span> <span class="ex">.venv/bin/pip</span> install <span class="at">-q</span> <span class="at">-r</span> requirements-dev.txt</span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a><span class="ex">.venv/bin/pytest</span> <span class="at">-q</span> <span class="at">-m</span> <span class="st">&quot;not integracao&quot;</span> <span class="at">--cov</span></span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a><span class="ex">.venv/bin/pytest</span> <span class="at">-q</span> <span class="at">-m</span> integracao <span class="at">--cov</span> <span class="at">--cov-append</span></span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a><span class="ex">.venv/bin/coverage</span> html <span class="at">-d</span> relatorio-cobertura</span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~/gqs-sandbox/class26/lab-gitea            <span class="co"># a pasta do docker-compose.yml</span></span>
+<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;BOLETIM_DIR=</span><span class="va">$HOME</span><span class="st">/boletim&quot;</span> <span class="op">&gt;&gt;</span> .env</span>
+<span id="cb36-9"><a href="#cb36-9" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> compose <span class="at">--profile</span> cobertura up <span class="at">-d</span></span></code></pre></div>
+<p><strong>Windows 11 (PowerShell)</strong> — no Windows o Python se
+chama <code>python</code> (ou <code>py</code>) e o venv fica em
+<code>.venv\Scripts</code>. O <code>.env</code> é gravado em UTF-8 e com
+<code>/</code> no caminho (o <code>&gt;&gt;</code> do PowerShell 5
+gravaria em UTF-16, que o Compose não lê):</p>
+<div class="sourceCode" id="cb37"><pre class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cd</span> <span class="va">$HOME</span>\boletim\java<span class="op">;</span> mvn <span class="op">-</span>q verify          <span class="co"># relatório em target\site\jacoco\</span></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cd</span> <span class="va">$HOME</span>\boletim\python<span class="op">;</span> python <span class="op">-</span>m venv <span class="op">.</span><span class="fu">venv</span><span class="op">;</span> <span class="op">.</span><span class="fu">venv</span>\Scripts\pip install <span class="op">-</span>q <span class="op">-</span>r requirements-dev<span class="op">.</span><span class="fu">txt</span></span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a><span class="op">.</span><span class="fu">venv</span>\Scripts\pytest <span class="op">-</span>q <span class="op">-</span>m <span class="st">&quot;not integracao&quot;</span> <span class="op">--</span>cov</span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a><span class="op">.</span><span class="fu">venv</span>\Scripts\pytest <span class="op">-</span>q <span class="op">-</span>m integracao <span class="op">--</span>cov <span class="op">--</span>cov-append</span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a><span class="op">.</span><span class="fu">venv</span>\Scripts\coverage html <span class="op">-</span>d relatorio-cobertura</span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a><span class="fu">cd</span> <span class="va">$HOME</span>\gqs-sandbox\class26\lab-gitea        <span class="co"># a pasta do docker-compose.yml</span></span>
+<span id="cb37-8"><a href="#cb37-8" aria-hidden="true" tabindex="-1"></a><span class="op">[</span>IO<span class="op">.</span><span class="fu">File</span><span class="op">]::</span>AppendAllText<span class="op">(</span><span class="st">&quot;</span><span class="va">$PWD</span><span class="st">\.env&quot;</span><span class="op">,</span> <span class="st">&quot;</span><span class="ch">`n</span><span class="st">BOLETIM_DIR=</span><span class="op">$(</span><span class="va">$HOME</span> <span class="op">-replace</span> <span class="st">&#39;\\&#39;</span><span class="op">,</span><span class="st">&#39;/&#39;</span><span class="op">)</span><span class="st">/boletim</span><span class="ch">`n</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb37-9"><a href="#cb37-9" aria-hidden="true" tabindex="-1"></a>docker compose <span class="op">--</span>profile cobertura up <span class="op">-</span>d</span></code></pre></div>
 <p>Abra <code>http://cobertura.localhost</code>. Em cada relatório, as
 linhas <strong>verdes</strong> foram executadas pelos testes; as
 <strong>vermelhas</strong>, não. Cobertura mede o que os testes
@@ -2781,12 +2858,21 @@ pode estar no repositório. A <code>INSTITUICAO</code>, que aparece no
 </ol>
 <blockquote>
 <p>Prefere a linha de comando? A API do Gitea faz o mesmo:</p>
-<div class="sourceCode" id="cb29"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-u</span> <span class="st">&#39;aluno:Troque-esta-senha!&#39;</span> <span class="at">-X</span> PUT <span class="at">-H</span> <span class="st">&#39;Content-Type: application/json&#39;</span> <span class="dt">\</span></span>
-<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>     <span class="at">-d</span> <span class="st">&#39;{&quot;data&quot;:&quot;segredo-do-gitea-123&quot;}&#39;</span> <span class="dt">\</span></span>
-<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>     http://gitea.localhost/api/v1/repos/aluno/boletim/actions/secrets/TOKEN_ADMIN</span>
-<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-u</span> <span class="st">&#39;aluno:Troque-esta-senha!&#39;</span> <span class="at">-X</span> POST <span class="at">-H</span> <span class="st">&#39;Content-Type: application/json&#39;</span> <span class="dt">\</span></span>
-<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>     <span class="at">-d</span> <span class="st">&#39;{&quot;value&quot;:&quot;Faculdade GQS&quot;}&#39;</span> <span class="dt">\</span></span>
-<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>     http://gitea.localhost/api/v1/repos/aluno/boletim/actions/variables/INSTITUICAO</span></code></pre></div>
+<div class="sourceCode" id="cb38"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-u</span> <span class="st">&#39;aluno:Troque-esta-senha!&#39;</span> <span class="at">-X</span> PUT <span class="at">-H</span> <span class="st">&#39;Content-Type: application/json&#39;</span> <span class="dt">\</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>     <span class="at">-d</span> <span class="st">&#39;{&quot;data&quot;:&quot;segredo-do-gitea-123&quot;}&#39;</span> <span class="dt">\</span></span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>     http://gitea.localhost/api/v1/repos/aluno/boletim/actions/secrets/TOKEN_ADMIN</span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-u</span> <span class="st">&#39;aluno:Troque-esta-senha!&#39;</span> <span class="at">-X</span> POST <span class="at">-H</span> <span class="st">&#39;Content-Type: application/json&#39;</span> <span class="dt">\</span></span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>     <span class="at">-d</span> <span class="st">&#39;{&quot;value&quot;:&quot;Faculdade GQS&quot;}&#39;</span> <span class="dt">\</span></span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a>     http://gitea.localhost/api/v1/repos/aluno/boletim/actions/variables/INSTITUICAO</span></code></pre></div>
+<p>No <strong>Windows 11 (PowerShell)</strong>, o JSON vai pela entrada
+padrão (<code>--data-binary &#39;@-&#39;</code>), o que evita o problema das
+aspas duplas em argumentos de programas externos:</p>
+<div class="sourceCode" id="cb39"><pre class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="st">&#39;{&quot;data&quot;:&quot;segredo-do-gitea-123&quot;}&#39;</span> <span class="op">|</span> <span class="fu">curl</span><span class="op">.</span><span class="fu">exe</span> <span class="op">-</span>u <span class="st">&#39;aluno:Troque-esta-senha!&#39;</span> <span class="op">-</span>X PUT `</span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>     <span class="op">-</span>H <span class="st">&#39;Content-Type: application/json&#39;</span> <span class="op">--</span>data-binary <span class="st">&#39;@-&#39;</span> `</span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>     http<span class="op">://</span>gitea<span class="op">.</span><span class="fu">localhost</span><span class="op">/</span>api<span class="op">/</span>v1<span class="op">/</span>repos<span class="op">/</span>aluno<span class="op">/</span>boletim<span class="op">/</span>actions<span class="op">/</span>secrets<span class="op">/</span>TOKEN_ADMIN</span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a><span class="st">&#39;{&quot;value&quot;:&quot;Faculdade GQS&quot;}&#39;</span> <span class="op">|</span> <span class="fu">curl</span><span class="op">.</span><span class="fu">exe</span> <span class="op">-</span>u <span class="st">&#39;aluno:Troque-esta-senha!&#39;</span> <span class="op">-</span>X POST `</span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>     <span class="op">-</span>H <span class="st">&#39;Content-Type: application/json&#39;</span> <span class="op">--</span>data-binary <span class="st">&#39;@-&#39;</span> `</span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a>     http<span class="op">://</span>gitea<span class="op">.</span><span class="fu">localhost</span><span class="op">/</span>api<span class="op">/</span>v1<span class="op">/</span>repos<span class="op">/</span>aluno<span class="op">/</span>boletim<span class="op">/</span>actions<span class="op">/</span>variables<span class="op">/</span>INSTITUICAO</span></code></pre></div>
 </blockquote>
 <p>Depois de salvo, o Gitea <strong>nunca mais mostra</strong> o valor
 do secret — só permite trocá-lo.</p>
@@ -2797,13 +2883,19 @@ versão: <strong>Actions</strong> → <strong>CI Java</strong> (na lista da
 esquerda) → <strong>Run workflow</strong> → <strong>Run
 workflow</strong>. Repita para o <strong>CI Python</strong>. (O
 <code>workflow_dispatch</code> dos dois YAMLs existe para isso.)</p>
-<div class="sourceCode" id="cb30"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-s</span> http://boletim-staging.localhost/api/health</span>
-<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="co"># {&quot;status&quot;:&quot;ok&quot;,&quot;versao&quot;:&quot;eee02b2&quot;,&quot;instituicao&quot;:&quot;Faculdade GQS&quot;}      &lt;- a variável chegou</span></span>
-<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-s</span> <span class="at">-o</span> /dev/null <span class="at">-w</span> <span class="st">&#39;%{http_code}\n&#39;</span> http://boletim-staging.localhost/api/admin/estatisticas</span>
-<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 401                                                                   &lt;- sem token, recusado</span></span>
-<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-s</span> <span class="at">-H</span> <span class="st">&#39;X-Admin-Token: segredo-do-gitea-123&#39;</span> http://boletim-staging.localhost/api/admin/estatisticas</span>
-<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a><span class="co"># {&quot;boletinsCalculados&quot;:5,&quot;versao&quot;:&quot;eee02b2&quot;}                           &lt;- com token, aceito</span></span></code></pre></div>
+<p><strong>Linux/macOS (bash):</strong></p>
+<div class="sourceCode" id="cb40"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-s</span> http://boletim-staging.localhost/api/health</span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a><span class="co"># {&quot;status&quot;:&quot;ok&quot;,&quot;versao&quot;:&quot;eee02b2&quot;,&quot;instituicao&quot;:&quot;Faculdade GQS&quot;}      &lt;- a variável chegou</span></span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-s</span> <span class="at">-o</span> /dev/null <span class="at">-w</span> <span class="st">&#39;%{http_code}\n&#39;</span> http://boletim-staging.localhost/api/admin/estatisticas</span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 401                                                                   &lt;- sem token, recusado</span></span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-s</span> <span class="at">-H</span> <span class="st">&#39;X-Admin-Token: segredo-do-gitea-123&#39;</span> http://boletim-staging.localhost/api/admin/estatisticas</span>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a><span class="co"># {&quot;boletinsCalculados&quot;:5,&quot;versao&quot;:&quot;eee02b2&quot;}                           &lt;- com token, aceito</span></span></code></pre></div>
+<p><strong>Windows 11 (PowerShell)</strong> — <code>NUL</code> faz o
+papel do <code>/dev/null</code>:</p>
+<div class="sourceCode" id="cb41"><pre class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu">curl</span><span class="op">.</span><span class="fu">exe</span> <span class="op">-</span>s http<span class="op">://</span>boletim-staging<span class="op">.</span><span class="fu">localhost</span><span class="op">/</span>api<span class="op">/</span>health</span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a><span class="fu">curl</span><span class="op">.</span><span class="fu">exe</span> <span class="op">-</span>s <span class="op">-</span>o NUL <span class="op">-</span>w <span class="st">&#39;%{http_code}\n&#39;</span> http<span class="op">://</span>boletim-staging<span class="op">.</span><span class="fu">localhost</span><span class="op">/</span>api<span class="op">/</span>admin<span class="op">/</span>estatisticas</span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a><span class="fu">curl</span><span class="op">.</span><span class="fu">exe</span> <span class="op">-</span>s <span class="op">-</span>H <span class="st">&#39;X-Admin-Token: segredo-do-gitea-123&#39;</span> http<span class="op">://</span>boletim-staging<span class="op">.</span><span class="fu">localhost</span><span class="op">/</span>api<span class="op">/</span>admin<span class="op">/</span>estatisticas</span></code></pre></div>
 <p>Procure <code>segredo-do-gitea-123</code> nos logs do job <strong>3.
 Deploy em staging</strong>: não aparece. O Gitea mascara o valor
 (<code>***</code>), e o <code>deploy.sh</code> repassa o secret ao
@@ -2822,8 +2914,11 @@ produção (10 min)</h2>
 uma versão não homologada</h3>
 <p>Pegue o hash do <strong>primeiro</strong> commit (o do 1º push, que
 nunca passou):</p>
-<div class="sourceCode" id="cb31"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> log <span class="at">--oneline</span> <span class="at">--reverse</span> <span class="kw">|</span> <span class="fu">head</span> <span class="at">-1</span></span>
-<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="co"># a1b2c3d Boletim API: versao inicial</span></span></code></pre></div>
+<p><strong>Linux/macOS (bash):</strong></p>
+<div class="sourceCode" id="cb42"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> log <span class="at">--oneline</span> <span class="at">--reverse</span> <span class="kw">|</span> <span class="fu">head</span> <span class="at">-1</span></span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a><span class="co"># a1b2c3d Boletim API: versao inicial</span></span></code></pre></div>
+<p><strong>Windows 11 (PowerShell):</strong></p>
+<div class="sourceCode" id="cb43"><pre class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>git log <span class="op">--</span>oneline <span class="op">--</span>reverse <span class="op">|</span> <span class="fu">Select-Object</span> <span class="op">-</span>First <span class="dv">1</span></span></code></pre></div>
 <ol type="1">
 <li>Aba <strong>Actions</strong> → <strong>Promover para
 producao</strong> na lista da esquerda → <strong>Run
@@ -2850,8 +2945,11 @@ homologada</h3>
 <p>Repita com a versão do último commit
 (<code>git rev-parse --short=7 HEAD</code>) e <code>java</code>. O job
 termina em poucos segundos:</p>
-<div class="sourceCode" id="cb33"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-s</span> http://boletim.localhost/api/health</span>
-<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="co"># {&quot;status&quot;:&quot;ok&quot;,&quot;versao&quot;:&quot;eee02b2&quot;,&quot;instituicao&quot;:&quot;Faculdade GQS&quot;}</span></span></code></pre></div>
+<p><strong>Linux/macOS (bash):</strong></p>
+<div class="sourceCode" id="cb45"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-s</span> http://boletim.localhost/api/health</span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a><span class="co"># {&quot;status&quot;:&quot;ok&quot;,&quot;versao&quot;:&quot;eee02b2&quot;,&quot;instituicao&quot;:&quot;Faculdade GQS&quot;}</span></span></code></pre></div>
+<p><strong>Windows 11 (PowerShell):</strong></p>
+<div class="sourceCode" id="cb46"><pre class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">curl</span><span class="op">.</span><span class="fu">exe</span> <span class="op">-</span>s http<span class="op">://</span>boletim<span class="op">.</span><span class="fu">localhost</span><span class="op">/</span>api<span class="op">/</span>health</span></code></pre></div>
 <p>Agora a <strong>Boletim em produção</strong> responde em
 <code>http://boletim.localhost</code>, com a mesma imagem que passou nos
 testes de staging — <strong>o artefato é construído uma vez e
@@ -2870,10 +2968,16 @@ cobertura em ação (10 min)</h2>
 testes</strong>? Simule: o arquivo <code>exercicios/historico.py</code>
 (e <code>Historico.java</code>) tem ~20 linhas de lógica que nenhum
 teste executa.</p>
-<div class="sourceCode" id="cb34"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cp</span> ~/gqs-sandbox/class26/lab-gitea/exercicios/historico.py   ~/boletim/python/boletim/</span>
-<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cp</span> ~/gqs-sandbox/class26/lab-gitea/exercicios/Historico.java ~/boletim/java/src/main/java/br/edu/gqs/boletim/</span>
-<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~/boletim</span>
-<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> add . <span class="kw">&amp;&amp;</span> <span class="fu">git</span> commit <span class="at">-m</span> <span class="st">&quot;Adiciona historico do aluno (sem testes)&quot;</span> <span class="kw">&amp;&amp;</span> <span class="fu">git</span> push</span></code></pre></div>
+<p><strong>Linux/macOS (bash):</strong></p>
+<div class="sourceCode" id="cb47"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cp</span> ~/gqs-sandbox/class26/lab-gitea/exercicios/historico.py   ~/boletim/python/boletim/</span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cp</span> ~/gqs-sandbox/class26/lab-gitea/exercicios/Historico.java ~/boletim/java/src/main/java/br/edu/gqs/boletim/</span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~/boletim</span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> add . <span class="kw">&amp;&amp;</span> <span class="fu">git</span> commit <span class="at">-m</span> <span class="st">&quot;Adiciona historico do aluno (sem testes)&quot;</span> <span class="kw">&amp;&amp;</span> <span class="fu">git</span> push</span></code></pre></div>
+<p><strong>Windows 11 (PowerShell):</strong></p>
+<div class="sourceCode" id="cb48"><pre class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="fu">Copy-Item</span> <span class="va">$HOME</span>\gqs-sandbox\class26\lab-gitea\exercicios\historico<span class="op">.</span><span class="fu">py</span>   <span class="va">$HOME</span>\boletim\python\boletim\</span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a><span class="fu">Copy-Item</span> <span class="va">$HOME</span>\gqs-sandbox\class26\lab-gitea\exercicios\Historico<span class="op">.</span><span class="fu">java</span> <span class="va">$HOME</span>\boletim\java\src\main\java\br\edu\gqs\boletim\</span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cd</span> <span class="va">$HOME</span>\boletim</span>
+<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a>git add <span class="op">.;</span> git commit <span class="op">-</span>m <span class="st">&quot;Adiciona historico do aluno (sem testes)&quot;</span><span class="op">;</span> git push</span></code></pre></div>
 <p>Os dois pipelines <strong>falham</strong> — com todos os testes
 verdes:</p>
 <pre class="text"><code># Java (passo mvn verify, JDK 21 e 17)
@@ -2890,14 +2994,18 @@ Coverage failure: total of 73 is less than fail-under=80</code></pre>
 testado</strong>. Para liberar, escreva testes para
 <code>Historico</code>/<code>historico_do_aluno</code> (um unitário já
 resolve) ou apague os arquivos:</p>
-<div class="sourceCode" id="cb36"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> revert HEAD <span class="at">--no-edit</span> <span class="kw">&amp;&amp;</span> <span class="fu">git</span> push</span></code></pre></div>
+<p><strong>Linux/macOS (bash):</strong></p>
+<div class="sourceCode" id="cb50"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> revert HEAD <span class="at">--no-edit</span> <span class="kw">&amp;&amp;</span> <span class="fu">git</span> push</span></code></pre></div>
+<p><strong>Windows 11 (PowerShell):</strong></p>
+<div class="sourceCode" id="cb51"><pre class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>git revert HEAD <span class="op">--</span>no-edit<span class="op">;</span> git push</span></code></pre></div>
 <hr />
 <h2 id="etapa-9-pull-request-validar-sem-publicar-10-min">Etapa 9 — Pull
 request: validar sem publicar (10 min)</h2>
-<div class="sourceCode" id="cb37"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> checkout <span class="at">-b</span> feature/mensagem-clara</span>
-<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="co"># edite uma mensagem de erro em python/boletim/calculadora.py (ex.: &quot;Informe de 1 a 4 notas&quot;)</span></span>
-<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> commit <span class="at">-am</span> <span class="st">&quot;Mensagem mais clara&quot;</span></span>
-<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> push <span class="at">-u</span> origin feature/mensagem-clara</span></code></pre></div>
+<p><strong>Linux, macOS e Windows 11</strong> (mesmos comandos):</p>
+<div class="sourceCode" id="cb52"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> checkout <span class="at">-b</span> feature/mensagem-clara</span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a><span class="co"># edite uma mensagem de erro em python/boletim/calculadora.py (ex.: &quot;Informe de 1 a 4 notas&quot;)</span></span>
+<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> commit <span class="at">-am</span> <span class="st">&quot;Mensagem mais clara&quot;</span></span>
+<span id="cb52-4"><a href="#cb52-4" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> push <span class="at">-u</span> origin feature/mensagem-clara</span></code></pre></div>
 <p>No Gitea, abra o link que o <code>git push</code> imprime (<em>Create
 a new pull request</em>) e crie o PR para <code>main</code>. Na aba
 <strong>Actions</strong> aparece uma execução do <strong>CI
@@ -2938,10 +3046,17 @@ Check</em> e marque os jobs <code>CI Python / 1. Testes ...</code> e
 <hr />
 <h2 id="etapa-10-encerrar-o-ambiente">Etapa 10 — Encerrar o
 ambiente</h2>
-<div class="sourceCode" id="cb38"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~/gqs-sandbox/class26/lab-gitea</span>
-<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a><span class="ex">./scripts/limpar-ambientes.sh</span>        <span class="co"># containers de staging/produção e imagens gqs26g/*</span></span>
-<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> compose <span class="at">--profile</span> cobertura down</span>
-<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> compose down <span class="at">-v</span>               <span class="co"># -v apaga também o Gitea e o cache do runner</span></span></code></pre></div>
+<p><strong>Linux/macOS (bash):</strong></p>
+<div class="sourceCode" id="cb53"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~/gqs-sandbox/class26/lab-gitea</span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a><span class="ex">./scripts/limpar-ambientes.sh</span>        <span class="co"># containers de staging/produção e imagens gqs26g/*</span></span>
+<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> compose <span class="at">--profile</span> cobertura down</span>
+<span id="cb53-4"><a href="#cb53-4" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> compose down <span class="at">-v</span>               <span class="co"># -v apaga também o Gitea e o cache do runner</span></span></code></pre></div>
+<p><strong>Windows 11 (PowerShell)</strong> — o script <code>.sh</code>
+roda no bash que vem com o Git for Windows:</p>
+<div class="sourceCode" id="cb54"><pre class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cd</span> <span class="va">$HOME</span>\gqs-sandbox\class26\lab-gitea</span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a><span class="op">&amp;</span> <span class="st">&quot;</span><span class="va">$env</span><span class="op">:</span><span class="va">ProgramFiles</span><span class="st">\Git\bin\bash.exe&quot;</span> scripts<span class="op">/</span>limpar-ambientes<span class="op">.</span><span class="fu">sh</span>   <span class="co"># containers de staging/produção e imagens gqs26g/*</span></span>
+<span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a>docker compose <span class="op">--</span>profile cobertura down</span>
+<span id="cb54-4"><a href="#cb54-4" aria-hidden="true" tabindex="-1"></a>docker compose down <span class="op">-</span>v               <span class="co"># -v apaga também o Gitea e o cache do runner</span></span></code></pre></div>
 <p><code>docker compose down</code> (sem <code>-v</code>) preserva
 repositórios, usuário e histórico do Gitea para a próxima aula.</p>
 <hr />
@@ -3007,6 +3122,38 @@ troque <code>HTTP_PORT</code> no <code>.env</code></td>
 <td>quem controla o runner controla o Docker da máquina (equivale a ser
 root). Aceitável num laboratório; em produção use runner dedicado e
 isolado</td>
+</tr>
+<tr>
+<td>Windows: runner reiniciando com
+<code>exec ... entrypoint.sh: no such file or directory</code> ou
+<code>$&#39;\r&#39;: command not found</code></td>
+<td>os <code>.sh</code> foram baixados com fim de linha CRLF:
+<code>git pull</code> no <code>gqs-sandbox</code> (o
+<code>.gitattributes</code> força LF) e
+<code>docker compose up -d --build</code></td>
+</tr>
+<tr>
+<td>Windows: <code>curl</code> responde com um objeto do PowerShell ou
+erro de parâmetro</td>
+<td>use <code>curl.exe</code> (no PowerShell 5, <code>curl</code> é
+apelido de <code>Invoke-WebRequest</code>)</td>
+</tr>
+<tr>
+<td>Windows: <code>&amp;&amp;</code> dá erro <em>“não é um separador de
+instrução válido”</em></td>
+<td>o PowerShell 5 não aceita <code>&amp;&amp;</code>: use os blocos
+<strong>Windows 11 (PowerShell)</strong>, que separam com
+<code>;</code></td>
+</tr>
+<tr>
+<td>Windows: <code>bash.exe</code> não encontrado</td>
+<td>o Git for Windows foi instalado em outra pasta: rode o script pelo
+<strong>Git Bash</strong> (<code>bash scripts/...</code>)</td>
+</tr>
+<tr>
+<td>Windows: <code>.env</code> ignorado ou com caracteres estranhos</td>
+<td>o arquivo foi salvo em UTF-16: salve-o como UTF-8 no Bloco de Notas
+(<em>Salvar como → Codificação</em>)</td>
 </tr>
 </tbody>
 </table>

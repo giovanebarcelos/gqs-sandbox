@@ -1,0 +1,2 @@
+# Scripts shell sempre com fim de linha LF (no Windows, CRLF quebra o bash e os entrypoints dos containers)
+*.sh text eol=lf

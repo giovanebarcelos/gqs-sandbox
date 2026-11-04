@@ -115,7 +115,7 @@ Esse teste passa **mesmo com a regra errada** — de propósito: ele só verific
 
 ### 1.3 O que olhar no `ci-java.yml`
 
-- **`paths:`** — só dispara quando muda `java/**`, `bruno/**` ou os próprios YAMLs.
+- **`paths:`** — no push da `main`, só dispara quando muda `java/**`, `bruno/**` ou os próprios YAMLs. Em `pull_request` não há filtro, de propósito: os testes são checks obrigatórios (Etapa 6) e precisam rodar em todo PR.
 - **`permissions: contents: read`** — menor privilégio para o `GITHUB_TOKEN`.
 - **`concurrency` + `cancel-in-progress`** — push novo cancela a execução antiga.
 - **`strategy.matrix.java: ["17","21"]`** + **`fail-fast: false`** — um job por JDK, e a outra versão termina mesmo se uma falhar.
@@ -321,7 +321,7 @@ git commit -am "Mensagem mais clara"; git push -u origin feature/mensagem-clara
 gh pr create --fill
 ```
 
-O botão **Merge** fica **bloqueado** (*Required statuses must pass*) até os dois jobs ficarem verdes. Armadilha clássica: com `paths:` no workflow, um check obrigatório que não rodou fica *Expected — Waiting for status* e bloqueia o merge; num repositório real, remova o `paths:` do workflow exigido. Com os checks verdes, faça o merge.
+O botão **Merge** fica **bloqueado** (*Required statuses must pass*) até os dois jobs ficarem verdes. Armadilha clássica que este lab evita: com `paths:` no `pull_request`, um PR que não toca `java/` (um *bump* do Dependabot no `runner/`, por exemplo) nunca reportaria o check obrigatório, que ficaria *Expected — Waiting for status* e bloquearia o merge para sempre; por isso o filtro fica só no `push`. Com os checks verdes, faça o merge.
 
 ---
 
@@ -374,15 +374,19 @@ curl.exe -s http://boletim.localhost/api/health
 
 ```bash
 docker compose --profile runner up -d --build
-docker logs gqs26_runner | tail -3      # ... Listening for Jobs
+sleep 20                                # o registro leva alguns segundos
+docker logs gqs26_runner 2>&1 | grep -E 'Connected to GitHub|Listening for Jobs' | grep -v RUNNER
 ```
 
 **Windows 11 (PowerShell):**
 
 ```powershell
 docker compose --profile runner up -d --build
-docker logs --tail 3 gqs26_runner       # ... Listening for Jobs
+Start-Sleep 20                          # o registro leva alguns segundos
+docker logs gqs26_runner 2>&1 | Select-String 'Connected to GitHub|Listening for Jobs' | Select-String -NotMatch 'RUNNER'
 ```
+
+O log do runner é verboso (linhas `[RUNNER ... INFO ...]`); o filtro mostra só `√ Connected to GitHub` e `Listening for Jobs`.
 
 Em *Runners* o `gqs26-runner` aparece **Idle** com o rótulo `gqs26`.
 
@@ -445,7 +449,7 @@ O secret não aparece nos logs (`***`). Em **Packages** a imagem está publicada
 | **SCA** | Dependabot (`dependabot.yml`: Maven, GitHub Actions, Docker) | *Pull requests* "Bump ..." e *Security → Dependabot* |
 | **Secret scanning** | grátis em repositório público | *Security → Secret scanning* |
 
-Os PRs do Dependabot disparam o **mesmo CI**, e a branch protection só deixa mesclar se estiver verde. (Em repositório **privado**, o CodeQL exige GitHub Advanced Security e o job falha com *"Code scanning is not enabled"* — é esperado.)
+Os PRs do Dependabot disparam o **mesmo CI**, e a branch protection só deixa mesclar se estiver verde. Eles são abertos logo no 1º push, sobre o código com defeitos: se estiverem vermelhos, comente `@dependabot rebase` para refazê-los sobre a `main` corrigida — e não mescle os que continuarem falhando (ex.: Spring Boot 4). (Em repositório **privado**, o CodeQL exige GitHub Advanced Security e o job falha com *"Code scanning is not enabled"* — é esperado.)
 
 **Encerrar:**
 
@@ -472,11 +476,12 @@ E **remova o runner** em *Settings → Actions → Runners → … → Remove ru
 | Sintoma | Causa e solução |
 |---|---|
 | Workflow não aparece | precisa estar em `.github/workflows/` com `.yml`; confira a indentação |
-| Pipeline não dispara | filtro `paths:` não casou; use **Run workflow** |
+| Pipeline não dispara num push na `main` | filtro `paths:` do `push` não casou; use **Run workflow** |
 | Job `deploy` fica Queued | nenhum runner com o rótulo `gqs26` online: `docker logs gqs26_runner` |
 | Token do runner expirou (`NotFound`) | vale 1 hora e é de uso único: gere outro e `docker compose --profile runner up -d --force-recreate` |
 | `denied` ao baixar do GHCR | pacote sem vínculo com o repositório ou sem `packages: read` |
-| Merge bloqueado em *Expected* | check obrigatório que o `paths:` impediu de rodar |
+| Merge bloqueado em *Expected* | check obrigatório que não rodou no PR (`paths:` recolocado no `pull_request` ou job renomeado) |
+| PRs do Dependabot vermelhos logo no início | abertos sobre o código com defeitos: comente `@dependabot rebase` |
 | Dois labs ao mesmo tempo | todos usam a porta 80: `docker compose down` num deles ou mude `HTTP_PORT` |
 | `docker.sock` no runner | equivale a dar root da máquina ao runner: aceitável em laboratório, não em produção |
 | Windows: runner reiniciando com `exec /entrypoint.sh: no such file or directory` ou `$'\r': command not found` | os `.sh` foram baixados com fim de linha CRLF: `git pull` no `gqs-sandbox` (o `.gitattributes` força LF), copie de novo e rode `docker compose --profile runner up -d --build` |

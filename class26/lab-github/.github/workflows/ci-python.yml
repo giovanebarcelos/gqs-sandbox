@@ -16,14 +16,12 @@ on:
       - ".github/workflows/ci-python.yml"
       - ".github/workflows/testes-api.yml"
       - ".github/actions/**"
+  # Sem "paths:" no pull_request, de proposito: os jobs de teste sao checks
+  # OBRIGATORIOS do ruleset da main. Com filtro, um PR que nao toca este
+  # projeto nunca reportaria o check e ficaria bloqueado para sempre
+  # ("Expected - Waiting for status to be reported").
   pull_request:
     branches: [main]
-    paths:
-      - "python/**"
-      - "bruno/**"
-      - ".github/workflows/ci-python.yml"
-      - ".github/workflows/testes-api.yml"
-      - ".github/actions/**"
   workflow_dispatch:
 
 permissions:

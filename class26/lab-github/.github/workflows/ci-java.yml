@@ -5,7 +5,8 @@
 #               JaCoCo com gate de 80%)
 #   testes-api  workflow reutilizavel testes-api.yml: imagem + Bruno
 #
-# So' dispara quando muda algo que afeta o Java (paths).
+# No push da main so' dispara quando muda algo que afeta o Java (paths);
+# em pull request roda sempre (veja o comentario em on.pull_request).
 # =============================================================================
 name: CI Java
 
@@ -18,14 +19,12 @@ on:
       - ".github/workflows/ci-java.yml"
       - ".github/workflows/testes-api.yml"
       - ".github/actions/**"
+  # Sem "paths:" no pull_request, de proposito: os jobs de teste sao checks
+  # OBRIGATORIOS do ruleset da main. Com filtro, um PR que nao toca este
+  # projeto nunca reportaria o check e ficaria bloqueado para sempre
+  # ("Expected - Waiting for status to be reported").
   pull_request:
     branches: [main]
-    paths:
-      - "java/**"
-      - "bruno/**"
-      - ".github/workflows/ci-java.yml"
-      - ".github/workflows/testes-api.yml"
-      - ".github/actions/**"
   workflow_dispatch:
 
 # Menor privilegio: o GITHUB_TOKEN deste workflow so' le o repositorio.

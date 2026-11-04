@@ -2086,8 +2086,11 @@ rodá-lo <strong>depois</strong> dos unitários (que rodam no
 <h3 id="o-que-olhar-no-ci-java.yml">1.3 O que olhar no
 <code>ci-java.yml</code></h3>
 <ul>
-<li><strong><code>paths:</code></strong> — só dispara quando muda
-<code>java/**</code>, <code>bruno/**</code> ou os próprios YAMLs.</li>
+<li><strong><code>paths:</code></strong> — no push da <code>main</code>,
+só dispara quando muda <code>java/**</code>, <code>bruno/**</code> ou os
+próprios YAMLs. Em <code>pull_request</code> não há filtro, de
+propósito: os testes são checks obrigatórios (Etapa 6) e precisam rodar
+em todo PR.</li>
 <li><strong><code>permissions: contents: read</code></strong> — menor
 privilégio para o <code>GITHUB_TOKEN</code>.</li>
 <li><strong><code>concurrency</code> +
@@ -2284,10 +2287,12 @@ marque <strong>Require a pull request before merging</strong> e
 <span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>gh pr create <span class="op">--</span>fill</span></code></pre></div>
 <p>O botão <strong>Merge</strong> fica <strong>bloqueado</strong>
 (<em>Required statuses must pass</em>) até os dois jobs ficarem verdes.
-Armadilha clássica: com <code>paths:</code> no workflow, um check
-obrigatório que não rodou fica <em>Expected — Waiting for status</em> e
-bloqueia o merge; num repositório real, remova o <code>paths:</code> do
-workflow exigido. Com os checks verdes, faça o merge.</p>
+Armadilha clássica que este lab evita: com <code>paths:</code> no
+<code>pull_request</code>, um PR que não toca <code>java/</code> (um
+<em>bump</em> do Dependabot no <code>runner/</code>, por exemplo) nunca
+reportaria o check obrigatório, que ficaria <em>Expected — Waiting for
+status</em> e bloquearia o merge para sempre; por isso o filtro fica só
+no <code>push</code>. Com os checks verdes, faça o merge.</p>
 <hr />
 <h2 id="etapa-7-environment-secret-e-variável-10-min">Etapa 7 —
 Environment, secret e variável (10 min)</h2>
@@ -2352,10 +2357,16 @@ valor depois de <code>--token</code>; vale 1 hora, uso único).</li>
 </ol>
 <p><strong>Linux/macOS (bash):</strong></p>
 <div class="sourceCode" id="cb25"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> compose <span class="at">--profile</span> runner up <span class="at">-d</span> <span class="at">--build</span></span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> logs gqs26_runner <span class="kw">|</span> <span class="fu">tail</span> <span class="at">-3</span>      <span class="co"># ... Listening for Jobs</span></span></code></pre></div>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sleep</span> 20                                <span class="co"># o registro leva alguns segundos</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> logs gqs26_runner <span class="dv">2</span><span class="op">&gt;&amp;</span><span class="dv">1</span> <span class="kw">|</span> <span class="fu">grep</span> <span class="at">-E</span> <span class="st">&#39;Connected to GitHub|Listening for Jobs&#39;</span> <span class="kw">|</span> <span class="fu">grep</span> <span class="at">-v</span> RUNNER</span></code></pre></div>
 <p><strong>Windows 11 (PowerShell):</strong></p>
 <div class="sourceCode" id="cb26"><pre class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>docker compose <span class="op">--</span>profile runner up <span class="op">-</span>d <span class="op">--</span>build</span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>docker logs <span class="op">--</span>tail <span class="dv">3</span> gqs26_runner       <span class="co"># ... Listening for Jobs</span></span></code></pre></div>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="fu">Start-Sleep</span> <span class="dv">20</span>                          <span class="co"># o registro leva alguns segundos</span></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>docker logs gqs26_runner <span class="dv">2</span><span class="op">&gt;&amp;</span><span class="dv">1</span> <span class="op">|</span> <span class="fu">Select-String</span> <span class="st">&#39;Connected to GitHub|Listening for Jobs&#39;</span> <span class="op">|</span> <span class="fu">Select-String</span> <span class="op">-NotMatch</span> <span class="st">&#39;RUNNER&#39;</span></span></code></pre></div>
+<p>O log do runner é verboso (linhas
+<code>[RUNNER ... INFO ...]</code>); o filtro mostra só
+<code>√ Connected to GitHub</code> e
+<code>Listening for Jobs</code>.</p>
 <p>Em <em>Runners</em> o <code>gqs26-runner</code> aparece
 <strong>Idle</strong> com o rótulo <code>gqs26</code>.</p>
 <hr />
@@ -2458,9 +2469,13 @@ Dependabot</em></td>
 </tbody>
 </table>
 <p>Os PRs do Dependabot disparam o <strong>mesmo CI</strong>, e a branch
-protection só deixa mesclar se estiver verde. (Em repositório
-<strong>privado</strong>, o CodeQL exige GitHub Advanced Security e o
-job falha com <em>“Code scanning is not enabled”</em> — é esperado.)</p>
+protection só deixa mesclar se estiver verde. Eles são abertos logo no
+1º push, sobre o código com defeitos: se estiverem vermelhos, comente
+<code>@dependabot rebase</code> para refazê-los sobre a
+<code>main</code> corrigida — e não mescle os que continuarem falhando
+(ex.: Spring Boot 4). (Em repositório <strong>privado</strong>, o CodeQL
+exige GitHub Advanced Security e o job falha com <em>“Code scanning is
+not enabled”</em> — é esperado.)</p>
 <p><strong>Encerrar:</strong></p>
 <p><strong>Linux/macOS (bash):</strong></p>
 <div class="sourceCode" id="cb31"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~/gqs26-boletim-ci</span>
@@ -2490,9 +2505,9 @@ Runners → … → Remove runner</em>.</p>
 <code>.yml</code>; confira a indentação</td>
 </tr>
 <tr>
-<td>Pipeline não dispara</td>
-<td>filtro <code>paths:</code> não casou; use <strong>Run
-workflow</strong></td>
+<td>Pipeline não dispara num push na <code>main</code></td>
+<td>filtro <code>paths:</code> do <code>push</code> não casou; use
+<strong>Run workflow</strong></td>
 </tr>
 <tr>
 <td>Job <code>deploy</code> fica Queued</td>
@@ -2511,7 +2526,13 @@ workflow</strong></td>
 </tr>
 <tr>
 <td>Merge bloqueado em <em>Expected</em></td>
-<td>check obrigatório que o <code>paths:</code> impediu de rodar</td>
+<td>check obrigatório que não rodou no PR (<code>paths:</code>
+recolocado no <code>pull_request</code> ou job renomeado)</td>
+</tr>
+<tr>
+<td>PRs do Dependabot vermelhos logo no início</td>
+<td>abertos sobre o código com defeitos: comente
+<code>@dependabot rebase</code></td>
 </tr>
 <tr>
 <td>Dois labs ao mesmo tempo</td>

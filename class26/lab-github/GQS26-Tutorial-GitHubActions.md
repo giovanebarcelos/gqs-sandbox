@@ -230,7 +230,7 @@ Esse teste passa **mesmo que a regra de negócio esteja errada** — e é de pro
 
 Abra `.github/workflows/ci-java.yml` e procure estes pontos:
 
-- **`on.push.paths` / `on.pull_request.paths`** — o pipeline Java só roda quando muda `java/**`, `bruno/**` ou os próprios YAMLs. Mudou só o Python? O Java nem dispara.
+- **`on.push.paths`** — no push da `main`, o pipeline Java só roda quando muda `java/**`, `bruno/**` ou os próprios YAMLs. Mudou só o Python? O Java nem dispara. **Em `pull_request` não há `paths:`, de propósito:** os jobs de teste são checks obrigatórios da `main` (Etapa 6), e um check filtrado nunca seria reportado — o PR ficaria bloqueado para sempre.
 - **`permissions: contents: read`** — **menor privilégio**: o `GITHUB_TOKEN` só lê o repositório (Slide 16).
 - **`concurrency` + `cancel-in-progress: true`** — um push novo na mesma branch cancela a execução antiga, que já não importa.
 - **`timeout-minutes`** — nenhum job fica preso indefinidamente consumindo minutos.
@@ -243,7 +243,7 @@ Abra `.github/workflows/ci-java.yml` e procure estes pontos:
 
 E o `.github/actions/bruno/action.yml` é uma **composite action**: reaproveita um conjunto de **steps** (instalar o Node, instalar o Bruno CLI, `bru run`). A diferença que o Slide 10 explica: o *workflow reutilizável* reaproveita **jobs** inteiros; a *composite action* reaproveita **steps** dentro de um job.
 
-> **Ponto de atenção sobre as versões das actions:** os YAMLs usam versões fixas (`actions/checkout@v7`, `actions/setup-java@v6`, ...). Fixar a versão evita que uma atualização inesperada quebre o pipeline (Slide 16); o Dependabot, na Etapa 9, abre PRs para atualizá-las com segurança.
+> **Ponto de atenção sobre as versões das actions:** os YAMLs usam versões fixas (`actions/checkout@v7`, `actions/setup-java@v6`, ...). Fixar a versão evita que uma atualização inesperada quebre o pipeline (Slide 16); o Dependabot, na Etapa 10, abre PRs para atualizá-las com segurança.
 
 ### 1.4 (Opcional) Rodar os testes na sua máquina
 
@@ -589,9 +589,9 @@ git push -u origin feature/mensagem-clara
 gh pr create --fill                  # ou clique em "Compare & pull request" no site
 ```
 
-Na página do PR, a seção **Checks** lista os jobs rodando. O botão **Merge pull request** fica **bloqueado** (*"Required statuses must pass before merging"*) até os cinco jobs de teste ficarem verdes. Dos dois CIs, só o Python roda (mais o CodeQL): o commit só tocou `python/` e o filtro `paths:` do Java não casou.
+Na página do PR, a seção **Checks** lista os jobs rodando. O botão **Merge pull request** fica **bloqueado** (*"Required statuses must pass before merging"*) até os cinco jobs de teste ficarem verdes. Os **dois** CIs rodam (mais o CodeQL), embora o commit só tenha tocado `python/`: no `pull_request` os workflows não têm filtro `paths:`.
 
-> Os checks **obrigatórios** que não rodam por causa do `paths:` ficam como *Expected — Waiting for status to be reported* e bloqueiam o merge. É a armadilha clássica de combinar `paths:` com branch protection: para um repositório de verdade, remova o `paths:` dos workflows exigidos ou use um job "guarda-chuva" que sempre roda.
+> **Por que sem `paths:` no PR?** É a armadilha clássica de combinar `paths:` com checks obrigatórios: se o CI Java filtrasse por `java/**`, este PR nunca reportaria `Testes (Java 17)`/`(Java 21)`, que ficariam como *Expected — Waiting for status to be reported*, e o merge estaria **bloqueado para sempre** (rodar o CI pelo *Run workflow* não resolve: o check precisa vir do evento do PR). Os PRs do Dependabot, que mexem só em um dos lados, cairiam no mesmo problema. Por isso o `paths:` fica só no `push` da `main`. Alternativa em projetos grandes: um job "guarda-chuva" que sempre roda e é o único check exigido.
 
 Quando estiverem verdes, faça o merge. Agora sim os pipelines rodam no `main`.
 
@@ -674,18 +674,22 @@ RUNNER_TOKEN=cole-o-token-aqui
 
 ```bash
 docker compose --profile runner up -d --build
-docker logs gqs26_runner | tail -3
+sleep 20                             # o registro leva alguns segundos
+docker logs gqs26_runner 2>&1 | grep -E 'Connected to GitHub|runner version|Listening for Jobs' | grep -v RUNNER
 # √ Connected to GitHub
-# Current runner version: ...
-# Listening for Jobs
+# Current runner version: '2.3xx.x'
+# ...: Listening for Jobs
 ```
 
 **Windows 11 (PowerShell):**
 
 ```powershell
 docker compose --profile runner up -d --build
-docker logs --tail 3 gqs26_runner
+Start-Sleep 20                       # o registro leva alguns segundos
+docker logs gqs26_runner 2>&1 | Select-String 'Connected to GitHub|runner version|Listening for Jobs' | Select-String -NotMatch 'RUNNER'
 ```
+
+> O log do runner é verboso (linhas `[RUNNER ... INFO ...]`); por isso o filtro, em vez de só olhar as últimas linhas.
 
 Em **Settings → Actions → Runners** o `gqs26-runner` aparece **Idle**, com o rótulo `gqs26`. É esse rótulo que o `runs-on: [self-hosted, gqs26]` procura.
 
@@ -784,6 +788,8 @@ O Slide 17 diz que DevSecOps "espalha checagens de segurança em etapas já exis
 
 Experimente: no Dependabot, abra um PR *"Bump actions/..."*. Ele dispara o **mesmo CI** — e a branch protection da Etapa 6 só deixa mesclar se estiver verde. É o ciclo completo de manutenção automática.
 
+> **PRs do Dependabot vermelhos?** O Dependabot abre os PRs logo no 1º push, quando o código ainda tinha os defeitos 1 e 2 — eles herdam os testes quebrados. Comente `@dependabot rebase` no PR: ele refaz a branch sobre a `main` corrigida e o CI roda de novo. Alguns *bumps* grandes (ex.: Spring Boot 4, JDK 25 na imagem) podem falhar de verdade — é justamente para isso que o CI existe: **não mescle**.
+
 > **Repositório privado?** CodeQL e *secret scanning* exigem GitHub Advanced Security. Sem ele, o job `CodeQL` falha com *"Code scanning is not enabled"* — é esperado, não é erro do lab.
 
 ---
@@ -813,13 +819,14 @@ E, **no GitHub**, remova o runner que ficou registrado: **Settings → Actions �
 | Sintoma | Causa e solução |
 |---|---|
 | Workflow **não aparece** na aba Actions | o arquivo precisa estar em `.github/workflows/` e ter a extensão `.yml`/`.yaml`; confira a indentação (YAML) |
-| Pipeline **não dispara** num commit | o filtro `paths:` não casou. Use **Run workflow** (`workflow_dispatch`) |
+| Pipeline **não dispara** num push na `main` | o filtro `paths:` do `push` não casou. Use **Run workflow** (`workflow_dispatch`) |
 | `Invalid workflow file` | recuo errado (matriz mal indentada). O editor do site mostra a linha do erro |
 | Job `deploy` fica **Queued** para sempre | nenhum runner com o rótulo `gqs26` está online: veja `docker logs gqs26_runner` e **Settings → Actions → Runners** |
 | `Waiting for a runner to pick up this job` e o runner está Idle | o `runs-on` do YAML não bate com os rótulos do runner (`self-hosted` **e** `gqs26`) |
 | Token do runner **expirou** (`Http response code: NotFound`) | vale 1 hora e é de uso único: gere outro, atualize o `.env` e rode `docker compose --profile runner up -d --force-recreate` |
 | `denied` ao baixar a imagem do GHCR | pacote sem vínculo com o repositório ou `packages: read` ausente no job; veja a nota da Etapa 9.2 |
-| Merge bloqueado com *Expected — Waiting for status* | check obrigatório que o `paths:` impediu de rodar (Etapa 6.2) |
+| Merge bloqueado com *Expected — Waiting for status* | check obrigatório que não rodou no PR: alguém recolocou `paths:` no `pull_request` ou o nome do job mudou (Etapa 6.2) |
+| PRs do Dependabot vermelhos logo no início | foram abertos sobre o código com defeitos: comente `@dependabot rebase` (Etapa 10) |
 | Dois labs ao mesmo tempo | todos usam a porta 80: pare um (`docker compose down`) ou troque `HTTP_PORT` no `.env` |
 | `*.localhost` não abre | use Chrome, Edge ou Firefox; em outros, acrescente `127.0.0.1 boletim.localhost boletim-python.localhost traefik.localhost cobertura.localhost` ao `hosts` |
 | Segurança do `docker.sock` no runner | quem controla o runner controla o Docker da máquina (equivale a ser root). Aceitável num laboratório; em produção use runner dedicado e isolado |

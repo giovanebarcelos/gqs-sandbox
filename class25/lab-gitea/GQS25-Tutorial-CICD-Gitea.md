@@ -135,7 +135,9 @@ winget install -e --id Docker.DockerDesktop
 # opcionais: EclipseAdoptium.Temurin.21.JDK, Python.Python.3.12, OpenJS.NodeJS.LTS
 ```
 
-Abra o Docker Desktop e espere *Engine running*. Use o **Git Bash** como terminal: todos os comandos do tutorial rodam nele sem adaptação.
+Abra o Docker Desktop e espere *Engine running*.
+
+> **Linux × Windows 11:** daqui em diante, cada bloco de comandos aparece em duas versões — **Linux/macOS (bash)** e **Windows 11 (PowerShell)** — ou num bloco único, quando os comandos são idênticos nos dois. No Windows, abra o **Terminal → PowerShell** (não precisa ser administrador). Quem preferir o **Git Bash** pode usar os comandos do Linux.
 
 **macOS** (com [Homebrew](https://brew.sh)):
 
@@ -146,6 +148,8 @@ brew install git                     # opcionais: openjdk@21 maven python@3.12 n
 
 ### 0.2 Conferir
 
+**Linux, macOS e Windows 11** (mesmos comandos):
+
 ```bash
 git --version
 docker --version
@@ -155,7 +159,7 @@ docker run --rm hello-world
 
 ### 0.3 Identidade do Git
 
-O Gitea mostra o autor de cada commit; configure uma vez:
+O Gitea mostra o autor de cada commit; configure uma vez (**Linux, macOS e Windows 11**, mesmos comandos):
 
 ```bash
 git config --global user.name  "Seu Nome"
@@ -164,12 +168,25 @@ git config --global user.email "seu.email@exemplo.com"
 
 ### 0.4 Baixar o repositório
 
+O tutorial supõe o clone na sua pasta pessoal (`~/gqs-sandbox`; no Windows, `$HOME\gqs-sandbox`).
+
+**Linux/macOS (bash):**
+
 ```bash
+cd ~
 git clone https://github.com/giovanebarcelos/gqs-sandbox.git
 cd gqs-sandbox/class25/lab-gitea
 ```
 
-Já tem o repositório? `cd gqs-sandbox && git pull`.
+**Windows 11 (PowerShell):**
+
+```powershell
+cd $HOME
+git clone https://github.com/giovanebarcelos/gqs-sandbox.git
+cd gqs-sandbox\class25\lab-gitea
+```
+
+Já tem o repositório? `cd gqs-sandbox` e `git pull`.
 
 **As Etapas 1 e 2 são executadas dentro de `gqs-sandbox/class25/lab-gitea`.** A partir da Etapa 3 você trabalha numa **cópia** do projeto, fora do `gqs-sandbox` (a Etapa 3.1 explica por quê).
 
@@ -181,31 +198,55 @@ Já tem o repositório? `cd gqs-sandbox && git pull`.
 
 ### 1.1 Preparar o `.env`
 
+**Linux/macOS (bash):**
+
 ```bash
 cp .env.example .env
 openssl rand -hex 20                 # gera 40 caracteres hexadecimais
 ```
 
+**Windows 11 (PowerShell):**
+
+```powershell
+Copy-Item .env.example .env
+$b = New-Object byte[] 20; [Security.Cryptography.RandomNumberGenerator]::Create().GetBytes($b); -join ($b | ForEach-Object { $_.ToString('x2') })   # 40 caracteres hexadecimais
+notepad .env
+```
+
 Abra o `.env` e cole o valor gerado em `RUNNER_TOKEN`. É o segredo que o **runner** usa para se registrar no Gitea: o Gitea lê o mesmo valor ao subir, e o runner se apresenta com ele.
 
-> Sem `openssl` (Windows fora do Git Bash)? Qualquer sequência de 40 caracteres `0-9a-f` serve. **O `.env` não vai para o Git** — já está no `.gitignore`. Token em arquivo versionado é o anti-padrão do Slide 11.
+> Qualquer sequência de 40 caracteres `0-9a-f` serve. **O `.env` não vai para o Git** — já está no `.gitignore`. Token em arquivo versionado é o anti-padrão do Slide 11.
 
 ### 1.2 Verificar a porta 80
 
 O Traefik usa a porta 80 da sua máquina. Se ela estiver ocupada (outro servidor web, o lab da Aula 23B ou 24 ainda rodando), descomente `HTTP_PORT=8882` no `.env` e **acrescente `:8882` em todas as URLs** deste tutorial (`http://gitea.localhost:8882`, ...).
 
+**Linux/macOS (bash):**
+
 ```bash
-# Linux/macOS: algo já escuta na 80?
+# algo já escuta na 80?
 sudo lsof -i :80 || echo "porta 80 livre"
 ```
 
+**Windows 11 (PowerShell):**
+
+```powershell
+# algo já escuta na 80? (mostra o processo dono da porta)
+$c = Get-NetTCPConnection -LocalPort 80 -State Listen -ErrorAction SilentlyContinue
+if ($c) { $c | ForEach-Object { Get-Process -Id $_.OwningProcess } } else { "porta 80 livre" }
+```
+
 ### 1.3 Subir
+
+**Linux, macOS e Windows 11** (mesmo comando):
 
 ```bash
 docker compose up -d --build
 ```
 
 A primeira vez demora alguns minutos: o Docker monta a imagem do runner (`runner/Dockerfile`), que instala JDK 17, Maven, Python, Node, o Bruno CLI e o cliente Docker sobre o `act_runner` oficial.
+
+**Linux/macOS (bash):**
 
 ```bash
 docker compose ps
@@ -218,15 +259,32 @@ docker logs gqs25_runner | tail -3
 # ... runner: gqs25-runner, with version: v0.6.1, with labels: [gqs-runner], declare successfully
 ```
 
+**Windows 11 (PowerShell):**
+
+```powershell
+docker compose ps
+docker logs --tail 3 gqs25_runner
+```
+
 ### 1.4 Criar o seu usuário
 
 A tela de instalação do Gitea foi pulada (`INSTALL_LOCK`) e o cadastro público está desligado. Crie o administrador pela linha de comando — **troque a senha**:
+
+**Linux/macOS (bash)** — a `\` continua o comando na linha seguinte:
 
 ```bash
 docker exec -u git gqs25_gitea gitea admin user create --admin \
   --username aluno --email aluno@gqs.local \
   --password 'Troque-esta-senha!' --must-change-password=false
 # New user 'aluno' has been successfully created!
+```
+
+**Windows 11 (PowerShell)** — no PowerShell, quem continua a linha é a crase `` ` ``:
+
+```powershell
+docker exec -u git gqs25_gitea gitea admin user create --admin `
+  --username aluno --email aluno@gqs.local `
+  --password 'Troque-esta-senha!' --must-change-password=false
 ```
 
 > Pode usar outro nome de usuário: troque `aluno` também nas URLs dos `git remote` das próximas etapas.
@@ -291,7 +349,7 @@ E o segundo workflow, `promover-producao.yml`, tem gatilho **`workflow_dispatch`
 
 ### 2.3 (Opcional) Rodar os testes na sua máquina
 
-Boa prática do Slide 9 — *nunca commitar código com testes quebrados*:
+Boa prática do Slide 9 — *nunca commitar código com testes quebrados* (**Linux, macOS e Windows 11**, mesmo comando):
 
 ```bash
 mvn -f frete-java/pom.xml -q verify
@@ -308,6 +366,8 @@ Falhou? Ótimo: é o defeito 1. Faça o push assim mesmo — a Etapa 3 mostra o 
 
 O projeto `frete-java` vira um repositório **próprio**, separado do `gqs-sandbox`. Copie a pasta para fora do clone — um repositório Git dentro de outro confunde os dois:
 
+**Linux/macOS (bash):**
+
 ```bash
 cp -r frete-java ~/frete-java
 cd ~/frete-java
@@ -318,9 +378,21 @@ git remote add origin http://gitea.localhost/aluno/frete-java.git
 git push -u origin main
 ```
 
-O Git pede usuário e senha: `aluno` e a senha da Etapa 1.4. O repositório **não precisava existir**: o Gitea está configurado para criá-lo no primeiro push (`ENABLE_PUSH_CREATE_USER`).
+**Windows 11 (PowerShell):**
 
-> **De agora em diante, os comandos rodam em `~/frete-java`**, a menos que digam o contrário.
+```powershell
+Copy-Item -Recurse -Force frete-java $HOME\frete-java
+cd $HOME\frete-java
+git init -b main
+git add .
+git commit -m "API de frete: versao inicial"
+git remote add origin http://gitea.localhost/aluno/frete-java.git
+git push -u origin main
+```
+
+O Git pede usuário e senha (no Windows, numa janela do *Git Credential Manager*): `aluno` e a senha da Etapa 1.4. O repositório **não precisava existir**: o Gitea está configurado para criá-lo no primeiro push (`ENABLE_PUSH_CREATE_USER`).
+
+> **De agora em diante, os comandos rodam em `~/frete-java`** (no Windows, `$HOME\frete-java`), a menos que digam o contrário.
 
 ### 3.2 Acompanhar a execução
 
@@ -345,11 +417,20 @@ Na página da execução, em **Artifacts**, baixe `relatorios-java`: tem os rela
 
 ### 3.3 O que **não** aconteceu
 
+**Linux/macOS (bash):**
+
 ```bash
 curl -s http://frete-staging.localhost/api/health
 # 404 page not found        <- nenhum ambiente foi criado
 docker images gqs25/frete-java
 # (vazio)                   <- nenhuma imagem foi gerada
+```
+
+**Windows 11 (PowerShell)** — use sempre `curl.exe` (no PowerShell, `curl` sozinho pode ser apelido de `Invoke-WebRequest`):
+
+```powershell
+curl.exe -s http://frete-staging.localhost/api/health
+docker images gqs25/frete-java
 ```
 
 Isso é o **fail fast** do Slide 15: o defeito foi detectado em segundos, isolado ao commit que o causou, **antes** de existir qualquer artefato. Compare com o "antes do CI/CD" do Slide 6, onde quem descobre o bug é o cliente.
@@ -367,9 +448,19 @@ Isso é o **fail fast** do Slide 15: o defeito foi detectado em segundos, isolad
 +        boolean gratis = valorPedido.compareTo(LIMITE_FRETE_GRATIS) >= 0;
 ```
 
+**Linux/macOS (bash):**
+
 ```bash
 mvn -q verify                        # opcional: agora passa (15 testes, 0 falhas)
 git commit -am "Corrige frete gratis: a partir de R\$ 200,00 (>=)"
+git push
+```
+
+**Windows 11 (PowerShell)** — mensagem entre aspas simples, para o `$` não ser lido como variável:
+
+```powershell
+mvn -q verify                        # opcional: agora passa (15 testes, 0 falhas)
+git commit -am 'Corrige frete gratis: a partir de R$ 200,00 (>=)'
 git push
 ```
 
@@ -397,6 +488,8 @@ No log do job 4, passo **Bruno contra staging**:
 
 Confira você mesmo — staging está no ar, com a versão do seu commit:
 
+**Linux/macOS (bash):**
+
 ```bash
 git rev-parse --short=7 HEAD                         # a versão = 7 primeiros caracteres do commit
 curl -s http://frete-staging.localhost/api/health
@@ -405,6 +498,15 @@ curl -s -X POST http://frete-staging.localhost/api/frete \
      -H "Content-Type: application/json" \
      -d '{"regiao":"SUL","pesoKg":31,"valorPedido":100}'
 # {"timestamp":"...","status":500,"error":"Internal Server Error","path":"/api/frete"}
+```
+
+**Windows 11 (PowerShell)** — o JSON vai pela entrada padrão (`--data-binary '@-'`), o que evita o problema das aspas duplas em argumentos de programas externos:
+
+```powershell
+git rev-parse --short=7 HEAD                         # a versão = 7 primeiros caracteres do commit
+curl.exe -s http://frete-staging.localhost/api/health
+'{"regiao":"SUL","pesoKg":31,"valorPedido":100}' | curl.exe -s -X POST http://frete-staging.localhost/api/frete `
+     -H "Content-Type: application/json" --data-binary '@-'
 ```
 
 ### 4.3 Por que os testes unitários não pegaram?
@@ -452,6 +554,8 @@ E `http://frete.localhost` continua sem responder: **produção nunca recebeu um
 +public class FreteInvalidoException extends IllegalArgumentException {
 ```
 
+**Linux, macOS e Windows 11** (mesmos comandos):
+
 ```bash
 git commit -am "Corrige erro 500 com peso invalido: FreteInvalidoException vira 400"
 git push
@@ -466,6 +570,8 @@ Versao 6bac153 homologada. Para publicar em producao, rode o
 workflow 'Promover para producao' informando: 6bac153
 ```
 
+**Linux, macOS e Windows 11** (mesmo comando):
+
 ```bash
 docker images gqs25/frete-java --format '{{.Tag}}'
 # 6bac153-homologada        <- a "etiqueta" que libera a promoção
@@ -477,6 +583,8 @@ docker images gqs25/frete-java --format '{{.Tag}}'
 
 **Actions** → **Promover para producao** → **Run Workflow** → versão `6bac153` (a sua será outra) → **Run Workflow**. Em ~3 segundos:
 
+**Linux/macOS (bash):**
+
 ```bash
 curl -s http://frete.localhost/api/health
 # {"status":"ok","versao":"6bac153"}
@@ -484,6 +592,14 @@ curl -s -X POST http://frete.localhost/api/frete \
      -H "Content-Type: application/json" \
      -d '{"regiao":"SUL","pesoKg":31,"valorPedido":100}'
 # {"erro":"Peso deve ser maior que 0 e no maximo 30 kg"}
+```
+
+**Windows 11 (PowerShell):**
+
+```powershell
+curl.exe -s http://frete.localhost/api/health
+'{"regiao":"SUL","pesoKg":31,"valorPedido":100}' | curl.exe -s -X POST http://frete.localhost/api/frete `
+     -H "Content-Type: application/json" --data-binary '@-'
 ```
 
 Abra `http://traefik.localhost`: agora há rotas para `frete-staging.localhost` e `frete.localhost`, criadas pelo `deploy.sh` com *labels* no container — o Traefik descobre os containers novos sozinho.
@@ -500,9 +616,18 @@ O Slide 21 avisa: *`continue-on-error: true` no job de teste faz o pipeline fica
 
 Um colega "refatora" o cálculo e reintroduz o defeito 1. Para "destravar" o pipeline, liga o `continue-on-error`:
 
+**Linux (bash):**
+
 ```bash
 sed -i 's/compareTo(LIMITE_FRETE_GRATIS) >= 0/compareTo(LIMITE_FRETE_GRATIS) > 0/' \
     src/main/java/br/edu/gqs/frete/CalculadoraFrete.java
+```
+
+**Windows 11 (PowerShell)** — troca o texto e regrava o arquivo em UTF-8:
+
+```powershell
+$f = "$PWD\src\main\java\br\edu\gqs\frete\CalculadoraFrete.java"
+[IO.File]::WriteAllText($f, [IO.File]::ReadAllText($f).Replace('compareTo(LIMITE_FRETE_GRATIS) >= 0', 'compareTo(LIMITE_FRETE_GRATIS) > 0'))
 ```
 
 E em `.gitea/workflows/pipeline.yml`, no passo do Maven:
@@ -513,7 +638,9 @@ E em `.gitea/workflows/pipeline.yml`, no passo do Maven:
 +        continue-on-error: true
 ```
 
-> No macOS, o `sed -i` exige um argumento a mais: `sed -i '' 's/.../.../' arquivo`. Ou edite o arquivo à mão.
+> No macOS, o `sed -i` exige um argumento a mais: `sed -i '' 's/.../.../' arquivo`. Ou edite o arquivo à mão (vale para qualquer sistema).
+
+**Linux, macOS e Windows 11** (mesmos comandos):
 
 ```bash
 git commit -am "Refatora calculo do frete (e liga continue-on-error)"
@@ -539,6 +666,8 @@ Desta vez quem salvou foi a camada de cima: o teste de API **API04** também cob
 
 `git revert` cria um commit novo que desfaz o anterior — sem reescrever o histórico que já foi para o servidor:
 
+**Linux, macOS e Windows 11** (mesmos comandos):
+
 ```bash
 git revert --no-edit HEAD
 git push
@@ -552,12 +681,20 @@ O pipeline volta a ficar verde e a versão do revert é homologada. **Não promo
 
 Você tem duas versões homologadas: a da Etapa 5 (ex.: `6bac153`) e a do revert (`git rev-parse --short=7 HEAD`).
 
-1. **Promova a do revert.** `curl -s http://frete.localhost/api/health` mostra a versão nova.
+1. **Promova a do revert.** `curl -s http://frete.localhost/api/health` (Windows: `curl.exe -s ...`) mostra a versão nova.
 2. Imagine que um cliente reportou um problema logo depois. **Rollback:** rode a promoção de novo, informando a versão anterior (`6bac153`).
+
+**Linux/macOS (bash):**
 
 ```bash
 curl -s http://frete.localhost/api/health
 # {"status":"ok","versao":"6bac153"}      <- de volta em ~3 segundos
+```
+
+**Windows 11 (PowerShell):**
+
+```powershell
+curl.exe -s http://frete.localhost/api/health
 ```
 
 Não houve rebuild, nem novo teste, nem acesso ao servidor: a imagem homologada **já existia**. Rollback rápido é uma consequência de três decisões do pipeline:
@@ -574,9 +711,21 @@ Isso derruba diretamente o **MTTR** das métricas DORA (Slide 20).
 
 ## Etapa 8 — Pull request: validar sem publicar (10 min)
 
+**Linux (bash):**
+
 ```bash
 git switch -c feature/prazo-sudeste
 sed -i 's/SUDESTE("18.00", 2)/SUDESTE("18.00", 1)/' src/main/java/br/edu/gqs/frete/Regiao.java
+git commit -am "Sudeste entrega em 1 dia"
+git push -u origin feature/prazo-sudeste
+```
+
+**Windows 11 (PowerShell):**
+
+```powershell
+git switch -c feature/prazo-sudeste
+$f = "$PWD\src\main\java\br\edu\gqs\frete\Regiao.java"
+[IO.File]::WriteAllText($f, [IO.File]::ReadAllText($f).Replace('SUDESTE("18.00", 2)', 'SUDESTE("18.00", 1)'))
 git commit -am "Sudeste entrega em 1 dia"
 git push -u origin feature/prazo-sudeste
 ```
@@ -600,7 +749,7 @@ O revisor vê, **dentro do PR**, que os testes passaram, antes de aprovar. Nada 
 
 ## Etapa 9 — O mesmo ciclo com Python (30 min)
 
-O runner já tem Python; nada muda na infraestrutura. O pipeline Python cria um *virtualenv*, instala `requirements-dev.txt` e roda:
+O runner já tem Python; nada muda na infraestrutura. O pipeline Python cria um *virtualenv*, instala `requirements-dev.txt` e roda (este comando é executado **pelo pipeline, dentro do runner Linux** — você não precisa digitá-lo):
 
 ```bash
 pytest -v --cov --cov-report=term-missing --cov-report=html:relatorio-cobertura \
@@ -613,9 +762,25 @@ O `--cov-fail-under=80` é o gate de cobertura embutido no próprio comando de t
 
 A partir de `gqs-sandbox/class25/lab-gitea`:
 
+**Linux/macOS (bash):**
+
 ```bash
+cd ~/gqs-sandbox/class25/lab-gitea
 cp -r frete-python ~/frete-python
 cd ~/frete-python
+git init -b main
+git add .
+git commit -m "API de frete (Python): versao inicial"
+git remote add origin http://gitea.localhost/aluno/frete-python.git
+git push -u origin main
+```
+
+**Windows 11 (PowerShell):**
+
+```powershell
+cd $HOME\gqs-sandbox\class25\lab-gitea
+Copy-Item -Recurse -Force frete-python $HOME\frete-python
+cd $HOME\frete-python
 git init -b main
 git add .
 git commit -m "API de frete (Python): versao inicial"
@@ -634,8 +799,17 @@ Job 1 falha: **16 testes, 1 falha** (`test_pedido_de_exatamente_200_tem_frete_gr
 +    gratis = valor_pedido >= LIMITE_FRETE_GRATIS
 ```
 
+**Linux/macOS (bash):**
+
 ```bash
 git commit -am "Corrige frete gratis: a partir de R\$ 200,00 (>=)"
+git push
+```
+
+**Windows 11 (PowerShell):**
+
+```powershell
+git commit -am 'Corrige frete gratis: a partir de R$ 200,00 (>=)'
 git push
 ```
 
@@ -649,6 +823,8 @@ O `app.py` traduz `ValueError` em 400, mas a exceção da regra herda de `Except
 -class FreteInvalido(Exception):
 +class FreteInvalido(ValueError):
 ```
+
+**Linux, macOS e Windows 11** (mesmos comandos):
 
 ```bash
 git commit -am "Corrige erro 500 com peso invalido: FreteInvalido vira 400"
@@ -668,13 +844,23 @@ Pipeline verde → **Actions** → **Promover para producao** → versão do com
 
 ## Etapa 10 — Encerrar o ambiente
 
+**Linux/macOS (bash):**
+
 ```bash
-cd gqs-sandbox/class25/lab-gitea
+cd ~/gqs-sandbox/class25/lab-gitea
 ./scripts/limpar-ambientes.sh        # remove staging, produção e as imagens gqs25/*
 docker compose down                  # para Gitea, runner e Traefik, mantendo os dados
 ```
 
-`docker compose down -v` apaga também o Gitea (repositórios, usuários, histórico de execuções) e o cache do runner. Seus repositórios locais em `~/frete-java` e `~/frete-python` continuam intactos.
+**Windows 11 (PowerShell)** — o script `.sh` roda no bash que vem com o Git for Windows:
+
+```powershell
+cd $HOME\gqs-sandbox\class25\lab-gitea
+& "$env:ProgramFiles\Git\bin\bash.exe" scripts/limpar-ambientes.sh   # remove staging, produção e as imagens gqs25/*
+docker compose down                  # para Gitea, runner e Traefik, mantendo os dados
+```
+
+`docker compose down -v` apaga também o Gitea (repositórios, usuários, histórico de execuções) e o cache do runner. Seus repositórios locais em `~/frete-java` e `~/frete-python` (no Windows, `$HOME\frete-java` e `$HOME\frete-python`) continuam intactos.
 
 ---
 
@@ -690,6 +876,11 @@ docker compose down                  # para Gitea, runner e Traefik, mantendo os
 | Promoção recusada com versão "certa" | versão não passou no job 4, ou foi digitada com mais de 7 caracteres | use `git rev-parse --short=7 HEAD` e confira a tag `-homologada` com `docker images` |
 | `git push` pede senha toda vez | o Git não guardou a credencial | `git config --global credential.helper store` (grava em texto puro — só em laboratório) |
 | `docker compose up` reclama de `RUNNER_TOKEN` | `.env` ausente ou sem o token | Etapa 1.1 |
+| Windows: runner reiniciando com `exec ... entrypoint.sh: no such file or directory` ou `$'\r': command not found` | os `.sh` foram baixados com fim de linha CRLF | `git pull` no `gqs-sandbox` (o `.gitattributes` força LF) e `docker compose up -d --build` |
+| Windows: `curl` responde com um objeto do PowerShell ou erro de parâmetro | no PowerShell 5, `curl` é apelido de `Invoke-WebRequest` | use `curl.exe` |
+| Windows: `&&` dá erro *"não é um separador de instrução válido"* | o PowerShell 5 não aceita `&&` | use os blocos **Windows 11 (PowerShell)**, que separam os comandos em linhas ou com `;` |
+| Windows: `bash.exe` não encontrado | o Git for Windows foi instalado em outra pasta | rode o script pelo **Git Bash** (`bash scripts/limpar-ambientes.sh`) |
+| Windows: `.env` ignorado ou com caracteres estranhos | o arquivo foi salvo em UTF-16 | salve-o como UTF-8 no Bloco de Notas (*Salvar como → Codificação*) |
 
 **Sobre o `docker.sock` no runner:** montar o socket dá ao pipeline controle total do Docker da máquina — é o que permite gerar imagens e subir ambientes aqui. Num servidor compartilhado, isso exige um runner **dedicado** e confiável, porque qualquer workflow de qualquer repositório ganharia esse poder. É uma decisão de segurança, não um detalhe de configuração (DevSecOps, Aula 26).
 

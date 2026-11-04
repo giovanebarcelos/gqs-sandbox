@@ -13,6 +13,8 @@ Esteira de CI/CD completa na sua máquina: **Gitea** (servidor Git + Actions), u
 
 ## Início rápido
 
+**Linux/macOS (bash):**
+
 ```bash
 cp .env.example .env                 # cole em RUNNER_TOKEN a saída de: openssl rand -hex 20
 docker compose up -d --build
@@ -21,6 +23,22 @@ docker exec -u git gqs25_gitea gitea admin user create --admin \
 
 cp -r frete-java ~/frete-java && cd ~/frete-java
 git init -b main && git add . && git commit -m "API de frete: versao inicial"
+git remote add origin http://gitea.localhost/aluno/frete-java.git
+git push -u origin main              # acompanhe em http://gitea.localhost/aluno/frete-java/actions
+```
+
+**Windows 11 (PowerShell):**
+
+```powershell
+Copy-Item .env.example .env
+$b = New-Object byte[] 20; [Security.Cryptography.RandomNumberGenerator]::Create().GetBytes($b); -join ($b | ForEach-Object { $_.ToString('x2') })
+notepad .env                         # cole a saída acima em RUNNER_TOKEN e salve
+docker compose up -d --build
+docker exec -u git gqs25_gitea gitea admin user create --admin `
+  --username aluno --email aluno@gqs.local --password 'Troque-esta-senha!' --must-change-password=false
+
+Copy-Item -Recurse -Force frete-java $HOME\frete-java; cd $HOME\frete-java
+git init -b main; git add .; git commit -m "API de frete: versao inicial"
 git remote add origin http://gitea.localhost/aluno/frete-java.git
 git push -u origin main              # acompanhe em http://gitea.localhost/aluno/frete-java/actions
 ```
@@ -36,8 +54,17 @@ Produção: workflow **Promover para producao** (`workflow_dispatch`), que só a
 
 ## Encerrar
 
+**Linux/macOS (bash):**
+
 ```bash
 ./scripts/limpar-ambientes.sh        # staging, produção e imagens gqs25/*
+docker compose down -v               # -v apaga também o Gitea e o cache do runner
+```
+
+**Windows 11 (PowerShell):**
+
+```powershell
+& "$env:ProgramFiles\Git\bin\bash.exe" scripts/limpar-ambientes.sh   # staging, produção e imagens gqs25/*
 docker compose down -v               # -v apaga também o Gitea e o cache do runner
 ```
 

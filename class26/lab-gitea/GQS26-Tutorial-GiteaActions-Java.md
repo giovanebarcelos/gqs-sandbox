@@ -319,6 +319,7 @@ Pelo Gitea: **Artifacts → `relatorios-java-21`** → `site/jacoco/index.html`.
 
 ```bash
 cd ~/boletim/java && mvn -q verify                  # gera target/site/jacoco/
+mkdir -p ~/boletim/python/relatorio-cobertura       # o compose também monta a pasta do Python; sem ela, o Docker a cria como root
 cd ~/gqs-sandbox/class26/lab-gitea
 echo "BOLETIM_DIR=$HOME/boletim" >> .env
 docker compose --profile cobertura up -d            # abra http://cobertura.localhost
@@ -328,6 +329,7 @@ docker compose --profile cobertura up -d            # abra http://cobertura.loca
 
 ```powershell
 cd $HOME\boletim\java; mvn -q verify                # gera target\site\jacoco\
+New-Item -ItemType Directory -Force $HOME\boletim\python\relatorio-cobertura | Out-Null   # o compose também monta a pasta do Python
 cd $HOME\gqs-sandbox\class26\lab-gitea
 [IO.File]::AppendAllText("$PWD\.env", "`nBOLETIM_DIR=$($HOME -replace '\\','/')/boletim`n")
 docker compose --profile cobertura up -d            # abra http://cobertura.localhost

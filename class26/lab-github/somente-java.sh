@@ -18,6 +18,7 @@ rm -rf python .github/workflows/ci-python.yml exercicios/historico.py \
 ini=$(grep -n 'Boletim API - PYTHON' docker-compose.yml | cut -d: -f1)
 fim=$(grep -n 'Relatorios de cobertura' docker-compose.yml | cut -d: -f1)
 sed -i "$((ini-1)),$((fim-2))d" docker-compose.yml
+sed -i '\#./python/relatorio-cobertura:#d' docker-compose.yml   # sem Python, a pasta nao existe: o Docker a criaria como root
 sed -i '/boletim-python.localhost   Boletim API em Python/d; s#IMAGEM_JAVA / IMAGEM_PYTHON / APP_VERSION#IMAGEM_JAVA / APP_VERSION#' docker-compose.yml
 
 # release.yml

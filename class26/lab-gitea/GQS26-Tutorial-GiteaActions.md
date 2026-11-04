@@ -602,9 +602,8 @@ O **CI Python não rodou** neste push: o commit só tocou `java/` e o filtro `pa
 docker images 'gqs26g/*' --format '{{.Repository}}:{{.Tag}}'
 # gqs26g/boletim-java:eee02b2-homologada     <- a "etiqueta" que libera a promoção
 # gqs26g/boletim-java:eee02b2
-# gqs26g/boletim-python:eee02b2-homologada
-# gqs26g/boletim-python:eee02b2
-# gqs26g/boletim-python:ea9bd8e              <- versões antigas continuam, mas as sem etiqueta não vão a produção
+# gqs26g/boletim-python:ea9bd8e-homologada   <- o Python foi homologado no push da Etapa 4
+# gqs26g/boletim-python:ea9bd8e
 ```
 
 (Os hashes do seu repositório serão diferentes.)
@@ -758,7 +757,7 @@ curl -s http://boletim.localhost/api/health
 curl.exe -s http://boletim.localhost/api/health
 ```
 
-Agora a **Boletim em produção** responde em `http://boletim.localhost`, com a mesma imagem que passou nos testes de staging — **o artefato é construído uma vez e promovido**, nunca reconstruído. Faça o mesmo com `python` e a versão do último commit (que o CI Python também homologou) para ter `http://boletim-python.localhost`.
+Agora a **Boletim em produção** responde em `http://boletim.localhost`, com a mesma imagem que passou nos testes de staging — **o artefato é construído uma vez e promovido**, nunca reconstruído. Faça o mesmo com `python` e a versão do último commit para ter `http://boletim-python.localhost` — ela foi homologada pelo *Run workflow* do CI Python na Etapa 6.2 (o push da Etapa 5 não disparou o CI Python). Pulou a 6.2? Use a versão da Etapa 4.
 
 ### 7.3 Rollback
 

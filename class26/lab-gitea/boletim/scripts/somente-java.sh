@@ -11,7 +11,8 @@ set -euo pipefail
 [ -d java ] && [ -d .gitea/workflows ] || { echo "Rode na raiz do projeto (onde estao java/ e .gitea/)." >&2; exit 1; }
 
 rm -rf python .gitea/workflows/ci-python.yml \
-       bruno/Boletim-API/environments/StagingPython.bru bruno/Boletim-API/environments/ProducaoPython.bru
+       bruno/Boletim-API/environments/StagingPython.bru bruno/Boletim-API/environments/ProducaoPython.bru \
+       bruno/Boletim-API/environments/Python.bru
 sed -i 's/options: \[java, python\]/options: [java]/; s/Aplicacao: java ou python/Aplicacao: java/' .gitea/workflows/promover-producao.yml
 sed -i 's/(java|python)/(java)/; s/Use java ou python/Use java/' .gitea/workflows/promover-producao.yml
 rm -- "$0"

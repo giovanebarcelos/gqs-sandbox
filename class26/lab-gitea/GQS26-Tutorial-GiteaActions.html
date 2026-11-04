@@ -2796,9 +2796,8 @@ staging</strong>:</p>
 <div class="sourceCode" id="cb35"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> images <span class="st">&#39;gqs26g/*&#39;</span> <span class="at">--format</span> <span class="st">&#39;{{.Repository}}:{{.Tag}}&#39;</span></span>
 <span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="co"># gqs26g/boletim-java:eee02b2-homologada     &lt;- a &quot;etiqueta&quot; que libera a promoção</span></span>
 <span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a><span class="co"># gqs26g/boletim-java:eee02b2</span></span>
-<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a><span class="co"># gqs26g/boletim-python:eee02b2-homologada</span></span>
-<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a><span class="co"># gqs26g/boletim-python:eee02b2</span></span>
-<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a><span class="co"># gqs26g/boletim-python:ea9bd8e              &lt;- versões antigas continuam, mas as sem etiqueta não vão a produção</span></span></code></pre></div>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a><span class="co"># gqs26g/boletim-python:ea9bd8e-homologada   &lt;- o Python foi homologado no push da Etapa 4</span></span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a><span class="co"># gqs26g/boletim-python:ea9bd8e</span></span></code></pre></div>
 <p>(Os hashes do seu repositório serão diferentes.)</p>
 <h3 id="os-relatórios-de-cobertura">5.3 Os relatórios de cobertura</h3>
 <p><strong>Pelo Gitea:</strong> na página da execução do CI Java, em
@@ -2954,8 +2953,10 @@ termina em poucos segundos:</p>
 <code>http://boletim.localhost</code>, com a mesma imagem que passou nos
 testes de staging — <strong>o artefato é construído uma vez e
 promovido</strong>, nunca reconstruído. Faça o mesmo com
-<code>python</code> e a versão do último commit (que o CI Python também
-homologou) para ter <code>http://boletim-python.localhost</code>.</p>
+<code>python</code> e a versão do último commit para ter
+<code>http://boletim-python.localhost</code> — ela foi homologada pelo
+<em>Run workflow</em> do CI Python na Etapa 6.2 (o push da Etapa 5 não
+disparou o CI Python). Pulou a 6.2? Use a versão da Etapa 4.</p>
 <h3 id="rollback">7.3 Rollback</h3>
 <p>Para voltar a uma versão anterior, rode <strong>o mesmo
 workflow</strong> informando uma versão homologada antiga (as imagens

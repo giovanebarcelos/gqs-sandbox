@@ -1,0 +1,292 @@
+{
+  "id": "952c3908-df0d-4b86-a900-d515f3828098",
+  "version": "2.0",
+  "name": "GQS17 SauceDemo",
+  "url": "https://www.saucedemo.com",
+  "tests": [
+    {
+      "id": "358109ca-d5b5-41c0-a9d3-17152a8ad008",
+      "name": "Login valido",
+      "commands": [
+        {
+          "id": "adf7bc5e-fb74-4966-b1d0-d7acf92f2e5e",
+          "comment": "",
+          "command": "open",
+          "target": "/",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "c9f650e7-3a0b-4e32-a1a0-1030c68eeafb",
+          "comment": "",
+          "command": "setWindowSize",
+          "target": "1280x800",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "dcb0edad-6fbc-4cb0-827b-fc387271feaf",
+          "comment": "",
+          "command": "type",
+          "target": "id=user-name",
+          "targets": [],
+          "value": "standard_user"
+        },
+        {
+          "id": "3c5429ef-6c15-4341-adde-c66609ac047f",
+          "comment": "",
+          "command": "type",
+          "target": "css=[data-test=\"password\"]",
+          "targets": [],
+          "value": "secret_sauce"
+        },
+        {
+          "id": "50d74fbd-bf37-438b-8be8-4b8e5e7c9397",
+          "comment": "",
+          "command": "click",
+          "target": "id=login-button",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "c7273c6a-d5b3-46dc-ba52-171fe65df688",
+          "comment": "",
+          "command": "waitForElementVisible",
+          "target": "css=[data-test=\"title\"]",
+          "targets": [],
+          "value": "10000"
+        },
+        {
+          "id": "eb7a54cf-fa75-4a17-b7d5-f54b3010e738",
+          "comment": "oraculo: a pagina de produtos abriu",
+          "command": "assertText",
+          "target": "css=[data-test=\"title\"]",
+          "targets": [],
+          "value": "Products"
+        },
+        {
+          "id": "d97c78f2-c62b-42fa-b66d-f92c6e800f8b",
+          "comment": "",
+          "command": "assertTitle",
+          "target": "Swag Labs",
+          "targets": [],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "f10c674d-8c29-4b64-8c53-20cc6464bb28",
+      "name": "Login bloqueado",
+      "commands": [
+        {
+          "id": "d86625cd-db70-4ead-b441-129c1c8b45f5",
+          "comment": "",
+          "command": "open",
+          "target": "/",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "0bd65412-051a-4570-9f02-1bf631ef408e",
+          "comment": "",
+          "command": "setWindowSize",
+          "target": "1280x800",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "dab73c9c-2eab-456f-bade-771ba5f70dd9",
+          "comment": "",
+          "command": "type",
+          "target": "id=user-name",
+          "targets": [],
+          "value": "locked_out_user"
+        },
+        {
+          "id": "ea3e0eff-279f-487f-9176-d5ba709dab9c",
+          "comment": "",
+          "command": "type",
+          "target": "css=[data-test=\"password\"]",
+          "targets": [],
+          "value": "secret_sauce"
+        },
+        {
+          "id": "8215310e-d194-4a0e-a473-4ea049107c16",
+          "comment": "",
+          "command": "click",
+          "target": "id=login-button",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "8f5d7d74-b46f-476b-877c-a3e7d2ffcf8e",
+          "comment": "",
+          "command": "waitForElementVisible",
+          "target": "css=[data-test=\"error\"]",
+          "targets": [],
+          "value": "10000"
+        },
+        {
+          "id": "cb43d7b2-0463-4f1c-9589-ce71628a822c",
+          "comment": "teste negativo: o login deve ser recusado",
+          "command": "assertText",
+          "target": "css=[data-test=\"error\"]",
+          "targets": [],
+          "value": "Epic sadface: Sorry, this user has been locked out."
+        },
+        {
+          "id": "e2dfea2d-f809-4da9-80d6-bd4a69dafbf7",
+          "comment": "",
+          "command": "assertElementNotPresent",
+          "target": "css=[data-test=\"inventory-list\"]",
+          "targets": [],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "4e0c4f14-8265-496c-9997-555cdf0e0fc3",
+      "name": "Adicionar ao carrinho",
+      "commands": [
+        {
+          "id": "fab7f7c4-4fb8-40b8-9fa5-098eb634febb",
+          "comment": "variaveis: troque aqui e o teste inteiro usa o novo valor",
+          "command": "store",
+          "target": "standard_user",
+          "targets": [],
+          "value": "usuario"
+        },
+        {
+          "id": "0bc5724a-69c9-482a-9d4e-be359ecb547c",
+          "comment": "",
+          "command": "store",
+          "target": "secret_sauce",
+          "targets": [],
+          "value": "senha"
+        },
+        {
+          "id": "ad8da460-eb09-4b76-b4c1-434869290fc8",
+          "comment": "",
+          "command": "open",
+          "target": "/",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "a74ae2d0-4e48-4df7-b912-6a3497d504e2",
+          "comment": "",
+          "command": "setWindowSize",
+          "target": "1280x800",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "066a586b-162c-459b-b5db-84ecdf059404",
+          "comment": "",
+          "command": "type",
+          "target": "id=user-name",
+          "targets": [],
+          "value": "${usuario}"
+        },
+        {
+          "id": "a47c6237-695b-4843-9dd9-e68f14d5457d",
+          "comment": "",
+          "command": "type",
+          "target": "css=[data-test=\"password\"]",
+          "targets": [],
+          "value": "${senha}"
+        },
+        {
+          "id": "7a01ad80-8c66-42f8-94f0-2a3c5f503e5a",
+          "comment": "",
+          "command": "click",
+          "target": "id=login-button",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "7a120306-8e79-4b56-b12a-b775c6d9b96b",
+          "comment": "",
+          "command": "waitForElementVisible",
+          "target": "css=[data-test=\"inventory-list\"]",
+          "targets": [],
+          "value": "10000"
+        },
+        {
+          "id": "b5fd889a-7854-4539-ada4-5843adc55e9e",
+          "comment": "guarda o nome do 1o produto",
+          "command": "storeText",
+          "target": "css=[data-test=\"inventory-item-name\"]",
+          "targets": [],
+          "value": "produto"
+        },
+        {
+          "id": "4c591d5a-4e72-4fb7-b432-0dd87cec2df8",
+          "comment": "",
+          "command": "echo",
+          "target": "Produto escolhido: ${produto}",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "362f5841-baeb-4ed6-b937-4b59b3790080",
+          "comment": "",
+          "command": "click",
+          "target": "css=[data-test^=\"add-to-cart\"]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "df8ac0b3-8045-4815-a5f5-cf05ead28aa8",
+          "comment": "",
+          "command": "assertText",
+          "target": "css=[data-test=\"shopping-cart-badge\"]",
+          "targets": [],
+          "value": "1"
+        },
+        {
+          "id": "a03b2f7e-177b-4083-8e1e-89234e3b64bf",
+          "comment": "",
+          "command": "click",
+          "target": "css=[data-test=\"shopping-cart-link\"]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "c3b2b304-03b6-46cd-900c-42555ec591a6",
+          "comment": "",
+          "command": "waitForElementVisible",
+          "target": "css=[data-test=\"cart-list\"]",
+          "targets": [],
+          "value": "10000"
+        },
+        {
+          "id": "2403ba4c-23f5-4232-86a6-54ddb1a3ea05",
+          "comment": "o item no carrinho e o mesmo que foi adicionado",
+          "command": "assertText",
+          "target": "css=[data-test=\"inventory-item-name\"]",
+          "targets": [],
+          "value": "${produto}"
+        }
+      ]
+    }
+  ],
+  "suites": [
+    {
+      "id": "85d89047-7764-469e-a5e8-27d59cf91c0c",
+      "name": "Regressao SauceDemo",
+      "persistSession": false,
+      "parallel": false,
+      "timeout": 300,
+      "tests": [
+        "358109ca-d5b5-41c0-a9d3-17152a8ad008",
+        "f10c674d-8c29-4b64-8c53-20cc6464bb28",
+        "4e0c4f14-8265-496c-9997-555cdf0e0fc3"
+      ]
+    }
+  ],
+  "urls": [
+    "https://www.saucedemo.com/"
+  ],
+  "plugins": []
+}

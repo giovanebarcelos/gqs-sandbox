@@ -25,7 +25,7 @@ repository/
 ├── class23B/ — SonarQube: Análise Contínua e Quality Gate (+ lab-sonar/: SonarQube + Biblioteca API Java/Python + Bruno + Traefik)  
 ├── class24/ — Kiwi TCMS e Bug Tracking (+ lab-kiwi/: Kiwi + TechStore API Java/Python + Bruno + Traefik)  
 ├── class25/ — CI/CD  
-├── class26/ — DevOps e GitHub Actions  
+├── class26/ — DevOps, GitHub Actions e Gitea Actions  
 ├── class27/ — Estimativa de Software e Métricas de Processo/Projeto  
 ├── class28/ — Gestão de Configuração, Versionamento e Manutenção  
 ├── class29/ — Projeto Integrador Final (+ modelos de AGENTS.md e do registro de Uso de IA)  
@@ -556,7 +556,7 @@ Mantido como referência: o TestLink continua em uso em muitas empresas e os con
 
 ---  
 
-## class26 — DevOps e GitHub Actions  
+## class26 — DevOps, GitHub Actions e Gitea Actions  
 
 ### diagrams/  
 
